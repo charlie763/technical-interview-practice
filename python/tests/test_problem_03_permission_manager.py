@@ -6,27 +6,41 @@ Run from the python/ directory:
 """
 
 import pytest
-from practice_problems.problem_03_permission_manager import PermissionManager
-
+from python.practice_problem_answers.cw_answer_03_permission_manager import (
+    PermissionManager,
+)
 
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture
 def pm():
     """Fresh PermissionManager with a standard set of roles."""
     p = PermissionManager()
-    p.create_role("viewer",  ["posts:read", "comments:read"])
-    p.create_role("editor",  ["posts:read", "posts:write", "comments:read", "comments:write"])
-    p.create_role("admin",   ["posts:read", "posts:write", "posts:delete",
-                               "users:read", "users:write", "billing:read"])
+    p.create_role("viewer", ["posts:read", "comments:read"])
+    p.create_role(
+        "editor", ["posts:read", "posts:write", "comments:read", "comments:write"]
+    )
+    p.create_role(
+        "admin",
+        [
+            "posts:read",
+            "posts:write",
+            "posts:delete",
+            "users:read",
+            "users:write",
+            "billing:read",
+        ],
+    )
     return p
 
 
 # ---------------------------------------------------------------------------
 # PART 1 — Flat RBAC
 # ---------------------------------------------------------------------------
+
 
 class TestCreateRole:
     def test_creates_role(self):
@@ -53,7 +67,9 @@ class TestGrantRevokePermission:
 
     def test_grant_idempotent(self, pm):
         pm.grant_permission("viewer", "posts:read")  # already exists
-        assert pm.get_role_permissions("viewer").count if False else True  # just shouldn't raise
+        assert (
+            pm.get_role_permissions("viewer").count if False else True
+        )  # just shouldn't raise
 
     def test_grant_missing_role_raises(self, pm):
         with pytest.raises(KeyError):
@@ -134,19 +150,20 @@ class TestHasPermission:
 # PART 2 — Role inheritance
 # ---------------------------------------------------------------------------
 
+
 class TestRoleInheritance:
     def test_child_inherits_parent_permissions(self, pm):
         # viewer < editor < admin hierarchy
         pm.set_parent_role("editor", "viewer")
         perms = pm.get_role_permissions("editor")
-        assert "posts:read" in perms    # own
-        assert "comments:read" in perms # inherited from viewer
+        assert "posts:read" in perms  # own
+        assert "comments:read" in perms  # inherited from viewer
 
     def test_grandchild_inherits_transitively(self):
         p = PermissionManager()
-        p.create_role("base",  ["base:read"])
-        p.create_role("mid",   ["mid:write"])
-        p.create_role("top",   ["top:admin"])
+        p.create_role("base", ["base:read"])
+        p.create_role("mid", ["mid:write"])
+        p.create_role("top", ["top:admin"])
         p.set_parent_role("mid", "base")
         p.set_parent_role("top", "mid")
         perms = p.get_role_permissions("top")
@@ -157,8 +174,8 @@ class TestRoleInheritance:
     def test_user_gets_inherited_permissions(self, pm):
         pm.set_parent_role("editor", "viewer")
         pm.assign_role("alice", "editor")
-        assert pm.has_permission("alice", "posts:read") is True   # own
-        assert pm.has_permission("alice", "comments:read") is True # inherited
+        assert pm.has_permission("alice", "posts:read") is True  # own
+        assert pm.has_permission("alice", "comments:read") is True  # inherited
 
     def test_user_does_not_get_sibling_permissions(self, pm):
         pm.set_parent_role("editor", "viewer")
@@ -169,7 +186,7 @@ class TestRoleInheritance:
         p = PermissionManager()
         p.create_role("base_a", ["a:read"])
         p.create_role("base_b", ["b:read"])
-        p.create_role("child",  ["c:read"])
+        p.create_role("child", ["c:read"])
         p.set_parent_role("child", "base_a")
         p.set_parent_role("child", "base_b")  # replace parent
         perms = p.get_role_permissions("child")
@@ -193,15 +210,16 @@ class TestRoleInheritance:
 # PART 3 — Scoped permissions with wildcards
 # ---------------------------------------------------------------------------
 
+
 class TestScopedPermissions:
     @pytest.fixture
     def scoped_pm(self):
         p = PermissionManager()
-        p.create_role("reader",     ["posts:read", "comments:read"])
+        p.create_role("reader", ["posts:read", "comments:read"])
         p.create_role("post_owner", ["posts:*"])
-        p.create_role("moderator",  ["*:delete"])
+        p.create_role("moderator", ["*:delete"])
         p.create_role("superadmin", ["*:*"])
-        p.create_role("mixed",      ["billing:read", "plain_permission"])
+        p.create_role("mixed", ["billing:read", "plain_permission"])
         return p
 
     def test_exact_match(self, scoped_pm):
@@ -236,12 +254,17 @@ class TestScopedPermissions:
         scoped_pm.assign_role("alice", "superadmin")
         assert scoped_pm.has_scoped_permission("alice", "posts", "read") is True
         assert scoped_pm.has_scoped_permission("alice", "billing", "write") is True
-        assert scoped_pm.has_scoped_permission("alice", "anything", "everything") is True
+        assert (
+            scoped_pm.has_scoped_permission("alice", "anything", "everything") is True
+        )
 
     def test_plain_permission_ignored_by_scoped_check(self, scoped_pm):
         scoped_pm.assign_role("alice", "mixed")
         # "plain_permission" has no ":" so it's not a scoped permission
-        assert scoped_pm.has_scoped_permission("alice", "plain_permission", "read") is False
+        assert (
+            scoped_pm.has_scoped_permission("alice", "plain_permission", "read")
+            is False
+        )
 
     def test_unknown_user_returns_false(self, scoped_pm):
         assert scoped_pm.has_scoped_permission("nobody", "posts", "read") is False
