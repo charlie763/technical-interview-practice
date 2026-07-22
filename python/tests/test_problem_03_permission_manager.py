@@ -6,7 +6,7 @@ Run from the python/ directory:
 """
 
 import pytest
-from python.practice_problem_answers.cw_answer_03_permission_manager import (
+from practice_problems.problem_03_permission_manager import (
     PermissionManager,
 )
 

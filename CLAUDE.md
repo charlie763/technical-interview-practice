@@ -17,7 +17,9 @@ react/
 3. He updates the test file's import to point at his answer file.
 4. He runs `pytest tests/test_problem_XX_<name>.py -v` from the `python/` directory.
 
-Test files therefore import from `python.practice_problem_answers.cw_answer_XX_...`, not from `practice_problems/`.
+Test files **always** import from `practice_problems.problem_NN_<name>` (the stub).
+The `--answer` flag in `python/conftest.py` injects the answer module under that same
+module path before test collection, so no manual import changes are ever needed.
 
 ---
 
