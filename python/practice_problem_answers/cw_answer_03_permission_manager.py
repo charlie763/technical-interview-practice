@@ -33,6 +33,17 @@ NOTES
 # Notes to self
 # read through all problem specs, i.e. inheritance, only grabbing roles via user id first -> better long term planning
 
+"""
+NOTES for ai:
+    - more realistic would be to have role id automatically increment, like in a DB
+    - tests are interdependent in a way that means I can't test this without test writing get_role permissions first
+    - ai should start with some example data, it was hard to parse through some of the intended functinoality (although
+      maybe this is realistic of real tests and worth having to struggle with)
+    - put tests in order of functionality being built, so you can run the whole test suite and more easily see what's not working
+    - tests shouldn't be susceptible to memory bleed issues, i.e. TestCreateRole::test_duplicate_raises seems to succeed
+        in isolation but fails in when run with other tests
+"""
+
 
 class Role:
     """
@@ -97,12 +108,7 @@ class PermissionManager:
         Raise ValueError if role_id already exists.
         Permissions default to an empty set if not provided.
         """
-        # NOTES for ai:
-        #   - more realistic would be to have role id increment
-        #   - tests are interdependent in a way that means I can't test this without test writing get_role permissions first
-        #   - ai should start with some example data
-        #   - put tests in order of functionality being built
-        #   - tests shouldn't be susceptible to memory bleed issues
+
         if role_id in Role.EXISTING_ROLES_IDS:
             raise ValueError(f"role id, {role_id} already exists")
         role_permissions = set(permissions) if permissions else set()

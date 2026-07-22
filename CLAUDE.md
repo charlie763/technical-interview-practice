@@ -1,0 +1,110 @@
+# Technical Interview Practice — Agent Guidelines
+
+## Repo structure
+
+```
+python/
+  practice_problems/          # problem stubs (read-only during practice)
+  practice_problem_answers/   # cw_answer_XX_... files (filled in by Charlie)
+  tests/                      # pytest suites
+react/
+  practice_problems/          # JSX/TSX starter files
+```
+
+**Workflow per problem:**
+1. Problem file has the prompt + empty stubs.
+2. User copies the problem file to `practice_problem_answers/cw_answer_XX_<name>.py` and implements it there.
+3. He updates the test file's import to point at his answer file.
+4. He runs `pytest tests/test_problem_XX_<name>.py -v` from the `python/` directory.
+
+Test files therefore import from `python.practice_problem_answers.cw_answer_XX_...`, not from `practice_problems/`.
+
+---
+
+## Problem design rules
+
+### Parts must be self-contained
+- Tests for Part N must only call methods/functions defined in Parts 1–N.
+- Never verify a Part 1 result by calling a Part 2 helper.
+- Any introspection method needed to check state in tests (e.g. `get_role_permissions`,
+  `get_usage`, `get_all_permissions`) must live in the **earliest Part that requires it**.
+
+### Include a concrete usage example
+Add a short `# Example` block in the problem docstring showing the data in use and
+expected return values for 2–3 key operations. Interviewers always have an example;
+the problem file should too.
+
+```python
+# Example
+# pm = PermissionManager()
+# pm.create_role("admin", ["users:write", "billing:read"])
+# pm.assign_role("alice", "admin")
+# pm.has_permission("alice", "billing:read")  # -> True
+# pm.has_permission("alice", "posts:read")    # -> False
+```
+
+### Use string IDs, not auto-incrementing integers
+String slugs like `"admin"`, `"viewer"`, `"pk.abc123"` are more readable in tests and
+don't require the caller to track state. Auto-increment belongs in DB-backed systems,
+not in-memory interview problems. If the problem intentionally models a DB entity,
+call it out explicitly in the docstring.
+
+### All mutable state must be instance-level
+Include this note in every class-based problem docstring:
+
+  "Store all state in instance variables initialized in `__init__`.
+   Class-level variables will bleed between tests and between PermissionManager
+   instances — avoid them."
+
+---
+
+## Test writing rules
+
+### Use fixtures — never inline `ClassName()` inside test methods
+All tests must receive instances via pytest fixtures, not inline construction:
+
+```python
+# BAD — bleeds if implementation uses class-level state
+def test_creates_role(self):
+    p = PermissionManager()
+    p.create_role("mod", ...)
+
+# GOOD
+def test_creates_role(self, fresh_pm):
+    fresh_pm.create_role("mod", ...)
+```
+
+Provide both:
+- `pm` — a fixture pre-seeded with a realistic set of roles/data
+- `fresh_pm` — a bare, empty instance for tests that need a clean slate
+
+### Use unique identifiers per test method
+When multiple test methods create objects with string IDs, give each a distinct ID
+(e.g. `"role_creates_test"`, `"role_dup_test"`) rather than a shared generic name
+like `"mod"`. This prevents false failures when an implementation accidentally stores
+state at the class level.
+
+### Test ordering = implementation ordering
+Order test classes to match the Part order. A developer who finishes Part 1 and runs
+the full suite should see only Part 1 tests passing, with Part 2/3 failing cleanly
+due to `NotImplementedError` — not due to test coupling.
+
+### No cross-part dependencies in assertions
+A Part 1 test must not fail simply because Part 2 hasn't been implemented. If
+checking a Part 1 result requires a function slated for Part 2, move that function
+to Part 1.
+
+---
+
+## Problem style
+
+- Target ~45 min completion for a senior engineer.
+- Frame problems around a realistic product context but keep core logic generic
+  enough to apply across company types (SaaS, API platform, IoT, dev tools, etc.).
+- Don't make problems company-specific unless doing targeted prep for a named role.
+- Class-based problems (non-existing data structure): the candidate chooses internal data structures. 
+  Say so explicitly: "You choose the internal data structures — the public interface is what
+  matters."
+- Class-based problems: (existing data structure): the problem should have a predefined data
+  structure and the problem is just about creating application logic that modifies/utilizes that data 
+- Dict-based problems: provide a `make_<thing>()` factory and a clear schema comment.

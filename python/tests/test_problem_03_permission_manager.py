@@ -16,6 +16,12 @@ from python.practice_problem_answers.cw_answer_03_permission_manager import (
 
 
 @pytest.fixture
+def fresh_pm():
+    """Bare PermissionManager with no roles or users."""
+    return PermissionManager()
+
+
+@pytest.fixture
 def pm():
     """Fresh PermissionManager with a standard set of roles."""
     p = PermissionManager()
@@ -43,21 +49,18 @@ def pm():
 
 
 class TestCreateRole:
-    def test_creates_role(self):
-        p = PermissionManager()
-        p.create_role("mod", ["reports:read"])
-        assert p.get_role_permissions("mod") == {"reports:read"}
+    def test_creates_role(self, fresh_pm):
+        fresh_pm.create_role("role_creates", ["reports:read"])
+        assert fresh_pm.get_role_permissions("role_creates") == {"reports:read"}
 
-    def test_empty_permissions_by_default(self):
-        p = PermissionManager()
-        p.create_role("empty")
-        assert p.get_role_permissions("empty") == set()
+    def test_empty_permissions_by_default(self, fresh_pm):
+        fresh_pm.create_role("role_empty")
+        assert fresh_pm.get_role_permissions("role_empty") == set()
 
-    def test_duplicate_raises(self):
-        p = PermissionManager()
-        p.create_role("mod")
+    def test_duplicate_raises(self, fresh_pm):
+        fresh_pm.create_role("role_dup")
         with pytest.raises(ValueError):
-            p.create_role("mod")
+            fresh_pm.create_role("role_dup")
 
 
 class TestGrantRevokePermission:
@@ -159,14 +162,13 @@ class TestRoleInheritance:
         assert "posts:read" in perms  # own
         assert "comments:read" in perms  # inherited from viewer
 
-    def test_grandchild_inherits_transitively(self):
-        p = PermissionManager()
-        p.create_role("base", ["base:read"])
-        p.create_role("mid", ["mid:write"])
-        p.create_role("top", ["top:admin"])
-        p.set_parent_role("mid", "base")
-        p.set_parent_role("top", "mid")
-        perms = p.get_role_permissions("top")
+    def test_grandchild_inherits_transitively(self, fresh_pm):
+        fresh_pm.create_role("base", ["base:read"])
+        fresh_pm.create_role("mid", ["mid:write"])
+        fresh_pm.create_role("top", ["top:admin"])
+        fresh_pm.set_parent_role("mid", "base")
+        fresh_pm.set_parent_role("top", "mid")
+        perms = fresh_pm.get_role_permissions("top")
         assert "base:read" in perms
         assert "mid:write" in perms
         assert "top:admin" in perms
@@ -182,14 +184,13 @@ class TestRoleInheritance:
         pm.assign_role("alice", "viewer")
         assert pm.has_permission("alice", "posts:write") is False  # editor-only
 
-    def test_replacing_parent(self):
-        p = PermissionManager()
-        p.create_role("base_a", ["a:read"])
-        p.create_role("base_b", ["b:read"])
-        p.create_role("child", ["c:read"])
-        p.set_parent_role("child", "base_a")
-        p.set_parent_role("child", "base_b")  # replace parent
-        perms = p.get_role_permissions("child")
+    def test_replacing_parent(self, fresh_pm):
+        fresh_pm.create_role("base_a", ["a:read"])
+        fresh_pm.create_role("base_b", ["b:read"])
+        fresh_pm.create_role("child", ["c:read"])
+        fresh_pm.set_parent_role("child", "base_a")
+        fresh_pm.set_parent_role("child", "base_b")  # replace parent
+        perms = fresh_pm.get_role_permissions("child")
         assert "b:read" in perms
         assert "a:read" not in perms  # old parent no longer applies
 

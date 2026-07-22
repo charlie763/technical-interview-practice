@@ -27,6 +27,24 @@ NOTES
     that hasn't been seen before creates the user implicitly.
   - You may assume no cycles will be introduced in the role hierarchy.
   - Choose whatever internal data structures you like (dicts, sets, etc.).
+  - role_id and user_id are caller-supplied string slugs (e.g. "admin", "alice").
+  - All mutable state MUST be stored in instance variables set in __init__.
+    Class-level variables will bleed state between PermissionManager instances
+    and between test runs.
+
+EXAMPLE
+-------
+  pm = PermissionManager()
+  pm.create_role("admin", ["users:write", "billing:read"])
+  pm.create_role("viewer", ["posts:read"])
+  pm.assign_role("alice", "admin")
+  pm.assign_role("bob", "viewer")
+
+  pm.has_permission("alice", "billing:read")   # -> True
+  pm.has_permission("alice", "posts:read")     # -> False
+  pm.has_permission("bob", "users:write")      # -> False
+  pm.get_all_permissions("alice")              # -> {"users:write", "billing:read"}
+  pm.get_role_permissions("admin")             # -> {"users:write", "billing:read"}
 =============================================================================
 """
 
@@ -35,7 +53,8 @@ class PermissionManager:
     """In-memory Role-Based Access Control (RBAC) engine."""
 
     def __init__(self):
-        # TODO: initialize your internal state here
+        # TODO: initialize your internal state here.
+        # All state must be instance variables (not class variables).
         raise NotImplementedError
 
     # -------------------------------------------------------------------------
@@ -102,6 +121,17 @@ class PermissionManager:
         """
         raise NotImplementedError
 
+    def get_role_permissions(self, role_id: str) -> set:
+        """
+        Return the set of permissions directly on a role.
+        Raise KeyError if role_id doesn't exist.
+
+        Note: in Part 1 this returns only the role's own permissions.
+        After implementing Part 2 (set_parent_role), update this to also
+        include permissions inherited from ancestor roles.
+        """
+        raise NotImplementedError
+
     # -------------------------------------------------------------------------
     # PART 2 — Role inheritance  (~15 min)
     # -------------------------------------------------------------------------
@@ -115,16 +145,8 @@ class PermissionManager:
         A role may have at most one parent; calling this again replaces the
         existing parent.
 
-        After this is implemented, has_permission and get_all_permissions
-        must reflect inherited permissions automatically.
-        """
-        raise NotImplementedError
-
-    def get_role_permissions(self, role_id: str) -> set:
-        """
-        Return the full set of permissions for a role, including those
-        inherited from ancestor roles.
-        Raise KeyError if role_id doesn't exist.
+        After implementing this, update has_permission, get_all_permissions,
+        and get_role_permissions to include inherited permissions.
         """
         raise NotImplementedError
 
