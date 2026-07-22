@@ -81,8 +81,22 @@ Provide both:
 ### Use unique identifiers per test method
 When multiple test methods create objects with string IDs, give each a distinct ID
 (e.g. `"role_creates_test"`, `"role_dup_test"`) rather than a shared generic name
-like `"mod"`. This prevents false failures when an implementation accidentally stores
+like `"mod"`. This reduces false failures when an implementation accidentally stores
 state at the class level.
+
+### The conftest safety net
+`python/conftest.py` contains an `autouse` fixture (`_reset_class_level_state`) that
+runs after every test and clears class-level `set` attributes and mutable default
+`set` arguments on all classes found in imported practice-problem modules. This guards
+against two common implementation bugs in class-based problems:
+
+- **Class-level sets used as instance state**: `class Foo: SEEN = set()` — shared
+  across all instances, persists between tests.
+- **Mutable default arguments**: `def __init__(self, roles=set())` — all instances
+  share the same `set` object.
+
+This fixture is a diagnostic aid, not a substitute for fixing the implementation.
+If tests only pass because of it, there is a bug to fix. Do not remove this fixture.
 
 ### Test ordering = implementation ordering
 Order test classes to match the Part order. A developer who finishes Part 1 and runs
