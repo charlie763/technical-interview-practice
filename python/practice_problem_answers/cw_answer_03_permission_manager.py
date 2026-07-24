@@ -44,6 +44,8 @@ NOTES for ai:
         in isolation but fails in when run with other tests
 """
 
+import re
+
 
 class Role:
     """
@@ -52,10 +54,17 @@ class Role:
 
     EXISTING_ROLES_IDS = set()
 
-    def __init__(self, id: int, permissions: set[str], name: str | None = None):
+    def __init__(
+        self,
+        id: int,
+        permissions: set[str],
+        name: str | None = None,
+        parent_id: int | None = None,
+    ):
         self.id = id
         self.permissions = permissions
         self.name = name
+        self.parent_id = parent_id
 
 
 class User:
@@ -98,6 +107,17 @@ class PermissionManager:
             user = User(id=user_id)
         return user
 
+    def _build_ancestor_permissions(self, role: Role, base_permissions: set[str]):
+        all_permissions = base_permissions
+        if role.parent_id:
+            parent_role = self.get_role(role_id=role.parent_id)
+            all_permissions = all_permissions.union(parent_role.permissions)
+            return self._build_ancestor_permissions(
+                role=parent_role, base_permissions=all_permissions
+            )
+        else:
+            return all_permissions
+
     # -------------------------------------------------------------------------
     # PART 1 — Flat role/permission model  (~15 min)
     # -------------------------------------------------------------------------
@@ -133,7 +153,8 @@ class PermissionManager:
         No-op if the permission wasn't on the role.
         """
         role = self.get_role(role_id=role_id)
-        role.permissions.remove(permission)
+        if permission in role.permissions:
+            role.permissions.remove(permission)
 
     def assign_role(self, user_id: str, role_id: str) -> None:
         """
@@ -169,9 +190,14 @@ class PermissionManager:
         Part 3 scoped wildcards are NOT applied here — only exact string match.
         """
         user = self.users.get(user_id)
+        if not user:
+            return False
         has_permission = False
         for role in user.roles:
-            if permission in role.permissions:
+            role_permissions_with_inherited = self._build_ancestor_permissions(
+                role=role, base_permissions=role.permissions
+            )
+            if permission in role_permissions_with_inherited:
                 has_permission = True
                 break
         return has_permission
@@ -187,8 +213,10 @@ class PermissionManager:
         if not user:
             return set()
         for role in user.roles:
-            for permission in role.permissions:
-                all_permissions.add(permission)
+            role_permissions_with_inherited = self._build_ancestor_permissions(
+                role=role, base_permissions=role.permissions
+            )
+            all_permissions = all_permissions.union(role_permissions_with_inherited)
         return all_permissions
 
     # -------------------------------------------------------------------------
@@ -207,7 +235,11 @@ class PermissionManager:
         After this is implemented, has_permission and get_all_permissions
         must reflect inherited permissions automatically.
         """
-        raise NotImplementedError
+        child_role = self.get_role(role_id=role_id)
+        parent_role = self.get_role(role_id=parent_role_id)
+        if not child_role or not parent_role:
+            raise KeyError
+        setattr(child_role, "parent_id", parent_role_id)
 
     def get_role_permissions(self, role_id: str) -> set:
         """
@@ -218,7 +250,10 @@ class PermissionManager:
         role = self.roles.get(role_id)
         if not role:
             raise KeyError(f"role for role id, {role_id}, does not exist")
-        return role.permissions
+        role_permissions_with_inherited = self._build_ancestor_permissions(
+            role=role, base_permissions=role.permissions
+        )
+        return role_permissions_with_inherited
 
     # -------------------------------------------------------------------------
     # PART 3 — Scoped permissions with wildcards  (~15 min)
@@ -241,4 +276,34 @@ class PermissionManager:
         Inherited permissions (from Part 2) are included in the check.
         Return False if no matching permission is found or user doesn't exist.
         """
-        raise NotImplementedError
+        user = self.users.get(user_id)
+        if not user:
+            return False
+
+        for role in user.roles:
+            # Note this is inefficient if user has multiples that inherit from each other
+            role_permissions_with_inherited = self._build_ancestor_permissions(
+                role=role, base_permissions=role.permissions
+            )
+            if "*:*" in role_permissions_with_inherited:
+                return True
+            if f"{resource}:{action}" in role_permissions_with_inherited:
+                return True
+            scoped_permissions = list(
+                filter(lambda perm: ":" in perm, role_permissions_with_inherited)
+            )
+            permissions_with_action_wildcard = filter(
+                lambda perm: perm.split(":")[1] == "*", scoped_permissions
+            )
+            for perm in permissions_with_action_wildcard:
+                perm_resource = perm.split(":")[0]
+                if perm_resource == resource:
+                    return True
+            permissions_with_resource_wildcard = filter(
+                lambda perm: perm.split(":")[0] == "*", scoped_permissions
+            )
+            for perm in permissions_with_resource_wildcard:
+                perm_action = perm.split(":")[1]
+                if perm_action == action:
+                    return True
+        return False

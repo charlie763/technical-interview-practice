@@ -6,9 +6,11 @@ Run from the python/ directory:
 """
 
 import pytest
-from practice_problems.problem_03_permission_manager import (
-    PermissionManager,
-)
+
+# from practice_problems.problem_03_permission_manager import (
+#     PermissionManager,
+# )
+from practice_problem_answers.cw_answer_03_permission_manager import PermissionManager
 
 # ---------------------------------------------------------------------------
 # Fixtures
