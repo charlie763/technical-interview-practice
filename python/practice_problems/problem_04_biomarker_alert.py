@@ -112,6 +112,8 @@ class BiomarkerMonitor:
         Consecutive means no gap: Jan 1, Jan 2, Jan 3 is a streak of 3.
         Jan 1, Jan 3 (skipping Jan 2) is two separate streaks of 1.
         Multiple readings on the same day collapse to one day.
+
+        Hint: is_out_of_range can be helpful here.
         """
         raise NotImplementedError
 
@@ -136,6 +138,8 @@ class BiomarkerMonitor:
         threshold (e.g., both glucose and ketone streaks).
 
         Sort the list by consecutive_days descending (most urgent first).
+
+        Hint: max_consecutive_out_of_range_days can be helpful here.
         """
         raise NotImplementedError
 

@@ -142,6 +142,8 @@ class TitrationTracker:
         return only events with that direction.
 
         Return 0 if the patient or medication is unknown.
+
+        Hint: get_medication_history can be helpful here.
         """
         raise NotImplementedError
 
@@ -158,6 +160,8 @@ class TitrationTracker:
                 "metformin":       2,   # 1 decrease + 1 stop
                 "glipizide":       1,   # 1 stop only
             }
+
+        Hint: titration_count can be helpful here.
         """
         raise NotImplementedError
 
@@ -169,6 +173,8 @@ class TitrationTracker:
         """
         Return a sorted list of patient_ids who currently have the given
         medication active (latest event is NOT "stop").
+
+        Hint: current_medications can be helpful here.
         """
         raise NotImplementedError
 
@@ -180,6 +186,8 @@ class TitrationTracker:
 
         If fewer than top_n medications exist, return all of them.
         Ties may appear in any order.
+
+        Hint: titration_count can be helpful here.
         """
         raise NotImplementedError
 

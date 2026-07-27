@@ -31,6 +31,34 @@ module path before test collection, so no manual import changes are ever needed.
 - Any introspection method needed to check state in tests (e.g. `get_role_permissions`,
   `get_usage`, `get_all_permissions`) must live in the **earliest Part that requires it**.
 
+### Methods must compose — no parallel implementations
+Design the call chain so that Part N methods **call** Part N-1 methods rather than
+re-implementing the same logic with a different return type.
+
+**Anti-pattern to avoid:** A Part 1 method returns `bool` (e.g. `is_allowed`), then a
+Part 3 method needs to do the same check but also know *why* it failed (e.g. rate-limited
+per-minute vs. per-day). Because the Part 1 method only returns `bool`, Part 3 can't use
+it — it has to duplicate all the logic. The candidate ends up writing the same thing twice,
+which doesn't reflect good real-world design.
+
+**How to avoid it:** Before finalising the return type of a Part N-1 method, ask: "Could
+a higher-level method in a later Part use this return value directly, or would it need to
+re-run the same check?" If the answer is "re-run", either:
+- Make the lower-level method return richer data (an enum, a tuple, a typed dict), OR
+- Introduce a private `_helper` in the problem notes that both methods can call (and
+  tell the candidate to implement it first).
+
+**Positive pattern:** Each Part should have a natural "use the method from the Part before"
+moment. Signal this explicitly in the stub docstring:
+
+```python
+def get_outreach_list(self, min_consecutive_days: int = 3) -> list[dict]:
+    """
+    ...
+    Hint: max_consecutive_out_of_range_days can be helpful here.
+    """
+```
+
 ### Include a concrete usage example
 Add a short `# Example` block in the problem docstring showing the data in use and
 expected return values for 2–3 key operations. Interviewers always have an example;
