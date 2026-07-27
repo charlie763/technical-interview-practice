@@ -6,7 +6,19 @@ Run from the python/ directory:
 """
 
 import pytest
-from practice_problems.problem_02_api_rate_limiter import (
+
+# from practice_problems.problem_02_api_rate_limiter import (
+#     make_gateway,
+#     create_key,
+#     revoke_key,
+#     update_plan,
+#     _count_in_window,
+#     is_allowed,
+#     record_request,
+#     handle_request,
+#     get_usage,
+# )
+from practice_problem_answers.cw_answer_02_api_rate_limiter import (
     make_gateway,
     create_key,
     revoke_key,
@@ -25,12 +37,13 @@ BASE_TIME = 1_700_000_000.0  # arbitrary fixed "now" for deterministic tests
 # Fixtures
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture
 def gw():
     """Gateway with a known set of plans."""
     plans = {
-        "free":  {"rpm": 3,   "rpd": 10},
-        "pro":   {"rpm": 100, "rpd": 5_000},
+        "free": {"rpm": 3, "rpd": 10},
+        "pro": {"rpm": 100, "rpd": 5_000},
         "unlimited": {"rpm": None, "rpd": None},
     }
     return make_gateway(plans)
@@ -45,6 +58,7 @@ def gw_with_key(gw):
 # ---------------------------------------------------------------------------
 # PART 1 — Key management
 # ---------------------------------------------------------------------------
+
 
 class TestCreateKey:
     def test_creates_key(self, gw):
@@ -98,6 +112,7 @@ class TestUpdatePlan:
 # PART 2 — _count_in_window
 # ---------------------------------------------------------------------------
 
+
 class TestCountInWindow:
     def test_empty_log(self):
         assert _count_in_window([], BASE_TIME, 60) == 0
@@ -124,6 +139,7 @@ class TestCountInWindow:
 # PART 2 — is_allowed
 # ---------------------------------------------------------------------------
 
+
 class TestIsAllowed:
     def test_allowed_when_under_limits(self, gw_with_key):
         assert is_allowed(gw_with_key, "key_abc", BASE_TIME) is True
@@ -138,14 +154,20 @@ class TestIsAllowed:
     def test_denied_when_rpm_exceeded(self, gw):
         create_key(gw, "k1", "alice", "free")  # rpm=3
         # Seed 3 requests in the last minute
-        gw["keys"]["k1"]["request_log"] = [BASE_TIME - 30, BASE_TIME - 20, BASE_TIME - 10]
+        gw["keys"]["k1"]["request_log"] = [
+            BASE_TIME - 30,
+            BASE_TIME - 20,
+            BASE_TIME - 10,
+        ]
         assert is_allowed(gw, "k1", BASE_TIME) is False
 
     def test_allowed_when_rpm_window_has_rolled_off(self, gw):
         create_key(gw, "k1", "alice", "free")  # rpm=3
         # 3 requests but all > 60s ago — they're outside the window
         gw["keys"]["k1"]["request_log"] = [
-            BASE_TIME - 90, BASE_TIME - 80, BASE_TIME - 70
+            BASE_TIME - 90,
+            BASE_TIME - 80,
+            BASE_TIME - 70,
         ]
         assert is_allowed(gw, "k1", BASE_TIME) is True
 
@@ -165,13 +187,14 @@ class TestIsAllowed:
 # PART 3 — record_request
 # ---------------------------------------------------------------------------
 
+
 class TestRecordRequest:
     def test_appends_timestamp(self, gw_with_key):
         record_request(gw_with_key, "key_abc", BASE_TIME)
         assert BASE_TIME in gw_with_key["keys"]["key_abc"]["request_log"]
 
     def test_prunes_old_entries(self, gw_with_key):
-        old = BASE_TIME - 90_001   # older than 25h
+        old = BASE_TIME - 90_001  # older than 25h
         gw_with_key["keys"]["key_abc"]["request_log"] = [old]
         record_request(gw_with_key, "key_abc", BASE_TIME)
         assert old not in gw_with_key["keys"]["key_abc"]["request_log"]
@@ -190,6 +213,7 @@ class TestRecordRequest:
 # ---------------------------------------------------------------------------
 # PART 4 — handle_request
 # ---------------------------------------------------------------------------
+
 
 class TestHandleRequest:
     def test_success_records_request(self, gw_with_key):
@@ -238,11 +262,12 @@ class TestHandleRequest:
 # PART 4 — get_usage
 # ---------------------------------------------------------------------------
 
+
 class TestGetUsage:
     def test_returns_correct_counts(self, gw_with_key):
         gw_with_key["keys"]["key_abc"]["request_log"] = [
-            BASE_TIME - 30,   # within both minute and day windows
-            BASE_TIME - 3600, # within day window only
+            BASE_TIME - 30,  # within both minute and day windows
+            BASE_TIME - 3600,  # within day window only
         ]
         stats = get_usage(gw_with_key, "key_abc", BASE_TIME)
         assert stats["rpm_used"] == 1
