@@ -2,12 +2,12 @@
 =============================================================================
 INTERVIEW PROBLEM 5: Medication Titration Tracker
 Difficulty: Senior Software Engineer | Estimated time: 45 min
-Company context: Virta Health — Care Delivery Engineering
+Company context: Health Tech
 =============================================================================
 
 CONTEXT
 -------
-Virta Health's remote clinical care program often de-escalates (reduces or
+<health tech co>'s remote clinical care program often de-escalates (reduces or
 stops) diabetes medications as patients' blood sugar improves. Coaches and
 physicians need to track each patient's medication history — when doses were
 changed and why — so they can coordinate care and generate compliance reports.
@@ -53,7 +53,6 @@ from dataclasses import dataclass
 from datetime import date
 from typing import Optional
 
-
 # ---------------------------------------------------------------------------
 # PRE-GIVEN — do not modify
 # ---------------------------------------------------------------------------
@@ -62,20 +61,22 @@ from typing import Optional
 @dataclass
 class TitrationEvent:
     """A single medication change recorded by a Virta clinical coach or physician."""
-    patient_id:  str
-    medication:  str        # e.g. "metformin", "glipizide", "insulin_glargine"
-    direction:   str        # "start" | "increase" | "decrease" | "stop"
-    dose_mg:     float      # dose in milligrams at the time of this event (0.0 for "stop")
+
+    patient_id: str
+    medication: str  # e.g. "metformin", "glipizide", "insulin_glargine"
+    direction: str  # "start" | "increase" | "decrease" | "stop"
+    dose_mg: float  # dose in milligrams at the time of this event (0.0 for "stop")
     recorded_on: date
 
 
 @dataclass
 class Medication:
     """Summary of a patient's current relationship with a single medication."""
-    name:          str
-    current_dose:  float
-    last_changed:  date
-    total_changes: int      # total number of titration events (including start/stop)
+
+    name: str
+    current_dose: float
+    last_changed: date
+    total_changes: int  # total number of titration events (including start/stop)
 
 
 # ---------------------------------------------------------------------------
@@ -116,7 +117,9 @@ class TitrationTracker:
         """
         raise NotImplementedError
 
-    def get_medication_history(self, patient_id: str, medication: str) -> list[TitrationEvent]:
+    def get_medication_history(
+        self, patient_id: str, medication: str
+    ) -> list[TitrationEvent]:
         """
         Return all TitrationEvents for (patient_id, medication), sorted
         chronologically (earliest first).

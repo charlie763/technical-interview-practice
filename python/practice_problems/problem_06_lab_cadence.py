@@ -2,12 +2,12 @@
 =============================================================================
 INTERVIEW PROBLEM 6: Lab Cadence Compliance Monitor
 Difficulty: Senior Software Engineer | Estimated time: 45 min
-Company context: Virta Health — Care Delivery Engineering
+Company context: Health Tech
 =============================================================================
 
 CONTEXT
 -------
-Virta Health requires patients to submit lab work at regular intervals so
+<health tech co> requires patients to submit lab work at regular intervals so
 clinicians can track metabolic health markers (HbA1c, fasting glucose, lipids,
 kidney function, etc.). Patients who miss lab deadlines need follow-up from
 their health coach.
@@ -44,7 +44,6 @@ NOTES
 """
 
 from datetime import date
-
 
 # ---------------------------------------------------------------------------
 # PRE-GIVEN — do not modify
@@ -145,9 +144,7 @@ def record_submission(
     raise NotImplementedError
 
 
-def is_overdue(
-    monitor: dict, patient_id: str, lab_type: str, as_of: date
-) -> bool:
+def is_overdue(monitor: dict, patient_id: str, lab_type: str, as_of: date) -> bool:
     """
     Return True if the patient has at least one uncleared deadline for
     lab_type that has passed as of `as_of` (i.e., due_date < as_of).
@@ -204,9 +201,7 @@ def compliance_report(monitor: dict, as_of: date) -> list[dict]:
 # -------------------------------------------------------------------------
 
 
-def submission_history(
-    monitor: dict, patient_id: str, lab_type: str
-) -> list[date]:
+def submission_history(monitor: dict, patient_id: str, lab_type: str) -> list[date]:
     """
     Return a chronologically sorted list of all submission dates for
     (patient_id, lab_type).

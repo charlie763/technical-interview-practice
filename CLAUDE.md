@@ -25,6 +25,13 @@ module path before test collection, so no manual import changes are ever needed.
 
 ## Problem design rules
 
+### Don't mention companies by name
+You may receive prompts to design problems related to a specific company. In such a case, do
+some research on said company, but try to design the problems to be something you'd generically
+see in the sector/industry that company is a part of. In particular, don't use specific company
+names in the code because we don't want to piss those companies off, or make them feel like 
+we're stealing (which we aren't). Instead, reference a specific sector, like health tech, iot, etc..
+
 ### Parts must be self-contained
 - Tests for Part N must only call methods/functions defined in Parts 1–N.
 - Never verify a Part 1 result by calling a Part 2 helper.
