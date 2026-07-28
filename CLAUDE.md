@@ -56,15 +56,9 @@ re-run the same check?" If the answer is "re-run", either:
   tell the candidate to implement it first).
 
 **Positive pattern:** Each Part should have a natural "use the method from the Part before"
-moment. Signal this explicitly in the stub docstring:
-
-```python
-def get_outreach_list(self, min_consecutive_days: int = 3) -> list[dict]:
-    """
-    ...
-    Hint: max_consecutive_out_of_range_days can be helpful here.
-    """
-```
+moment. Design the method signatures so this composition is obvious from context — the docstring
+wording and the naming of the methods should make the intended call chain clear without needing
+explicit hints.
 
 ### Include a concrete usage example
 Add a short `# Example` block in the problem docstring showing the data in use and

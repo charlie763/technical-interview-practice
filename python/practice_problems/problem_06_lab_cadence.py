@@ -170,7 +170,6 @@ def overdue_labs(monitor: dict, patient_id: str, as_of: date) -> list[str]:
 
     Return an empty list if the patient doesn't exist or has no overdue labs.
 
-    Hint: is_overdue can be helpful here.
     """
     raise NotImplementedError
 
@@ -191,7 +190,6 @@ def compliance_report(monitor: dict, as_of: date) -> list[dict]:
 
     Return an empty list if no patient has overdue labs.
 
-    Hint: overdue_labs can be helpful here.
     """
     raise NotImplementedError
 
@@ -221,6 +219,5 @@ def days_since_last_submission(
 
     Return None if the patient has never submitted that lab type.
 
-    Hint: submission_history can be helpful here.
     """
     raise NotImplementedError
