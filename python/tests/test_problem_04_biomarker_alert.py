@@ -11,7 +11,11 @@ Or use the test runner from the repo root:
 import pytest
 from datetime import date
 
-from practice_problems.problem_04_biomarker_alert import BiomarkerMonitor, BiomarkerReading
+# from practice_problems.problem_04_biomarker_alert import BiomarkerMonitor, BiomarkerReading
+from python.practice_problem_answers.cw_answer_04_biomarker_alert import (
+    BiomarkerMonitor,
+    BiomarkerReading,
+)
 
 # ---------------------------------------------------------------------------
 # Pre-existing data — represents a snapshot of patient readings already in the
@@ -21,9 +25,9 @@ from practice_problems.problem_04_biomarker_alert import BiomarkerMonitor, Bioma
 ALICE_READINGS = [
     # All in range — no outreach needed
     BiomarkerReading("alice", "glucose", 105.0, date(2024, 1, 1)),
-    BiomarkerReading("alice", "glucose",  98.0, date(2024, 1, 2)),
+    BiomarkerReading("alice", "glucose", 98.0, date(2024, 1, 2)),
     BiomarkerReading("alice", "glucose", 112.0, date(2024, 1, 3)),
-    BiomarkerReading("alice", "glucose",  91.0, date(2024, 1, 4)),
+    BiomarkerReading("alice", "glucose", 91.0, date(2024, 1, 4)),
 ]
 
 BOB_READINGS = [
@@ -37,7 +41,7 @@ BOB_READINGS = [
 CAROL_READINGS = [
     # Streak of 1 (Jan 1), in-range on Jan 2, then streak of 2 (Jan 3–4) → max=2
     BiomarkerReading("carol", "glucose", 190.0, date(2024, 1, 1)),
-    BiomarkerReading("carol", "glucose", 150.0, date(2024, 1, 2)),   # in range
+    BiomarkerReading("carol", "glucose", 150.0, date(2024, 1, 2)),  # in range
     BiomarkerReading("carol", "glucose", 185.0, date(2024, 1, 3)),
     BiomarkerReading("carol", "glucose", 191.0, date(2024, 1, 4)),
 ]
@@ -50,17 +54,19 @@ DAVE_READINGS = [
 
 EVE_READINGS = [
     # One dangerous low glucose (below 70) on Jan 1 — streak of 1 for glucose
-    BiomarkerReading("eve", "glucose",  62.0, date(2024, 1, 1)),
+    BiomarkerReading("eve", "glucose", 62.0, date(2024, 1, 1)),
     # 3 consecutive days with ketones below target (< 0.5) → ketone outreach
-    BiomarkerReading("eve", "ketone",   0.3, date(2024, 1, 2)),
-    BiomarkerReading("eve", "ketone",   0.2, date(2024, 1, 3)),
-    BiomarkerReading("eve", "ketone",   0.4, date(2024, 1, 4)),
+    BiomarkerReading("eve", "ketone", 0.3, date(2024, 1, 2)),
+    BiomarkerReading("eve", "ketone", 0.2, date(2024, 1, 3)),
+    BiomarkerReading("eve", "ketone", 0.4, date(2024, 1, 4)),
     # Weight readings — never out of range
     BiomarkerReading("eve", "weight", 165.0, date(2024, 1, 1)),
     BiomarkerReading("eve", "weight", 164.5, date(2024, 1, 2)),
 ]
 
-ALL_READINGS = ALICE_READINGS + BOB_READINGS + CAROL_READINGS + DAVE_READINGS + EVE_READINGS
+ALL_READINGS = (
+    ALICE_READINGS + BOB_READINGS + CAROL_READINGS + DAVE_READINGS + EVE_READINGS
+)
 
 
 # ---------------------------------------------------------------------------
@@ -143,7 +149,9 @@ class TestIsOutOfRange:
 
 class TestMaxConsecutiveOutOfRangeDays:
     def test_no_readings_returns_zero(self, monitor):
-        assert monitor.max_consecutive_out_of_range_days("unknown_patient", "glucose") == 0
+        assert (
+            monitor.max_consecutive_out_of_range_days("unknown_patient", "glucose") == 0
+        )
 
     def test_all_in_range_returns_zero(self, monitor):
         assert monitor.max_consecutive_out_of_range_days("alice", "glucose") == 0
@@ -223,7 +231,10 @@ class TestGetOutreachList:
         result = monitor.get_outreach_list()
         bob_entry = next(e for e in result if e["patient_id"] == "bob")
         assert set(bob_entry.keys()) == {
-            "patient_id", "reading_type", "consecutive_days", "latest_value"
+            "patient_id",
+            "reading_type",
+            "consecutive_days",
+            "latest_value",
         }
         assert bob_entry["consecutive_days"] == 4
         assert bob_entry["reading_type"] == "glucose"
