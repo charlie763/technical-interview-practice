@@ -213,12 +213,16 @@ near the top of the `<script>` block in that file (look for the comment that say
   language: "python",           // "python" | "react"
   industry: "health-tech",      // see valid values below
   tags: ["tag-one", "tag-two"], // 2–5 kebab-case strings
-  parts: 3                      // number of implementation parts
+  parts: 3,                     // number of implementation parts
+  level: "senior"               // "junior" | "mid-level" | "senior" | "staff"
 }
 ```
 
 ### Valid `language` values
 `python` | `react`
+
+### Valid `level` values (in order)
+`junior` | `mid-level` | `senior` | `staff`
 
 ### Suggested `industry` values (add new ones as needed, always kebab-case)
 `health-tech` | `iot` | `saas` | `api-platform` | `dev-tools` | `fintech`
