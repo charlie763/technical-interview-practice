@@ -225,7 +225,15 @@ near the top of the `<script>` block in that file (look for the comment that say
 `junior` | `mid-level` | `senior` | `staff`
 
 ### Suggested `industry` values (add new ones as needed, always kebab-case)
-`health-tech` | `iot` | `saas` | `api-platform` | `dev-tools` | `fintech`
+`general` | `health-tech` | `iot` | `dev-tools` | `fintech`
+
+Use `"general"` when a problem has no clear real-world industry vertical — e.g. a
+rate limiter, a permissions system, or an activity feed. These are generic software
+engineering patterns that appear everywhere; tag them with the relevant product
+category instead (e.g. `"saas"`, `"api-platform"`).
+
+**Industry = real-world vertical** (healthcare, finance, logistics).
+**Tag = product/platform category or algorithmic pattern** (saas, api-platform, rate-limiting).
 
 If you introduce a **new** industry value, also add a matching CSS rule to the
 `<style>` block in `index.html` so its badge renders with distinct colours:
