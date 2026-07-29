@@ -129,6 +129,45 @@ against two common implementation bugs in class-based problems:
 This fixture is a diagnostic aid, not a substitute for fixing the implementation.
 If tests only pass because of it, there is a bug to fix. Do not remove this fixture.
 
+### Always copy module-level collections in fixtures
+
+When a test file defines module-level data (e.g. `ALL_READINGS`, `ALL_EVENTS`) and a
+fixture passes it to a constructor, **always pass a defensive copy**:
+
+```python
+import copy
+
+# BAD — if the implementation appends to the passed list, ALL_READINGS is corrupted
+@pytest.fixture
+def monitor():
+    return BiomarkerMonitor(ALL_READINGS)
+
+# GOOD — for lists of immutable objects (dataclasses, strings, ints)
+@pytest.fixture
+def monitor():
+    return BiomarkerMonitor(list(ALL_READINGS))
+
+# GOOD — for nested/mutable structures (dicts of lists, etc.)
+@pytest.fixture
+def monitor():
+    return BiomarkerMonitor(copy.deepcopy(ALL_DATA))
+```
+
+Without the copy, a method like `add_reading` that appends to `self._readings` (where
+`self._readings` *is* `ALL_READINGS`) will permanently grow the module-level list,
+causing later tests to see extra data they didn't add.
+
+**Which copy to use:**
+- `list(DATA)` — sufficient when the top-level collection is a flat list of immutable
+  objects (dataclass instances, strings, ints). The list is new but the objects inside
+  are shared — fine as long as the implementation doesn't mutate the objects themselves.
+- `copy.deepcopy(DATA)` — required when the module-level data is a dict, a list of
+  dicts, or any nested mutable structure. A shallow copy of a `dict[str, list]` still
+  shares the inner lists, so `append` on an inner list still bleeds.
+
+The conftest safety net does not catch this pattern — it only clears class-level sets
+and mutable default args, not module-level collections passed in from the test file.
+
 ### Test ordering = implementation ordering
 Order test classes to match the Part order. A developer who finishes Part 1 and runs
 the full suite should see only Part 1 tests passing, with Part 2/3 failing cleanly
