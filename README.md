@@ -57,38 +57,7 @@ Fill in the `raise NotImplementedError` stubs in your answer file. Keep the func
 
 ### 4. Run tests against your answer
 
-```bash
-./run_tests.sh python/practice_problem_answers/my_answer_03_permission_manager.py
-```
-
-Pass extra pytest flags after the filename if you want:
-
-```bash
-# Stop on first failure
-./run_tests.sh python/practice_problem_answers/my_answer_03_permission_manager.py -x
-
-# Run only Part 1 tests
-./run_tests.sh python/practice_problem_answers/my_answer_03_permission_manager.py -k "TestCreate or TestGrant or TestAssign or TestHas"
-```
-
-### 5. Run tests against the stub (sanity check)
-
-Running the test suite without `--answer` tests the stub, where everything should raise `NotImplementedError`:
-
-```bash
-cd python && pytest tests/test_problem_03_permission_manager.py -v
-```
-
----
-
-## How `run_tests.sh` works
-
-The script detects the language from the file extension, locates the matching test file by problem number, then runs the appropriate test framework with your answer injected:
-
-- **Python (`.py`)** — runs `pytest --answer <file>`. The `conftest.py` loads your answer file and injects it into Python's module registry *before* test collection, so the test suite's imports resolve to your code instead of the stub. No manual import changes needed.
-- **JavaScript/TypeScript** — coming soon (jest/vitest).
-
----
+See the `/run_tests.sh` file documentation for instruction on how to run tests
 
 ## Adding new problems with an AI agent
 

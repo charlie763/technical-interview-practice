@@ -11,11 +11,15 @@ Or use the test runner from the repo root:
 import pytest
 from datetime import date
 
-# from practice_problems.problem_04_biomarker_alert import BiomarkerMonitor, BiomarkerReading
-from python.practice_problem_answers.cw_answer_04_biomarker_alert import (
+from practice_problems.problem_04_biomarker_alert import (
     BiomarkerMonitor,
     BiomarkerReading,
 )
+
+# from python.practice_problem_answers.cw_answer_04_biomarker_alert import (
+#     BiomarkerMonitor,
+#     BiomarkerReading,
+# )
 
 # ---------------------------------------------------------------------------
 # Pre-existing data — represents a snapshot of patient readings already in the
