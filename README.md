@@ -7,6 +7,7 @@ A collection of Senior Software Engineer–level practice problems with test sui
 ## Repo structure
 
 ```
+index.html                    # Searchable problem browser — open in any browser
 python/
   practice_problems/          # Problem stubs — read these, don't edit them
   practice_problem_answers/   # Your implementations go here
@@ -14,7 +15,7 @@ python/
   conftest.py                 # pytest config & --answer flag
 react/
   practice_problems/          # React/JSX starter files
-run_tests.sh                  # Universal test runner (see below)
+run_tests.sh                  # Test runner (see below)
 CLAUDE.md                     # Guidelines for the AI agent
 ```
 
@@ -36,11 +37,19 @@ The `run_tests.sh` script automatically activates `.venv` if it exists in the re
 
 ---
 
+## Browsing problems
+
+Open `index.html` in any browser (double-click it in Finder, or run `open index.html`).
+
+The index lets you filter by language and industry, search by keyword, and click tags to narrow results. Each card has an **Open in VS Code** link that deep-links directly into your local clone — no path configuration needed.
+
+---
+
 ## Practicing a problem
 
-### 1. Read the problem stub
+### 1. Find a problem
 
-Open the problem file in `python/practice_problems/` and read the docstring — it explains the data model, the parts, and what each function should do.
+Browse `index.html` to pick something, then click **Open in VS Code** to open the stub.
 
 ### 2. Copy it to your answers directory
 
@@ -57,7 +66,31 @@ Fill in the `raise NotImplementedError` stubs in your answer file. Keep the func
 
 ### 4. Run tests against your answer
 
-See the `/run_tests.sh` file documentation for instruction on how to run tests
+Use `run_tests.sh` with `-f` (your answer file) and `-c` (the pytest command to run):
+
+```bash
+# Run the full test suite for your answer
+./run_tests.sh \
+  -f python/practice_problem_answers/my_answer_03_permission_manager.py \
+  -c pytest python/tests/test_problem_03_permission_manager.py -v
+
+# Run a single test class
+./run_tests.sh \
+  -f python/practice_problem_answers/my_answer_03_permission_manager.py \
+  -c pytest python/tests/test_problem_03_permission_manager.py::TestCreateRole
+
+# Run a single test method
+./run_tests.sh \
+  -f python/practice_problem_answers/my_answer_03_permission_manager.py \
+  -c pytest python/tests/test_problem_03_permission_manager.py::TestCreateRole::test_empty_permissions_by_default
+
+# Stop on first failure
+./run_tests.sh \
+  -f python/practice_problem_answers/my_answer_03_permission_manager.py \
+  -c pytest python/tests/test_problem_03_permission_manager.py -x
+```
+
+The `-c` flag accepts any valid pytest command — flags, node IDs, and extra options all pass through unchanged. `--answer` is injected automatically, so you never need to edit the test files.
 
 ## Adding new problems with an AI agent
 
