@@ -142,6 +142,7 @@ class BiomarkerMonitor:
                 self.readings,
             )
         )
+        print(f"patient_readings: {len(patient_readings)}")
         if len(patient_readings) == 0:
             return 0
         sorted_patient_readings = sorted(
@@ -283,4 +284,22 @@ class BiomarkerMonitor:
         A duplicate is: same patient_id, reading_type, and recorded_on,
         with a value within ±0.5 of an existing reading on that day.
         """
-        raise NotImplementedError
+        # improvement note: just insert readings already sorted so we don't have to sort every time
+        possible_duplicate_readings = filter(
+            lambda existing_reading: existing_reading.patient_id == reading.patient_id
+            and existing_reading.reading_type == reading.reading_type
+            and existing_reading.recorded_on == reading.recorded_on,
+            self.readings,
+        )
+        is_duplicate = any(
+            reading.value < possible_duplicate.value + 0.5
+            and reading.value > possible_duplicate.value - 0.5
+            for possible_duplicate in possible_duplicate_readings
+        )
+        print(f"is_duplicate: {is_duplicate}")
+        if is_duplicate:
+            return False
+        else:
+            print("got here")
+            self.readings.append(reading)
+            return True
