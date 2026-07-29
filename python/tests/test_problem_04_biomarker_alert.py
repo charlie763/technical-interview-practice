@@ -77,7 +77,7 @@ ALL_READINGS = (
 @pytest.fixture
 def monitor():
     """BiomarkerMonitor seeded with the full pre-existing dataset."""
-    return BiomarkerMonitor(ALL_READINGS)
+    return BiomarkerMonitor(list(ALL_READINGS))
 
 
 @pytest.fixture

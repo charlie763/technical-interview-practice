@@ -142,7 +142,6 @@ class BiomarkerMonitor:
                 self.readings,
             )
         )
-        print(f"patient_readings: {len(patient_readings)}")
         if len(patient_readings) == 0:
             return 0
         sorted_patient_readings = sorted(
@@ -296,10 +295,8 @@ class BiomarkerMonitor:
             and reading.value > possible_duplicate.value - 0.5
             for possible_duplicate in possible_duplicate_readings
         )
-        print(f"is_duplicate: {is_duplicate}")
         if is_duplicate:
             return False
         else:
-            print("got here")
             self.readings.append(reading)
             return True
