@@ -192,3 +192,46 @@ to Part 1.
 - Class-based problems: (existing data structure): the problem should have a predefined data
   structure and the problem is just about creating application logic that modifies/utilizes that data 
 - Dict-based problems: provide a `make_<thing>()` factory and a clear schema comment.
+
+---
+
+## Keeping the problem index up to date
+
+`index.html` at the repo root is a self-contained searchable index of all practice
+problems. **Every time you create a new problem, add an entry to the `PROBLEMS` array**
+near the top of the `<script>` block in that file (look for the comment that says
+`PROBLEM INDEX — add new problems here`).
+
+### Entry format
+
+```javascript
+{
+  path: "python/practice_problems/problem_NN_<name>.py",  // path to the stub file
+  test: "python/tests/test_problem_NN_<name>.py",         // path to the test file (null for React problems without a separate test)
+  title: "Short Human-Readable Title",                     // shown as the card heading
+  description: "One or two sentences describing what the candidate builds.",
+  language: "python",           // "python" | "react"
+  industry: "health-tech",      // see valid values below
+  tags: ["tag-one", "tag-two"], // 2–5 kebab-case strings
+  parts: 3                      // number of implementation parts
+}
+```
+
+### Valid `language` values
+`python` | `react`
+
+### Suggested `industry` values (add new ones as needed, always kebab-case)
+`health-tech` | `iot` | `saas` | `api-platform` | `dev-tools` | `fintech`
+
+If you introduce a **new** industry value, also add a matching CSS rule to the
+`<style>` block in `index.html` so its badge renders with distinct colours:
+
+```css
+.badge-my-new-industry { background: #f0f0f0; color: #333; }
+```
+
+### Tag conventions
+Kebab-case strings that describe the core algorithmic pattern or domain concept.
+Examples: `sliding-window`, `rbac`, `event-driven`, `time-series`,
+`consecutive-tracking`, `deadline-tracking`, `optimistic-updates`.
+Aim for 2–5 tags per problem.

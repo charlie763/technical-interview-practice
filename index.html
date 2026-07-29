@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interview Practice — Problem Index</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f1f5f9;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --border-hover: #cbd5e1;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --radius: 10px;
+      --shadow: 0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.04);
+      --shadow-hover: 0 4px 14px rgba(0,0,0,.11);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1.4rem 2rem;
+    }
+    header h1 { font-size: 1.4rem; font-weight: 700; }
+    header p { color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.2rem; }
+
+    /* ── Filters ── */
+    .filters {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      align-items: center;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 180px;
+      max-width: 320px;
+    }
+    .search-wrap svg {
+      position: absolute;
+      left: 0.6rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+    .search-wrap input {
+      width: 100%;
+      padding: 0.45rem 0.75rem 0.45rem 2.1rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.875rem;
+      color: var(--text-primary);
+      background: var(--bg);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .search-wrap input:focus { border-color: var(--accent); background: #fff; }
+    .search-wrap input::placeholder { color: var(--text-muted); }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+    .filter-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .filter-btn {
+      padding: 0.28rem 0.7rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 0.8rem;
+      background: var(--surface);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.12s;
+      font-weight: 500;
+    }
+    .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    .active-tag-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.25rem 0.55rem;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      color: var(--accent);
+      font-weight: 500;
+      font-family: ui-monospace, "Cascadia Code", monospace;
+    }
+    .active-tag-chip button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--accent);
+      font-size: 0.95rem;
+      line-height: 1;
+      padding: 0;
+      opacity: 0.7;
+    }
+    .active-tag-chip button:hover { opacity: 1; }
+
+    /* ── Main ── */
+    main { max-width: 1200px; margin: 0 auto; padding: 1.25rem 2rem 3rem; }
+
+    .results-bar { margin-bottom: 0.85rem; }
+    .results-count { font-size: 0.8rem; color: var(--text-muted); }
+
+    /* ── Grid ── */
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1rem;
+    }
+
+    /* ── Card ── */
+    .problem-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.2rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+      transition: box-shadow 0.15s, border-color 0.15s;
+    }
+    .problem-card:hover { box-shadow: var(--shadow-hover); border-color: var(--border-hover); }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .card-num {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      font-family: ui-monospace, "Cascadia Code", monospace;
+      letter-spacing: 0.06em;
+      flex-shrink: 0;
+      padding-top: 3px;
+    }
+    .card-title {
+      font-size: 0.975rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.35;
+      flex: 1;
+    }
+    .parts-badge {
+      flex-shrink: 0;
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.15rem 0.4rem;
+      white-space: nowrap;
+    }
+
+    .card-desc {
+      font-size: 0.855rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+
+    .badges { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.18rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.73rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    /* Language */
+    .badge-python { background: #e8f0fe; color: #1e40af; }
+    .badge-react  { background: #e0f7fa; color: #006064; }
+
+    /* Industry — add a new rule here when adding a new industry value */
+    .badge-health-tech  { background: #dcfce7; color: #166534; }
+    .badge-iot          { background: #fef9c3; color: #713f12; }
+    .badge-saas         { background: #dbeafe; color: #1e3a8a; }
+    .badge-api-platform { background: #fce7f3; color: #831843; }
+    .badge-dev-tools    { background: #f3e8ff; color: #581c87; }
+    .badge-fintech      { background: #d1fae5; color: #064e3b; }
+
+    .tags { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+    .tag {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.15rem 0.42rem;
+      cursor: pointer;
+      transition: all 0.1s;
+      font-family: ui-monospace, "Cascadia Code", monospace;
+      user-select: none;
+    }
+    .tag:hover { color: var(--accent); border-color: #93c5fd; }
+    .tag.active { color: var(--accent); border-color: #93c5fd; background: #eff6ff; }
+
+    .file-path {
+      font-family: ui-monospace, "Cascadia Code", monospace;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      word-break: break-all;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+      margin-top: auto;
+      padding-top: 0.1rem;
+    }
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.38rem 0.7rem;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.12s;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .action-primary { background: var(--accent); color: #fff; }
+    .action-primary:hover { background: var(--accent-hover); }
+    .action-secondary { background: var(--surface); color: var(--text-secondary); border-color: var(--border); }
+    .action-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── Empty state ── */
+    .no-results {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-muted);
+    }
+    .no-results p { font-size: 0.875rem; margin-top: 0.4rem; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(0.75rem);
+      background: #0f172a;
+      color: #fff;
+      padding: 0.45rem 1rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+      pointer-events: none;
+      z-index: 999;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Interview Practice Problems</h1>
+  <p>Filter by language or industry, search by topic, or click a tag to narrow results.</p>
+</header>
+
+<div class="filters">
+  <div class="search-wrap">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <input type="text" id="search-input" placeholder="Search title, topic, or tag…" autocomplete="off">
+  </div>
+  <div class="filter-group" id="language-filters"></div>
+  <div class="filter-group" id="industry-filters"></div>
+  <div id="tag-chip"></div>
+</div>
+
+<main>
+  <div class="results-bar">
+    <span class="results-count" id="results-count"></span>
+  </div>
+  <div class="problem-grid" id="problem-grid"></div>
+</main>
+
+<div class="toast" id="toast">Path copied!</div>
+
+<script>
+// ============================================================
+// PROBLEM INDEX
+// To add a new problem, append an entry to this array.
+// See CLAUDE.md § "Keeping the problem index up to date" for
+// field definitions, valid values, and badge colour rules.
+// ============================================================
+const PROBLEMS = [
+  {
+    path: "python/practice_problems/problem_01_geofence_alert_engine.py",
+    test: "python/tests/test_problem_01_geofence_alert_engine.py",
+    title: "Geofence Alert Engine",
+    description: "Build a GPS-based zone monitor that fires configurable alert rules when tracked assets cross geofence boundaries.",
+    language: "python",
+    industry: "iot",
+    tags: ["event-driven", "geospatial", "alert-system", "data-model"],
+    parts: 3
+  },
+  {
+    path: "python/practice_problems/problem_02_api_rate_limiter.py",
+    test: "python/tests/test_problem_02_api_rate_limiter.py",
+    title: "Tiered API Rate Limiter",
+    description: "Implement a sliding-window rate limiter with per-minute and per-day caps across multiple subscription tiers.",
+    language: "python",
+    industry: "api-platform",
+    tags: ["rate-limiting", "sliding-window", "tiered-plans", "time-series"],
+    parts: 3
+  },
+  {
+    path: "python/practice_problems/problem_03_permission_manager.py",
+    test: "python/tests/test_problem_03_permission_manager.py",
+    title: "Permission Manager (RBAC)",
+    description: "Build a role-based access control engine supporting role inheritance and wildcard permission matching.",
+    language: "python",
+    industry: "saas",
+    tags: ["rbac", "permissions", "role-hierarchy", "wildcard-matching"],
+    parts: 3
+  },
+  {
+    path: "python/practice_problems/problem_04_biomarker_alert.py",
+    test: "python/tests/test_problem_04_biomarker_alert.py",
+    title: "Biomarker Alert Monitor",
+    description: "Process patient readings to track consecutive out-of-range days and generate prioritized coach outreach lists.",
+    language: "python",
+    industry: "health-tech",
+    tags: ["time-series", "consecutive-tracking", "clinical-monitoring", "alert-system"],
+    parts: 3
+  },
+  {
+    path: "python/practice_problems/problem_05_medication_titration.py",
+    test: "python/tests/test_problem_05_medication_titration.py",
+    title: "Medication Titration Tracker",
+    description: "Track dosage adjustment events over time, handling out-of-order arrivals and querying active medication history.",
+    language: "python",
+    industry: "health-tech",
+    tags: ["event-sourcing", "out-of-order-events", "medication", "clinical"],
+    parts: 3
+  },
+  {
+    path: "python/practice_problems/problem_06_lab_cadence.py",
+    test: "python/tests/test_problem_06_lab_cadence.py",
+    title: "Lab Cadence Compliance Monitor",
+    description: "Track required lab submission deadlines per patient and surface overdue labs for health coach follow-up.",
+    language: "python",
+    industry: "health-tech",
+    tags: ["deadline-tracking", "compliance", "scheduling", "clinical"],
+    parts: 3
+  },
+  {
+    path: "react/practice_problems/problem_01_activity_feed.jsx",
+    test: null,
+    title: "Activity Feed with Filtering & Optimistic Updates",
+    description: "Build a real-time event feed with client-side filtering and optimistic acknowledgement with automatic rollback on failure.",
+    language: "react",
+    industry: "saas",
+    tags: ["real-time", "event-stream", "filtering", "optimistic-updates", "hooks"],
+    parts: 3
+  }
+];
+// ============================================================
+
+// ── Derived from the file's own URL — works for any local clone ──────────────
+const repoRoot = window.location.pathname.replace(/\/index\.html$/, "");
+
+// ── Filter state ─────────────────────────────────────────────────────────────
+const state = { search: "", language: null, industry: null, tag: null };
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+const unique = arr => [...new Set(arr)];
+const label  = key => key.split("-").map(w => w[0].toUpperCase() + w.slice(1)).join(" ");
+
+function problemNum(path) {
+  const m = path.match(/problem_(\d+)/);
+  return m ? `#${m[1]}` : "";
+}
+
+function matchesFilters(p) {
+  if (state.language && p.language !== state.language) return false;
+  if (state.industry && p.industry !== state.industry) return false;
+  if (state.tag     && !p.tags.includes(state.tag))    return false;
+  if (state.search) {
+    const q = state.search.toLowerCase();
+    const hay = [p.title, p.description, ...p.tags].join(" ").toLowerCase();
+    if (!q.split(/\s+/).filter(Boolean).every(t => hay.includes(t))) return false;
+  }
+  return true;
+}
+
+function copyPath(path) {
+  navigator.clipboard.writeText(path).then(() => {
+    const t = document.getElementById("toast");
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 2000);
+  });
+}
+
+// ── Render ───────────────────────────────────────────────────────────────────
+function renderFilters() {
+  const langs = unique(PROBLEMS.map(p => p.language));
+  const inds   = unique(PROBLEMS.map(p => p.industry));
+
+  document.getElementById("language-filters").innerHTML =
+    `<span class="filter-label">Language</span>` +
+    ["all", ...langs].map(l => {
+      const active = l === "all" ? !state.language : state.language === l;
+      return `<button class="filter-btn${active ? " active" : ""}" data-lang="${l}">${l === "all" ? "All" : label(l)}</button>`;
+    }).join("");
+
+  document.getElementById("industry-filters").innerHTML =
+    `<span class="filter-label">Industry</span>` +
+    ["all", ...inds].map(i => {
+      const active = i === "all" ? !state.industry : state.industry === i;
+      return `<button class="filter-btn${active ? " active" : ""}" data-industry="${i}">${i === "all" ? "All" : label(i)}</button>`;
+    }).join("");
+
+  document.getElementById("tag-chip").innerHTML = state.tag
+    ? `<span class="active-tag-chip">#${state.tag}<button onclick="setTag(null)" title="Clear tag filter">×</button></span>`
+    : "";
+}
+
+function renderCards() {
+  const filtered = PROBLEMS.filter(matchesFilters);
+
+  document.getElementById("results-count").textContent =
+    filtered.length === PROBLEMS.length
+      ? `${PROBLEMS.length} problems`
+      : `${filtered.length} of ${PROBLEMS.length} problems`;
+
+  if (filtered.length === 0) {
+    document.getElementById("problem-grid").innerHTML =
+      `<div class="no-results"><strong>No problems match your filters.</strong><p>Try clearing some filters or adjusting your search.</p></div>`;
+    return;
+  }
+
+  document.getElementById("problem-grid").innerHTML = filtered.map(p => {
+    const vscodeProblem = `vscode://file${repoRoot}/${p.path}`;
+    const vscodeTest    = p.test ? `vscode://file${repoRoot}/${p.test}` : null;
+
+    const tagHtml = p.tags.map(t =>
+      `<span class="tag${state.tag === t ? " active" : ""}" onclick="setTag('${t}')">#${t}</span>`
+    ).join("");
+
+    const testBtn = vscodeTest
+      ? `<a href="${vscodeTest}" class="action-btn action-secondary">Test file ↗</a>`
+      : "";
+
+    return `
+<div class="problem-card">
+  <div class="card-header">
+    <span class="card-num">${problemNum(p.path)}</span>
+    <span class="card-title">${p.title}</span>
+    <span class="parts-badge">${p.parts} parts</span>
+  </div>
+  <p class="card-desc">${p.description}</p>
+  <div class="badges">
+    <span class="badge badge-${p.language}">${label(p.language)}</span>
+    <span class="badge badge-${p.industry}">${label(p.industry)}</span>
+  </div>
+  <div class="tags">${tagHtml}</div>
+  <p class="file-path">${p.path}</p>
+  <div class="card-actions">
+    <a href="${vscodeProblem}" class="action-btn action-primary">Open in VS Code ↗</a>
+    ${testBtn}
+    <button class="action-btn action-secondary" onclick="copyPath('${p.path}')">Copy path</button>
+  </div>
+</div>`;
+  }).join("");
+}
+
+function render() { renderFilters(); renderCards(); }
+
+// ── Public helpers called from inline handlers ────────────────────────────────
+function setTag(tag) {
+  state.tag = state.tag === tag ? null : tag;
+  render();
+}
+
+// ── Events ───────────────────────────────────────────────────────────────────
+document.getElementById("search-input").addEventListener("input", e => {
+  state.search = e.target.value.trim();
+  render();
+});
+
+document.getElementById("language-filters").addEventListener("click", e => {
+  const btn = e.target.closest("[data-lang]");
+  if (!btn) return;
+  state.language = btn.dataset.lang === "all" ? null : btn.dataset.lang;
+  render();
+});
+
+document.getElementById("industry-filters").addEventListener("click", e => {
+  const btn = e.target.closest("[data-industry]");
+  if (!btn) return;
+  state.industry = btn.dataset.industry === "all" ? null : btn.dataset.industry;
+  render();
+});
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
