@@ -94,18 +94,34 @@ The `-c` flag accepts any valid pytest command — flags, node IDs, and extra op
 
 ## Adding new problems with an AI agent
 
-This repo is designed to be extended by prompting an AI coding agent. Open Claude Code (or your preferred agent) in this repo and describe what you want:
+This repo is designed to be extended by prompting an AI coding agent. Open Claude Code (or your preferred agent) in this repo and describe what you want. The agent will read `CLAUDE.md` for conventions automatically.
+
+A good prompt specifies: the language, the industry/domain, the core data structure or algorithm pattern, the number of parts, and any constraints on problem style. Example:
 
 ```
 Generate a new Senior SWE interview problem for the python/ directory.
-Follow the conventions in CLAUDE.md — class-based data structure,
-4 progressive parts, full pytest suite.
-Theme: something broadly applicable to SaaS backends (not IoT-specific).
+
+- Domain: dev-tools / CI-CD infrastructure
+- Core concept: a class-based job scheduler that manages a queue of build jobs
+  with priorities, dependencies between jobs, and cancellation
+- 3 progressive parts: Part 1 basic enqueue/dequeue, Part 2 job dependencies
+  (a job can't start until its dependencies complete), Part 3 priority ordering
+  within the ready queue
+- Style: class-based, candidate chooses internal data structures
+- Follow all conventions in CLAUDE.md (fixtures, no class-level state,
+  self-contained parts, composing methods, concrete usage example in docstring)
+- [optional] - please checkout this JD/company website, do some research on the company
+   to see if the company asks a specific style of interview questions and base the practice 
+   problem(s) off of that.
+
+After creating the problem and test files, add an entry to the PROBLEMS array
+in index.html following the format in CLAUDE.md.
 ```
 
-The agent will read `CLAUDE.md` for conventions and create:
+The agent will create:
 - `python/practice_problems/problem_NN_<name>.py` — the stub
 - `python/tests/test_problem_NN_<name>.py` — the test suite
+- An entry in `index.html`
 
 You can also ask it to review and improve existing problems or test suites.
 
