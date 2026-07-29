@@ -144,18 +144,13 @@ class BiomarkerMonitor:
         )
         if len(patient_readings) == 0:
             return 0
-        # print(f"patient_readings: {patient_readings}")
         sorted_patient_readings = sorted(
             patient_readings, key=lambda reading: reading.recorded_on
         )
-        print(f"sorted_patient_readings: {sorted_patient_readings}")
         current_day = sorted_patient_readings[0].recorded_on.day
         grouped_patient_readings = []
         current_reading_group = []
         for reading in sorted_patient_readings:
-            # print(current_day)
-            # print(reading.recorded_on.day)
-            # print(current_reading_group)
             if reading.recorded_on.day == current_day:
                 current_reading_group.append(reading)
             else:
@@ -163,24 +158,16 @@ class BiomarkerMonitor:
                 grouped_patient_readings.append(current_reading_group)
                 current_reading_group = [reading]
         grouped_patient_readings.append(current_reading_group)
-
-        print(f"grouped_patient_readings: {grouped_patient_readings}")
         first_reading = sorted_patient_readings[0]
         longest_streak = 0
         current_streak = 0
         most_recent_day = first_reading.recorded_on.day
         for reading_group in grouped_patient_readings:
             group_day = reading_group[0].recorded_on.day
-            print(f"reading_group: {reading_group}")
-            print(f"group_day: {group_day}")
-            print(f"most_recent_day: {most_recent_day}")
-            print(f"current_streak: {current_streak}")
             any_reading_out_of_range = any(
                 self.is_out_of_range(reading=reading) for reading in reading_group
             )
-            print(f"any_reading_out_of_range: {any_reading_out_of_range}")
             if group_day - most_recent_day <= 1 and any_reading_out_of_range:
-                print("got here")
                 current_streak += 1
             else:
                 current_streak = 0
@@ -211,9 +198,77 @@ class BiomarkerMonitor:
 
         Sort the list by consecutive_days descending (most urgent first).
 
-        Hint: max_consecutive_out_of_range_days can be helpful here.
         """
-        raise NotImplementedError
+        # break up readings by patient id and reading_type,
+        # pass into max_consecutive_out_of_range_days
+        # keep track of results that come out of that
+        # normalize data to shape in method description -  i.e. latest_value
+        # sort based on longest streak/consecutive_days
+        # question: if patient can show up multiple times, what does it mean for them to be sorted (should their entries be still grouped by patient id even if one is less urgent)
+        # improvement note: make this logic and max_consecutive_out_of_range_days not redundant in terms of looping through readings
+        # improvement note: sort during instead of after the fact
+        # improvement note: add latest_value to return of max_consecutive_out_of_range_days
+        # improvement note: make helper function for getting most recent out of range value
+        # improvement note: get rid of list wrapper around filter
+        outreach_list = []
+        patient_ids = set()
+        for reading in self.readings:
+            patient_ids.add(reading.patient_id)
+        for patient_id in patient_ids:
+            glucose_max_streak = self.max_consecutive_out_of_range_days(
+                patient_id=patient_id, reading_type="glucose"
+            )
+            ketone_max_streak = self.max_consecutive_out_of_range_days(
+                patient_id=patient_id, reading_type="ketone"
+            )
+            if glucose_max_streak >= min_consecutive_days:
+                patient_readings_out_of_range = list(
+                    filter(
+                        lambda reading: reading.patient_id == patient_id
+                        and reading.reading_type == "glucose"
+                        and self.is_out_of_range(reading=reading),
+                        self.readings,
+                    )
+                )
+                max_reading = max(
+                    patient_readings_out_of_range,
+                    key=lambda reading: reading.recorded_on.day,
+                )
+                outreach_list.append(
+                    {
+                        "patient_id": patient_id,
+                        "reading_type": "glucose",
+                        "consecutive_days": glucose_max_streak,
+                        "latest_value": max_reading.value,
+                    }
+                )
+            if ketone_max_streak >= min_consecutive_days:
+                patient_readings_out_of_range = list(
+                    filter(
+                        lambda reading: reading.patient_id == patient_id
+                        and reading.reading_type == "ketone"
+                        and self.is_out_of_range(reading=reading),
+                        self.readings,
+                    )
+                )
+                max_reading = max(
+                    patient_readings_out_of_range,
+                    key=lambda reading: reading.recorded_on.day,
+                )
+                outreach_list.append(
+                    {
+                        "patient_id": patient_id,
+                        "reading_type": "ketone",
+                        "consecutive_days": ketone_max_streak,
+                        "latest_value": max_reading.value,
+                    }
+                )
+        sorted_outreach_list = sorted(
+            outreach_list,
+            key=lambda outreach_entry: outreach_entry["consecutive_days"],
+            reverse=True,
+        )
+        return sorted_outreach_list
 
     # -------------------------------------------------------------------------
     # PART 4 — deduplication on ingestion  (~10 min)
