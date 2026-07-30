@@ -1,10 +1,20 @@
 # Technical Interview Practice
 
-A collection of Senior Software Engineer–level practice problems with test suites, designed to be generated and extended by an AI coding agent (Claude Code or similar).
+A collection of Software Engineer practice problems with test suites, designed to be generated and extended by an AI coding agent (Claude Code or similar).
 
 ---
 
+## Design Principles
+- It should be easy to get AI to add new practice problems that can (1) be tested under the existing framework and (2) be searcheable by opening index.html
+- It should be easy to find relevant practice problems to work on
+- SWEs practice should be able to run tests against their practice problem answer files without having to update any code besides the code in their answer file
+- Tests should isolated and not bleed data
+- Practice problem logic should be cumalitive; later stage logic should utilize earlier stage logic where possible
+- Practice problems should be strive to realistic represent practice problems an SWE might encounter in a real technical interview
+- This repo is meant to be used locally
+
 ## Repo structure
+More directories may be added over time as problems in d ifferent languages are added, but the overall structure should say the same
 
 ```
 index.html                    # Searchable problem browser — open in any browser
