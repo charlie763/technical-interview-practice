@@ -175,7 +175,10 @@ class EnrollmentPipeline:
         patients_in_state = filter(
             lambda patient: patient["current_state"] == state, self.patients.values()
         )
-        return sorted(patients_in_state, key=lambda patient: patient["id"])
+        sorted_patients_in_state = sorted(
+            patients_in_state, key=lambda patient: patient["id"]
+        )
+        return [patient["id"] for patient in sorted_patients_in_state]
 
     # ── Part 2: Duration and conversion metrics ───────────────────────────────
 
