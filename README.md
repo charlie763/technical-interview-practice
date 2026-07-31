@@ -133,15 +133,9 @@ The agent will create:
 - `python/tests/test_problem_NN_<name>.py` — the test suite
 - An entry in `index.html`
 
-You can also ask it to review and improve existing problems or test suites.
+DO NOT ask it to improve existing problems or test suites, unless you don't plan to merge your branch into `main`
+as that will likely break other peoples' answers. Instead, if you would like to improve upon an existing problem/test
+just copy and paste it into a new problem/test file with something like `v.x` appended to the file name, and then try
+to improve the problem and/or test suite.
 
----
 
-## Adding problems manually
-
-Follow the conventions in `CLAUDE.md`. Key rules:
-
-- Problem stubs live in `practice_problems/` and import from nowhere (pure Python).
-- Test files always import from `practice_problems.problem_NN_<name>` — never from the answer directory directly. The `--answer` flag handles the swap at runtime.
-- Tests are ordered Part 1 → Part 2 → Part 3. Each Part's tests only call functions defined in that Part or earlier.
-- Every test uses a pytest fixture — no inline `ClassName()` construction inside test methods.
