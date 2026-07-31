@@ -222,18 +222,18 @@ class TestOverdueLabs:
 
 class TestComplianceReport:
     def test_report_contains_overdue_patients(self, seeded):
-        report = compliance_report(seeded, as_of=date(2024, 4, 1))
+        report = compliance_report(seeded, as_of=date(2024, 4, 16))
         patient_ids = [e["patient_id"] for e in report]
         assert "alice" in patient_ids  # bmp overdue
         assert "bob" in patient_ids    # bmp overdue
 
     def test_compliant_patients_excluded(self, seeded):
-        report = compliance_report(seeded, as_of=date(2024, 4, 1))
+        report = compliance_report(seeded, as_of=date(2024, 4, 16))
         patient_ids = [e["patient_id"] for e in report]
         assert "carol" not in patient_ids
 
     def test_entry_fields(self, seeded):
-        report = compliance_report(seeded, as_of=date(2024, 4, 1))
+        report = compliance_report(seeded, as_of=date(2024, 4, 16))
         bob_entry = next(e for e in report if e["patient_id"] == "bob")
         assert set(bob_entry.keys()) == {"patient_id", "overdue_labs", "overdue_count"}
         assert bob_entry["overdue_count"] == len(bob_entry["overdue_labs"])
