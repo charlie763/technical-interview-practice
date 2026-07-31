@@ -172,7 +172,6 @@ def process_location_update(
                 }
                 triggered_alerts.append(trigger_alert)
                 state["alert_log"].append(trigger_alert)
-    print(triggered_alerts)
     return triggered_alerts
 
 
