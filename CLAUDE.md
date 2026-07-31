@@ -11,6 +11,25 @@ react/
   practice_problems/          # JSX/TSX starter files
 ```
 
+## Python virtual environment
+
+A `.venv` lives at the repo root. Always activate it before running pytest or
+any Python command:
+
+```bash
+source .venv/bin/activate
+```
+
+If `.venv` doesn't exist yet, create it:
+
+```bash
+python3.11 -m venv .venv && .venv/bin/pip install pytest
+```
+
+`run_tests.sh` activates `.venv` automatically when it exists.
+
+---
+
 **Workflow per problem:**
 1. Problem file has the prompt + empty stubs.
 2. User copies the problem file to `practice_problem_answers/cw_answer_XX_<name>.py` and implements it there.
