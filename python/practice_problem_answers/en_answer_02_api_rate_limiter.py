@@ -234,8 +234,44 @@ def handle_request(state: dict, key_id: str, now: float) -> dict:
       "rpm_exceeded"    — per-minute cap hit
       "rpd_exceeded"    — per-day cap hit (only if rpm is OK)
     """
-    raise NotImplementedError
+    if is_allowed(state, key_id, now):
+      record_request(state, key_id, now)
+      return {
+        "allowed": True,
+        "key_id": key_id
+      }
+    else:
+      if not state["keys"].get(key_id):
+        return {
+          "allowed": False,
+          "reason": 'key_not_found'
+        }
+      if state["keys"].get(key_id).get("enabled") == False:
+        return {
+          "allowed": False,
+          "reason": 'key_disabled'
+        }
 
+      # check rpm + rpd now
+      request_log = state["keys"][key_id]["request_log"]
+      plan_name = state["keys"][key_id]["plan"]
+      plan_rpm = state["plans"][plan_name]["rpm"]
+      plan_rpd = state["plans"][plan_name]["rpd"]
+
+      if _count_in_window(request_log, now, 60) >= plan_rpm:
+        return {
+          "allowed": False,
+          "reason": 'rpm_exceeded'
+        }
+      if _count_in_window(request_log, now, 86_400) >= plan_rpd:
+        return {
+          "allowed": False,
+          "reason": 'rpd_exceeded'
+        }
+      return {
+        "allowed": False,
+        "reason": 'unknown'
+      }
 
 def get_usage(state: dict, key_id: str, now: float) -> dict:
     """
@@ -250,4 +286,23 @@ def get_usage(state: dict, key_id: str, now: float) -> dict:
     }
     Raise KeyError if key_id not found.
     """
-    raise NotImplementedError
+    try:
+      if not state["keys"].get(key_id):
+        raise KeyError
+    except KeyError as error:
+      print(f'Key does not exist: {error}')
+      raise
+
+    request_log = state["keys"][key_id]["request_log"]
+    plan_name = state["keys"][key_id]["plan"]
+    plan_rpm = state["plans"][plan_name]["rpm"]
+    plan_rpd = state["plans"][plan_name]["rpd"]
+
+    return {
+      "key_id": key_id,
+      "plan": plan_name,
+      "rpm_used": _count_in_window(request_log, now, 60),
+      "rpm_limit": plan_rpm,
+      "rpd_used": _count_in_window(request_log, now, 86_400),
+      "rpd_limit": plan_rpd,
+    }
