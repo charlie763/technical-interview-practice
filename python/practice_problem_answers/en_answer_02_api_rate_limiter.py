@@ -75,13 +75,13 @@ def create_key(state: dict, key_id: str, owner: str, plan: str) -> dict:
     Raise ValueError if key_id already exists or plan is not in state["plans"].
     """
     try:
-      if plan not in DEFAULT_PLANS:
+      if plan not in state["plans"]:
         raise ValueError
     except ValueError as error:
       print(f'Plan does not exist: {error}')
       raise
     try:
-      if state.get(key_id):
+      if state["keys"].get(key_id):
         raise ValueError
     except ValueError as error:
       print(f'Key already exists: {error}')
@@ -95,7 +95,7 @@ def create_key(state: dict, key_id: str, owner: str, plan: str) -> dict:
       "request_log": []
     }
 
-    state[key_id] = api_key
+    state["keys"][key_id] = api_key
     return api_key
 
 def revoke_key(state: dict, key_id: str) -> None:
@@ -104,13 +104,12 @@ def revoke_key(state: dict, key_id: str) -> None:
     (Keys are disabled rather than deleted so historical logs are preserved.)
     """
     try:
-      if not state.get(key_id):
-        raise ValueError
-    except ValueError as error:
-      print(f'Key does not exist: {error}')
+      if not state["keys"].get(key_id):
+        raise KeyError
+    except KeyError as error:
       raise
 
-    state[key_id]["enabled"] = False
+    state["keys"][key_id]["enabled"] = False
     return None
 
 
@@ -121,20 +120,19 @@ def update_plan(state: dict, key_id: str, new_plan: str) -> None:
     The request_log is preserved (no reset on plan change).
     """
     try:
-      if new_plan not in DEFAULT_PLANS:
+      if new_plan not in state["plans"]:
         raise ValueError
     except ValueError as error:
       print(f'Plan does not exist: {error}')
       raise
     try:
-      if not state.get(key_id):
-        raise ValueError
-    except ValueError as error:
+      if not state["keys"].get(key_id):
+        raise KeyError
+    except KeyError as error:
       print(f'Key does not exist: {error}')
       raise
 
-    state[key_id]["plan"] = new_plan
-    raise NotImplementedError
+    state["keys"][key_id]["plan"] = new_plan
 
 
 # ---------------------------------------------------------------------------
@@ -148,8 +146,14 @@ def _count_in_window(request_log: list, now: float, window_seconds: int) -> int:
 
     Helper — feel free to use this in Parts 2 and 3, or inline it.
     """
-    raise NotImplementedError
-
+    print('nani')
+    window_end = now - window_seconds
+    for request in request_log:
+      print(window_end, request, now)
+    return sum(1 for request in request_log if
+        (window_end < request and
+        request <= now)
+    )
 
 def is_allowed(state: dict, key_id: str, now: float) -> bool:
     """
