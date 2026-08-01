@@ -146,10 +146,7 @@ def _count_in_window(request_log: list, now: float, window_seconds: int) -> int:
 
     Helper — feel free to use this in Parts 2 and 3, or inline it.
     """
-    print('nani')
     window_end = now - window_seconds
-    for request in request_log:
-      print(window_end, request, now)
     return sum(1 for request in request_log if
         (window_end < request and
         request <= now)
@@ -167,7 +164,23 @@ def is_allowed(state: dict, key_id: str, now: float) -> bool:
 
     A None limit means that dimension is unlimited.
     """
-    raise NotImplementedError
+    if not state["keys"].get(key_id):
+      return False
+    if state["keys"][key_id]["enabled"] == False:
+      return False
+
+    request_log = state["keys"][key_id]["request_log"]
+    plan_name = state["keys"][key_id]["plan"]
+    plan_rpm = state["plans"][plan_name]["rpm"]
+    plan_rpd = state["plans"][plan_name]["rpd"]
+
+    if plan_rpm is None or plan_rpd is None:
+      return True
+    if _count_in_window(request_log, now, 60) >= plan_rpm:
+      return False
+    if _count_in_window(request_log, now, 86400) >= plan_rpd:
+      return False
+    return True
 
 
 # ---------------------------------------------------------------------------
