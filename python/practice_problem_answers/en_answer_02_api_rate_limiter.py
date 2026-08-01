@@ -204,6 +204,8 @@ def record_request(state: dict, key_id: str, now: float) -> None:
 
     out_of_date_time = now - 90_000
     request_log = state["keys"][key_id]["request_log"]
+
+    # make a new list because it's linear time vs removing qwhich is quadratic
     state["keys"][key_id]["request_log"] = (
       [request for request in request_log if request >= out_of_date_time]
     )
