@@ -178,7 +178,7 @@ def is_allowed(state: dict, key_id: str, now: float) -> bool:
       return True
     if _count_in_window(request_log, now, 60) >= plan_rpm:
       return False
-    if _count_in_window(request_log, now, 86400) >= plan_rpd:
+    if _count_in_window(request_log, now, 86_400) >= plan_rpd:
       return False
     return True
 
@@ -195,8 +195,20 @@ def record_request(state: dict, key_id: str, now: float) -> None:
     Raise KeyError if key_id not found.
     Note: call this only AFTER confirming the request is allowed.
     """
-    raise NotImplementedError
+    try:
+      if not state["keys"].get(key_id):
+        raise KeyError
+    except KeyError as error:
+      print(f'Key does not exist: {error}')
+      raise
 
+    out_of_date_time = now - 90_000
+    request_log = state["keys"][key_id]["request_log"]
+    state["keys"][key_id]["request_log"] = (
+      [request for request in request_log if request >= out_of_date_time]
+    )
+    state["keys"][key_id]["request_log"].append(now)
+    return None
 
 # ---------------------------------------------------------------------------
 # PART 4 — Combined handler + usage stats  (~10 min)
