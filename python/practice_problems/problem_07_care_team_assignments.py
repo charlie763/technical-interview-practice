@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """
 Care Team Assignment Manager
 ============================
@@ -55,13 +57,13 @@ Part 3 — Assignment history
 # mgr.get_assignment_at("patient_1", "coach", 3000.0)   # -> "coach_a"
 # mgr.get_assignment_at("patient_1", "coach", 6000.0)   # -> "coach_b"
 """
-from __future__ import annotations
 
 from typing import Optional
 
 
 class CapacityError(Exception):
     """Raised when assigning a patient to a member who is at their patient capacity."""
+
     pass
 
 

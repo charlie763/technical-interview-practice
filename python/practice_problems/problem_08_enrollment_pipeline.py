@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """
 Patient Enrollment Pipeline
 ===========================
@@ -62,14 +64,13 @@ Part 3 — SLA monitoring
 # pipeline.average_time_in_state("screened", as_of=999999.0)
 # # -> 64800.0  ((86400 + 43200) / 2; both p_001 and p_002 have exited screened)
 """
-from __future__ import annotations
 
 
 ALLOWED_TRANSITIONS: dict[str, set[str]] = {
-    "referred":  {"screened"},
-    "screened":  {"enrolled", "ineligible"},
-    "enrolled":  {"active", "withdrawn"},
-    "active":    {"graduated", "churned", "withdrawn"},
+    "referred": {"screened"},
+    "screened": {"enrolled", "ineligible"},
+    "enrolled": {"active", "withdrawn"},
+    "active": {"graduated", "churned", "withdrawn"},
 }
 
 TERMINAL_STATES: set[str] = {"ineligible", "withdrawn", "graduated", "churned"}
