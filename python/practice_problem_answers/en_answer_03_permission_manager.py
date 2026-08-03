@@ -52,7 +52,7 @@ EXAMPLE
 class PermissionManager:
     """In-memory Role-Based Access Control (RBAC) engine."""
     """
-        self.roles = { role(str): { "parent_role_id": str, "permissions": Set[str] }
+        self.roles = { role(str): { "parent_role_id": str | None, "permissions": Set[str] }
         self.users = { user(str): role(str) }
     """
 
