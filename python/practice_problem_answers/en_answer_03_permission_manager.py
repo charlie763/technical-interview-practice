@@ -205,7 +205,7 @@ class PermissionManager:
             raise KeyError
 
         # remove all permissions belonging to current ancestor line
-        if self.roles[role_id]["parent_role_id"] is not None:
+        if self.roles[role_id]["parent_role_id"]:
             current_ancestor = self.roles[role_id]["parent_role_id"]
             while current_ancestor != None:
                 self.roles[role_id]["permissions"].difference_update(
