@@ -218,6 +218,7 @@
     .badge-dev-tools    { background: #f3e8ff; color: #581c87; }
     .badge-fintech        { background: #d1fae5; color: #064e3b; }
     .badge-public-safety  { background: #dbeafe; color: #1e3a8a; }
+    .badge-legal-tech     { background: #fef3c7; color: #92400e; }
 
     /* Level */
     .badge-level-junior    { background: #f1f5f9; color: #64748b; }
@@ -490,6 +491,50 @@ const PROBLEMS = [
     language: "react",
     industry: "public-safety",
     tags: ["dispatch", "real-time", "optimistic-updates", "bulk-actions", "tabs", "hooks"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "python/practice_problems/problem_12_contract_alert_scheduler.py",
+    test: "python/tests/test_problem_12_contract_alert_scheduler.py",
+    title: "Contract Expiration Alert Scheduler",
+    description: "Schedule and track expiration alerts for contracts — register global alert configs, compute per-contract alert schedules, query due alerts, and track sent state.",
+    language: "python",
+    industry: "legal-tech",
+    tags: ["scheduling", "date-arithmetic", "clm", "notifications"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "python/practice_problems/problem_13_contract_lifecycle.py",
+    test: "python/tests/test_problem_13_contract_lifecycle.py",
+    title: "Contract Lifecycle State Machine",
+    description: "Manage contract state transitions through a defined lifecycle (draft → executed → expired), enforcing valid transitions, audit-logging every change, and surfacing overdue contracts.",
+    language: "python",
+    industry: "legal-tech",
+    tags: ["state-machine", "audit-trail", "clm", "lifecycle"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "python/practice_problems/problem_14_contract_amendment.py",
+    test: "python/tests/test_problem_14_contract_amendment.py",
+    title: "Contract Amendment Manager",
+    description: "Track amendments to signed contracts and resolve the effective field values as of any date by applying base fields and chronological overrides.",
+    language: "python",
+    industry: "legal-tech",
+    tags: ["clm", "versioning", "date-arithmetic", "event-sourcing"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "react/practice_problems/problem_04_contract_dashboard.jsx",
+    test: "react/tests/test_problem_04_contract_dashboard.spec.js",
+    title: "Contract Review Dashboard",
+    description: "Build a contract list view with status/text filtering, expiration sorting, and inline field editing with optimistic updates and rollback on failure.",
+    language: "react",
+    industry: "legal-tech",
+    tags: ["clm", "optimistic-updates", "filtering", "inline-editing", "hooks"],
     parts: 3,
     level: "senior"
   }

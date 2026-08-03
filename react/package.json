@@ -10,7 +10,8 @@
     "test:ui": "playwright test --ui",
     "test:01": "playwright test tests/test_problem_01_activity_feed.spec.js",
     "test:02": "playwright test tests/test_problem_02_incident_dashboard.spec.js",
-    "test:03": "playwright test tests/test_problem_03_alert_triage_console.spec.js"
+    "test:03": "playwright test tests/test_problem_03_alert_triage_console.spec.js",
+    "test:04": "playwright test tests/test_problem_04_contract_dashboard.spec.js"
   },
   "dependencies": {
     "react": "^18.3.1",
