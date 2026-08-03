@@ -216,7 +216,8 @@
     .badge-health-tech  { background: #dcfce7; color: #166534; }
     .badge-iot          { background: #fef9c3; color: #713f12; }
     .badge-dev-tools    { background: #f3e8ff; color: #581c87; }
-    .badge-fintech      { background: #d1fae5; color: #064e3b; }
+    .badge-fintech        { background: #d1fae5; color: #064e3b; }
+    .badge-public-safety  { background: #dbeafe; color: #1e3a8a; }
 
     /* Level */
     .badge-level-junior    { background: #f1f5f9; color: #64748b; }
@@ -434,6 +435,39 @@ const PROBLEMS = [
     language: "react",
     industry: "general",
     tags: ["real-time", "event-stream", "filtering", "optimistic-updates", "hooks", "saas"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "python/practice_problems/problem_09_incident_aggregator.py",
+    test: "python/tests/test_problem_09_incident_aggregator.py",
+    title: "Multi-Source Incident Aggregator",
+    description: "Ingest reports from multiple data sources, manually group them into unified incidents, and auto-deduplicate new arrivals using a sliding time window.",
+    language: "python",
+    industry: "public-safety",
+    tags: ["event-deduplication", "time-window", "alert-system", "event-driven"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "python/practice_problems/problem_10_dispatch_manager.py",
+    test: "python/tests/test_problem_10_dispatch_manager.py",
+    title: "Responder Dispatch Manager",
+    description: "Route incoming incident alerts to field responders based on type subscriptions and capacity limits, with auto-assignment selecting the least-loaded eligible unit.",
+    language: "python",
+    industry: "public-safety",
+    tags: ["dispatch", "capacity-constraints", "priority-queue", "auto-assignment"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "python/practice_problems/problem_11_coverage_tracker.py",
+    test: "python/tests/test_problem_11_coverage_tracker.py",
+    title: "Sensor Coverage Tracker",
+    description: "Monitor radio-receiver station health via heartbeats, track outage history with duration metrics, and compute per-region coverage status.",
+    language: "python",
+    industry: "public-safety",
+    tags: ["heartbeat-monitoring", "outage-tracking", "time-series", "coverage-analysis"],
     parts: 3,
     level: "senior"
   }
