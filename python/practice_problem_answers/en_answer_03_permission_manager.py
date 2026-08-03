@@ -247,15 +247,10 @@ class PermissionManager:
             return False
 
         permissions = self.get_all_permissions(user_id)
-        for permission in permissions:
-            if permission == "*:*":
-                return True
-            if permission == f'{resource}:*':
-                return True
-            if permission == f'*:{action}':
-                return True
-            if permission == f'{resource}:{action}':
-                return True
-        return False
+        # O(1) lookups using set syntax
+        required_permissions = { "*:*", f"{resource}:*", f"*:{action}", f"{resource}:{action}" }
+
+        # Returns True if there is any overlap
+        return not required_permissions.isdisjoint(permissions)
 
 
