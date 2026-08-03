@@ -52,7 +52,7 @@ EXAMPLE
 class PermissionManager:
     """In-memory Role-Based Access Control (RBAC) engine."""
     """
-        self.roles = { role(str): { "parent_role_id": str | None, "permissions": Set[str] }
+        self.roles = { role(str): { "parent_role_id": str | None, "permissions": Set[str], "ancestor_permissions": Set[str] }
         self.users = { user(str): role(str) }
     """
 
@@ -79,7 +79,8 @@ class PermissionManager:
 
         self.roles[role_id] = {
             "parent_role_id": None, # is the parent
-            "permissions": set(permissions) if permissions != None else set()
+            "permissions": set(permissions) if permissions != None else set(),
+            "ancestor_permissions": set()
         }
         return None
 
@@ -166,9 +167,9 @@ class PermissionManager:
         permissions_set = set()
 
         for role in users_roles:
-            if self.roles.get(role):
-                for permission in self.roles[role]["permissions"]:
-                    permissions_set.add(permission)
+            permissions_set.update(
+                self.roles[role]["permissions"] | self.roles[role]["ancestor_permissions"]
+            )
         return permissions_set
 
 
@@ -183,7 +184,7 @@ class PermissionManager:
         """
         if self.roles.get(role_id) is None:
             raise KeyError
-        return self.roles[role_id]["permissions"]
+        return self.roles[role_id]["permissions"] | self.roles[role_id]["ancestor_permissions"]
 
     # -------------------------------------------------------------------------
     # PART 2 — Role inheritance  (~15 min)
@@ -203,24 +204,22 @@ class PermissionManager:
         """
         if (self.roles.get(role_id) is None) or (self.roles.get(parent_role_id) is None):
             raise KeyError
+        if parent_role_id == self.roles[role_id]["parent_role_id"]: # parent is same
+            return None
 
-        # remove all permissions belonging to current ancestor line
-        if self.roles[role_id]["parent_role_id"]:
-            current_ancestor = self.roles[role_id]["parent_role_id"]
-            while current_ancestor != None:
-                self.roles[role_id]["permissions"].difference_update(
-                    self.roles[current_ancestor]["permissions"]
+        self.roles[role_id]["ancestor_permissions"] = set()
+        if role_id == parent_role_id:
+            # remove parent
+            self.roles[role_id]["parent_role_id"] = None
+        else:
+            # inherit all permissions from new ancestor line
+            new_ancestor = parent_role_id
+            while new_ancestor != None:
+                self.roles[role_id]["ancestor_permissions"].update(
+                    self.roles[new_ancestor]["permissions"]
                 )
-                current_ancestor = self.roles[current_ancestor]["parent_role_id"]
-
-        # inherit all permissions from new ancestor line
-        new_ancestor = parent_role_id
-        while new_ancestor != None:
-            self.roles[role_id]["permissions"].update(
-                self.roles[new_ancestor]["permissions"]
-            )
-            new_ancestor = self.roles[new_ancestor]["parent_role_id"]
-        self.roles[role_id]["parent_role_id"] = parent_role_id
+                new_ancestor = self.roles[new_ancestor]["parent_role_id"]
+            self.roles[role_id]["parent_role_id"] = parent_role_id
         return None
 
     # -------------------------------------------------------------------------
