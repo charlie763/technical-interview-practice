@@ -175,6 +175,7 @@ git restore react/src/App.jsx
 ```
 
 ## Adding new problems with an AI agent
+⚠️ WARNING - PLEASE READ: If contributing, please do not add any problems verbatim from actual technical interviews. We don't want to get each other in trouble or cause issues for people actively interviewing. The `CLAUDE.md` file has instructions to scrub actual company names from problems, but please double check the code for that before submitting a PR.
 
 This repo is designed to be extended by prompting an AI coding agent. Open Claude Code (or your preferred agent) in this repo and describe what you want. The agent will read `CLAUDE.md` for conventions automatically.
 
