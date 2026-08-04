@@ -216,7 +216,9 @@
     .badge-health-tech  { background: #dcfce7; color: #166534; }
     .badge-iot          { background: #fef9c3; color: #713f12; }
     .badge-dev-tools    { background: #f3e8ff; color: #581c87; }
-    .badge-fintech      { background: #d1fae5; color: #064e3b; }
+    .badge-fintech        { background: #d1fae5; color: #064e3b; }
+    .badge-public-safety  { background: #dbeafe; color: #1e3a8a; }
+    .badge-legal-tech     { background: #fef3c7; color: #92400e; }
 
     /* Level */
     .badge-level-junior    { background: #f1f5f9; color: #64748b; }
@@ -434,6 +436,105 @@ const PROBLEMS = [
     language: "react",
     industry: "general",
     tags: ["real-time", "event-stream", "filtering", "optimistic-updates", "hooks", "saas"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "python/practice_problems/problem_09_incident_aggregator.py",
+    test: "python/tests/test_problem_09_incident_aggregator.py",
+    title: "Multi-Source Incident Aggregator",
+    description: "Ingest reports from multiple data sources, manually group them into unified incidents, and auto-deduplicate new arrivals using a sliding time window.",
+    language: "python",
+    industry: "public-safety",
+    tags: ["event-deduplication", "time-window", "alert-system", "event-driven"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "python/practice_problems/problem_10_dispatch_manager.py",
+    test: "python/tests/test_problem_10_dispatch_manager.py",
+    title: "Responder Dispatch Manager",
+    description: "Route incoming incident alerts to field responders based on type subscriptions and capacity limits, with auto-assignment selecting the least-loaded eligible unit.",
+    language: "python",
+    industry: "public-safety",
+    tags: ["dispatch", "capacity-constraints", "priority-queue", "auto-assignment"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "python/practice_problems/problem_11_coverage_tracker.py",
+    test: "python/tests/test_problem_11_coverage_tracker.py",
+    title: "Sensor Coverage Tracker",
+    description: "Monitor radio-receiver station health via heartbeats, track outage history with duration metrics, and compute per-region coverage status.",
+    language: "python",
+    industry: "public-safety",
+    tags: ["heartbeat-monitoring", "outage-tracking", "time-series", "coverage-analysis"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "react/practice_problems/problem_02_incident_dashboard.jsx",
+    test: "react/tests/test_problem_02_incident_dashboard.spec.js",
+    title: "Real-Time Incident Dashboard",
+    description: "Build a live incident monitoring panel with a real-time feed, severity/type filtering, and an optimistic 'Contain' action with rollback on failure.",
+    language: "react",
+    industry: "public-safety",
+    tags: ["real-time", "optimistic-updates", "filtering", "event-driven", "hooks"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "react/practice_problems/problem_03_alert_triage_console.jsx",
+    test: "react/tests/test_problem_03_alert_triage_console.spec.js",
+    title: "Alert Triage Console",
+    description: "Build a dispatch ops queue with real-time alert ingestion, unit assignment with optimistic updates, tab-based filtering, and bulk-acknowledge.",
+    language: "react",
+    industry: "public-safety",
+    tags: ["dispatch", "real-time", "optimistic-updates", "bulk-actions", "tabs", "hooks"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "python/practice_problems/problem_12_contract_alert_scheduler.py",
+    test: "python/tests/test_problem_12_contract_alert_scheduler.py",
+    title: "Contract Expiration Alert Scheduler",
+    description: "Schedule and track expiration alerts for contracts — register global alert configs, compute per-contract alert schedules, query due alerts, and track sent state.",
+    language: "python",
+    industry: "legal-tech",
+    tags: ["scheduling", "date-arithmetic", "clm", "notifications"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "python/practice_problems/problem_13_contract_lifecycle.py",
+    test: "python/tests/test_problem_13_contract_lifecycle.py",
+    title: "Contract Lifecycle State Machine",
+    description: "Manage contract state transitions through a defined lifecycle (draft → executed → expired), enforcing valid transitions, audit-logging every change, and surfacing overdue contracts.",
+    language: "python",
+    industry: "legal-tech",
+    tags: ["state-machine", "audit-trail", "clm", "lifecycle"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "python/practice_problems/problem_14_contract_amendment.py",
+    test: "python/tests/test_problem_14_contract_amendment.py",
+    title: "Contract Amendment Manager",
+    description: "Track amendments to signed contracts and resolve the effective field values as of any date by applying base fields and chronological overrides.",
+    language: "python",
+    industry: "legal-tech",
+    tags: ["clm", "versioning", "date-arithmetic", "event-sourcing"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "react/practice_problems/problem_04_contract_dashboard.jsx",
+    test: "react/tests/test_problem_04_contract_dashboard.spec.js",
+    title: "Contract Review Dashboard",
+    description: "Build a contract list view with status/text filtering, expiration sorting, and inline field editing with optimistic updates and rollback on failure.",
+    language: "react",
+    industry: "legal-tech",
+    tags: ["clm", "optimistic-updates", "filtering", "inline-editing", "hooks"],
     parts: 3,
     level: "senior"
   }

@@ -9,7 +9,99 @@ python/
   tests/                      # pytest suites
 react/
   practice_problems/          # JSX/TSX starter files
+  src/App.jsx                 # active problem (overwrite with a stub to work on it)
+  src/main.jsx                # Vite entry point (do not modify)
+  tests/                      # Playwright e2e specs
+  package.json                # Vite + Playwright deps
+  playwright.config.js
+  vite.config.js
 ```
+
+## React / frontend workflow
+
+### One-time setup
+
+```bash
+cd react
+npm install
+```
+
+Playwright browsers only need installing once (Chromium is used):
+
+```bash
+npx playwright install chromium
+```
+
+### Working on a problem
+
+1. Copy the stub into `src/App.jsx` (this is the file Vite serves):
+
+   ```bash
+   cd react
+   cp practice_problems/problem_02_incident_dashboard.jsx src/App.jsx
+   ```
+
+2. Start the Vite dev server to see your work in the browser:
+
+   ```bash
+   npm run dev        # opens http://localhost:5173
+   ```
+
+3. Run the Playwright tests for that problem to check your implementation:
+
+   ```bash
+   npm run test:02    # runs tests/test_problem_02_incident_dashboard.spec.js
+   ```
+
+   Or open interactive Playwright UI mode:
+
+   ```bash
+   npm run test:ui
+   ```
+
+4. Reset the placeholder when done:
+
+   ```bash
+   git restore src/App.jsx
+   ```
+
+### Test commands
+
+| Command | What it runs |
+|---|---|
+| `npm run test:01` | Problem 01 — Activity Feed |
+| `npm run test:02` | Problem 02 — Incident Dashboard |
+| `npm run test:03` | Problem 03 — Alert Triage Console |
+| `npm test` | All 3 spec files |
+| `npm run test:ui` | Playwright interactive UI |
+
+Playwright auto-starts the Vite dev server when it isn't already running.
+If you already have `npm run dev` running, Playwright reuses that server.
+
+### data-testid contract
+
+Problems 02 and 03 specify required `data-testid` attributes in their
+docstrings. The Playwright specs rely on those exact values. Problem 01 uses
+role/text selectors instead (it predates this setup).
+
+## Python virtual environment
+
+A `.venv` lives at the repo root. Always activate it before running pytest or
+any Python command:
+
+```bash
+source .venv/bin/activate
+```
+
+If `.venv` doesn't exist yet, create it:
+
+```bash
+python3.11 -m venv .venv && .venv/bin/pip install pytest
+```
+
+`run_tests.sh` activates `.venv` automatically when it exists.
+
+---
 
 **Workflow per problem:**
 1. Problem file has the prompt + empty stubs.

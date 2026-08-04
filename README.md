@@ -14,7 +14,7 @@ A collection of Software Engineer practice problems with test suites, designed t
 - This repo is meant to be used locally
 
 ## Repo structure
-More directories may be added over time as problems in d ifferent languages are added, but the overall structure should say the same
+More directories may be added over time as problems in different languages are added, but the overall structure should stay the same.
 
 ```
 index.html                    # Searchable problem browser — open in any browser
@@ -25,7 +25,13 @@ python/
   conftest.py                 # pytest config & --answer flag
 react/
   practice_problems/          # React/JSX starter files
-run_tests.sh                  # Test runner (see below)
+  src/App.jsx                 # Active problem (overwrite to work; restore with git)
+  src/main.jsx                # Vite entry point (do not modify)
+  tests/                      # Playwright e2e specs (one per problem)
+  package.json                # Vite + Playwright deps
+  playwright.config.js        # Playwright config (auto-starts Vite)
+  vite.config.js
+run_tests.sh                  # Unified test runner for Python and React (see below)
 CLAUDE.md                     # Guidelines for the AI agent
 ```
 
@@ -33,17 +39,23 @@ CLAUDE.md                     # Guidelines for the AI agent
 
 ## Prerequisites
 
-```bash
-# Create and activate the virtual environment (one-time setup)
-python3 -m venv .venv
-source .venv/bin/activate
-pip install pytest
+### Python (one-time setup)
 
-# React problems (coming soon)
-# npm install
+```bash
+# From the repo root
+python3.11 -m venv .venv
+.venv/bin/pip install pytest
 ```
 
-The `run_tests.sh` script automatically activates `.venv` if it exists in the repo root, so you don't need to activate it manually before running tests.
+`run_tests.sh` activates `.venv` automatically, so you don't need to do it manually before running tests.
+
+### React (one-time setup)
+
+```bash
+cd react
+npm install
+npx playwright install chromium   # download the test browser (~95 MB)
+```
 
 ---
 
@@ -61,35 +73,37 @@ The index lets you filter by language and industry, search by keyword, and click
 
 Browse `index.html` to pick something, then click **Open in VS Code** to open the stub.
 
-### 2. Copy it to your answers directory
+---
+
+### Python problems
+
+#### 2. Copy the stub to your answers directory
 
 ```bash
 cp python/practice_problems/problem_03_permission_manager.py \
    python/practice_problem_answers/my_answer_03_permission_manager.py
 ```
 
-The prefix (`my_answer_`, `cw_answer_`, etc.) can be anything. The filename **must** keep the `NN_<name>` segment (e.g. `03_permission_manager`) so the test runner can find the right test suite.
+The prefix (`my_answer_`, `cw_answer_`, etc.) can be anything — the filename **must** keep the `NN_<name>` segment (e.g. `03_permission_manager`) so the runner can map it to the right test suite.
 
-### 3. Implement it
+#### 3. Implement it
 
-Fill in the `raise NotImplementedError` stubs in your answer file. Keep the function/class signatures identical to the stub.
+Fill in the `raise NotImplementedError` stubs. Keep the function/class signatures identical to the stub.
 
-### 4. Run tests against your answer
-
-Use `run_tests.sh` with `-f` (your answer file) and `-c` (the pytest command to run):
+#### 4. Run tests against your answer
 
 ```bash
-# Run the full test suite for your answer
+# Full test suite
 ./run_tests.sh \
   -f python/practice_problem_answers/my_answer_03_permission_manager.py \
   -c pytest python/tests/test_problem_03_permission_manager.py -v
 
-# Run a single test class
+# Single test class
 ./run_tests.sh \
   -f python/practice_problem_answers/my_answer_03_permission_manager.py \
   -c pytest python/tests/test_problem_03_permission_manager.py::TestCreateRole
 
-# Run a single test method
+# Single test method
 ./run_tests.sh \
   -f python/practice_problem_answers/my_answer_03_permission_manager.py \
   -c pytest python/tests/test_problem_03_permission_manager.py::TestCreateRole::test_empty_permissions_by_default
@@ -100,7 +114,65 @@ Use `run_tests.sh` with `-f` (your answer file) and `-c` (the pytest command to 
   -c pytest python/tests/test_problem_03_permission_manager.py -x
 ```
 
-The `-c` flag accepts any valid pytest command — flags, node IDs, and extra options all pass through unchanged. `--answer` is injected automatically, so you never need to edit the test files.
+`--answer` is injected automatically — you never need to edit the test files.
+
+---
+
+### React problems
+
+#### 2. Copy the stub to `react/src/App.jsx`
+
+```bash
+cp react/practice_problems/problem_02_incident_dashboard.jsx \
+   react/src/App.jsx
+```
+
+#### 3. Implement it in a browser
+
+```bash
+cd react && npm run dev    # http://localhost:5173
+```
+
+Edit `react/src/App.jsx` — Vite hot-reloads on every save.
+
+#### 4. Run Playwright tests against your answer
+
+Use `run_tests.sh` the same way as Python — just pass the `.jsx` file.
+The script copies it to `react/src/App.jsx`, runs the tests, and restores the placeholder when done:
+
+```bash
+# Run the Playwright suite for problem 02
+./run_tests.sh \
+  -f react/practice_problems/problem_02_incident_dashboard.jsx \
+  -c npm run test:02
+
+# If you saved your work to a separate file instead:
+./run_tests.sh \
+  -f react/my_answer_02_incident_dashboard.jsx \
+  -c npm run test:02
+
+# Open Playwright's interactive UI (step through each test visually)
+./run_tests.sh \
+  -f react/practice_problems/problem_02_incident_dashboard.jsx \
+  -c npm run test:ui
+```
+
+You can also run tests directly from the `react/` directory if `src/App.jsx`
+already contains your implementation:
+
+```bash
+cd react
+npm run test:02     # problem 02 only
+npm run test:03     # problem 03 only
+npm run test:ui     # interactive Playwright UI for all problems
+npm test            # all 3 spec files
+```
+
+#### 5. Reset the placeholder when done
+
+```bash
+git restore react/src/App.jsx
+```
 
 ## Adding new problems with an AI agent
 

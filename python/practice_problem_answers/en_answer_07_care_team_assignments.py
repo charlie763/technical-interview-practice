@@ -63,8 +63,9 @@ from typing import Optional
 
 class CapacityError(Exception):
     """Raised when assigning a patient to a member who is at their patient capacity."""
-
-    pass
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
 
 
 class CareTeamManager:
@@ -76,16 +77,62 @@ class CareTeamManager:
     Store all state in instance variables initialized in `__init__`.
     Class-level variables will bleed between tests and between CareTeamManager
     instances — avoid them.
+
+    Members:
+    {
+        dict[member_id(str), Member]
+    }
+
+    Member:
+    {
+        role: str,
+        num_patients: int,
+        max_patients: int,
+        patients: set[str]
+    }
+
+    Roles:
+    {
+        dict[role(str), Role]
+    }
+
+    Role:
+    {
+        available_members: set[member_id (str)]
+        unavailable_members: set[member_id (str)]
+    }
+
+    # a list is ordered in a way a set isn't and you can keep track of
+    # if the patient moves back to a previous team member
+    Patients:
+    {
+        patient_id: {
+            current_members: dict[role (str), member_id (str)],
+            member_history: dict[role (str): dict[member_id (str), list[timestamps(int)]]
+        }
+    }
+
     """
 
     def __init__(self) -> None:
-        raise NotImplementedError
+        #self.roles: dict[str, dict] = {}
+        self.members: dict[str,dict] = {}
+        self.patients: dict[str, dict] = {}
 
     # ── Part 1: Basic assignment and lookup ───────────────────────────────────
 
     def add_member(self, member_id: str, role: str, max_patients: int) -> None:
         """Register a care team member with the given role and patient capacity."""
-        raise NotImplementedError
+        if self.members.get(member_id):
+            # assumes you cannot update a member's role in the system
+            raise ValueError('member already exists')
+        self.members[member_id] = {
+            "role": role,
+            "num_patients": 0,
+            "max_patients": max_patients,
+            "patients": set()
+        }
+
 
     def assign(self, patient_id: str, member_id: str, assigned_at: float) -> None:
         """
@@ -102,21 +149,60 @@ class CareTeamManager:
         (Reassigning a patient who is already on this member does not count as
         adding a new patient — it is a no-op for capacity purposes.)
         """
-        raise NotImplementedError
+        if self.members.get(member_id) is None:
+            raise ValueError("member doesn't exist")
+
+        if patient_id in self.members[member_id]["patients"]:
+            return None
+
+        if self.members[member_id]["num_patients"] == self.members[member_id]["max_patients"]:
+            raise CapacityError('At capacity')
+
+        # is user already assigned to member with same role, remove patient from prev member
+        role = self.members[member_id]["role"]
+        if self.patients.get(patient_id) is None: # existing patient
+            self.patients[patient_id] = {
+                "current_members": { role: member_id },
+                "member_history": {
+                    role: {
+                        member_id: [assigned_at, None],
+                    }
+                }
+            }
+        else:
+            member_id_with_role = self.patients[patient_id]["current_members"].get(role)
+            if member_id_with_role:
+                old_assigned_at, old_unassigned_at = self.patients[patient_id]["member_history"][role][member_id_with_role]
+                self.patients[patient_id]["member_history"][role][member_id_with_role] = [old_assigned_at, assigned_at]
+                self.members[member_id_with_role]["patients"].discard(patient_id)
+                self.members[member_id_with_role]["num_patients"] -= 1
+            if self.patients[patient_id]["member_history"].get(role) is None:
+                self.patients[patient_id]["member_history"][role] = { member_id: [assigned_at, None] }
+            else:
+                self.patients[patient_id]["member_history"][role][member_id] = [assigned_at, None]
+            self.patients[patient_id]["current_members"][role] = member_id
+
+        self.members[member_id]["patients"].add(patient_id)
+        self.members[member_id]["num_patients"] += 1
 
     def get_assignment(self, patient_id: str, role: str) -> Optional[str]:
         """
         Return the member_id currently assigned to this patient for the given
         role, or None if no member of that role is currently assigned.
         """
-        raise NotImplementedError
+        if self.patients.get(patient_id) is None:
+            return None
+        return self.patients[patient_id]["current_members"].get(role)
+
 
     def get_patients(self, member_id: str) -> list[str]:
         """
         Return a sorted list of patient_ids currently assigned to this member.
         Raises ValueError if member_id has not been registered.
         """
-        raise NotImplementedError
+        if self.members.get(member_id) is None:
+            raise ValueError("member doesn't exist")
+        return(sorted(self.members[member_id]["patients"]))
 
     # ── Part 2: Capacity enforcement ──────────────────────────────────────────
 
@@ -125,7 +211,12 @@ class CareTeamManager:
         Return a sorted list of member_ids with the given role that still have
         open capacity (current patient count < max_patients).
         """
-        raise NotImplementedError
+        available_members = []
+        for member_id, member_contents in self.members.items():
+            if member_contents["role"] == role:
+                if member_contents["num_patients"] < member_contents["max_patients"]:
+                    available_members.append(member_id)
+        return sorted(available_members)
 
     # ── Part 3: Assignment history ────────────────────────────────────────────
 
@@ -141,7 +232,14 @@ class CareTeamManager:
           past entries.
         - Returns [] if the patient has never been assigned a member of this role.
         """
-        raise NotImplementedError
+        history = []
+        if self.patients.get(patient_id) and self.patients[patient_id]["member_history"].get(role):
+            for member_id, assignment in self.patients[patient_id]["member_history"][role].items():
+                assigned_at, unassigned_at = assignment
+                history.append((member_id, assigned_at, unassigned_at))
+        if history:
+            return sorted(history, key=lambda x: x[1])
+        return []
 
     def get_assignment_at(
         self, patient_id: str, role: str, timestamp: float
@@ -156,4 +254,10 @@ class CareTeamManager:
 
         Implement this by calling get_history() — do not duplicate the lookup logic.
         """
-        raise NotImplementedError
+        if self.patients.get(patient_id) is None:
+            return None
+        history = self.get_history(patient_id, role)
+        for member_id, assigned_at, unassigned_at in history:
+            if assigned_at <= timestamp and (unassigned_at is None or timestamp < unassigned_at):
+                return member_id
+        return None
