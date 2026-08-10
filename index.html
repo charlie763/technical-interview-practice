@@ -208,8 +208,9 @@
     }
 
     /* Language */
-    .badge-python { background: #e8f0fe; color: #1e40af; }
-    .badge-react  { background: #e0f7fa; color: #006064; }
+    .badge-python     { background: #e8f0fe; color: #1e40af; }
+    .badge-react      { background: #e0f7fa; color: #006064; }
+    .badge-typescript { background: #dbeafe; color: #1d4ed8; }
 
     /* Industry — add a new rule here when adding a new industry value */
     .badge-general      { background: #f1f5f9; color: #475569; }
@@ -546,6 +547,171 @@ const PROBLEMS = [
     language: "react",
     industry: "legal-tech",
     tags: ["clm", "optimistic-updates", "filtering", "inline-editing", "hooks"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "typescript/practice_problems/problem_01_geofence_alert_engine.ts",
+    test: "typescript/tests/test_problem_01_geofence_alert_engine.spec.ts",
+    title: "Geofence Alert Engine",
+    description: "Build a GPS-based zone monitor that fires configurable alert rules when tracked assets cross geofence boundaries.",
+    language: "typescript",
+    industry: "iot",
+    tags: ["event-driven", "geospatial", "alert-system", "data-model"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "typescript/practice_problems/problem_02_api_rate_limiter.ts",
+    test: "typescript/tests/test_problem_02_api_rate_limiter.spec.ts",
+    title: "Tiered API Rate Limiter",
+    description: "Implement a sliding-window rate limiter with per-minute and per-day caps across multiple subscription tiers.",
+    language: "typescript",
+    industry: "general",
+    tags: ["rate-limiting", "sliding-window", "tiered-plans", "time-series", "api-platform"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "typescript/practice_problems/problem_03_permission_manager.ts",
+    test: "typescript/tests/test_problem_03_permission_manager.spec.ts",
+    title: "Permission Manager (RBAC)",
+    description: "Build a role-based access control engine supporting role inheritance and wildcard permission matching.",
+    language: "typescript",
+    industry: "general",
+    tags: ["rbac", "permissions", "role-hierarchy", "wildcard-matching", "saas"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "typescript/practice_problems/problem_04_biomarker_alert.ts",
+    test: "typescript/tests/test_problem_04_biomarker_alert.spec.ts",
+    title: "Biomarker Alert Monitor",
+    description: "Process patient readings to track consecutive out-of-range days and generate prioritized coach outreach lists.",
+    language: "typescript",
+    industry: "health-tech",
+    tags: ["time-series", "consecutive-tracking", "clinical-monitoring", "alert-system"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "typescript/practice_problems/problem_05_medication_titration.ts",
+    test: "typescript/tests/test_problem_05_medication_titration.spec.ts",
+    title: "Medication Titration Tracker",
+    description: "Track dosage adjustment events over time, handling out-of-order arrivals and querying active medication history.",
+    language: "typescript",
+    industry: "health-tech",
+    tags: ["event-sourcing", "out-of-order-events", "medication", "clinical"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "typescript/practice_problems/problem_06_lab_cadence.ts",
+    test: "typescript/tests/test_problem_06_lab_cadence.spec.ts",
+    title: "Lab Cadence Compliance Monitor",
+    description: "Track required lab submission deadlines per patient and surface overdue labs for health coach follow-up.",
+    language: "typescript",
+    industry: "health-tech",
+    tags: ["deadline-tracking", "compliance", "scheduling", "clinical"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "typescript/practice_problems/problem_07_care_team_assignments.ts",
+    test: "typescript/tests/test_problem_07_care_team_assignments.spec.ts",
+    title: "Care Team Assignment Manager",
+    description: "Assign patients to care team members by role with capacity enforcement and a full reassignment audit trail queryable by timestamp.",
+    language: "typescript",
+    industry: "health-tech",
+    tags: ["relational-data", "capacity-constraints", "audit-trail", "temporal-queries"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "typescript/practice_problems/problem_08_enrollment_pipeline.ts",
+    test: "typescript/tests/test_problem_08_enrollment_pipeline.spec.ts",
+    title: "Patient Enrollment Pipeline",
+    description: "Model a clinical enrollment state machine with duration metrics, conversion rates between stages, and SLA monitoring for patients overdue in a state.",
+    language: "typescript",
+    industry: "health-tech",
+    tags: ["state-machine", "metrics", "conversion-rate", "sla-monitoring", "clinical"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "typescript/practice_problems/problem_09_incident_aggregator.ts",
+    test: "typescript/tests/test_problem_09_incident_aggregator.spec.ts",
+    title: "Multi-Source Incident Aggregator",
+    description: "Ingest reports from multiple data sources, manually group them into unified incidents, and auto-deduplicate new arrivals using a sliding time window.",
+    language: "typescript",
+    industry: "public-safety",
+    tags: ["event-deduplication", "time-window", "alert-system", "event-driven"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "typescript/practice_problems/problem_10_dispatch_manager.ts",
+    test: "typescript/tests/test_problem_10_dispatch_manager.spec.ts",
+    title: "Responder Dispatch Manager",
+    description: "Route incoming incident alerts to field responders based on type subscriptions and capacity limits, with auto-assignment selecting the least-loaded eligible unit.",
+    language: "typescript",
+    industry: "public-safety",
+    tags: ["dispatch", "capacity-constraints", "priority-queue", "auto-assignment"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "typescript/practice_problems/problem_11_coverage_tracker.ts",
+    test: "typescript/tests/test_problem_11_coverage_tracker.spec.ts",
+    title: "Sensor Coverage Tracker",
+    description: "Monitor radio-receiver station health via heartbeats, track outage history with duration metrics, and compute per-region coverage status.",
+    language: "typescript",
+    industry: "public-safety",
+    tags: ["heartbeat-monitoring", "outage-tracking", "time-series", "coverage-analysis"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "typescript/practice_problems/problem_12_contract_alert_scheduler.ts",
+    test: "typescript/tests/test_problem_12_contract_alert_scheduler.spec.ts",
+    title: "Contract Expiration Alert Scheduler",
+    description: "Schedule and track expiration alerts for contracts — register global alert configs, compute per-contract alert schedules, query due alerts, and track sent state.",
+    language: "typescript",
+    industry: "legal-tech",
+    tags: ["scheduling", "date-arithmetic", "clm", "notifications"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "typescript/practice_problems/problem_13_contract_lifecycle.ts",
+    test: "typescript/tests/test_problem_13_contract_lifecycle.spec.ts",
+    title: "Contract Lifecycle State Machine",
+    description: "Manage contract state transitions through a defined lifecycle (draft → executed → expired), enforcing valid transitions, audit-logging every change, and surfacing overdue contracts.",
+    language: "typescript",
+    industry: "legal-tech",
+    tags: ["state-machine", "audit-trail", "clm", "lifecycle"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "typescript/practice_problems/problem_14_contract_amendment.ts",
+    test: "typescript/tests/test_problem_14_contract_amendment.spec.ts",
+    title: "Contract Amendment Manager",
+    description: "Track amendments to signed contracts and resolve the effective field values as of any date by applying base fields and chronological overrides.",
+    language: "typescript",
+    industry: "legal-tech",
+    tags: ["clm", "versioning", "date-arithmetic", "event-sourcing"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "typescript/practice_problems/problem_15_tic_tac_toe_engine.ts",
+    test: "typescript/tests/test_problem_15_tic_tac_toe_engine.spec.ts",
+    title: "Tic-Tac-Toe Engine",
+    description: "Analyze game boards for winners, optimize move tracking with O(1) incremental counters, then generalize to arbitrary board sizes, win lengths, and player counts.",
+    language: "typescript",
+    industry: "general",
+    tags: ["game-logic", "incremental-state", "optimization", "generalization"],
     parts: 3,
     level: "senior"
   }

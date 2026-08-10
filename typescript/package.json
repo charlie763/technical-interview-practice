@@ -1,0 +1,32 @@
+{
+  "name": "technical-interview-practice-typescript",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "fmt": "prettier . --write",
+    "test": "vitest run",
+    "test:ui": "vitest --ui",
+    "test:01": "vitest run tests/test_problem_01_geofence_alert_engine.spec.ts",
+    "test:02": "vitest run tests/test_problem_02_api_rate_limiter.spec.ts",
+    "test:03": "vitest run tests/test_problem_03_permission_manager.spec.ts",
+    "test:04": "vitest run tests/test_problem_04_biomarker_alert.spec.ts",
+    "test:05": "vitest run tests/test_problem_05_medication_titration.spec.ts",
+    "test:06": "vitest run tests/test_problem_06_lab_cadence.spec.ts",
+    "test:07": "vitest run tests/test_problem_07_care_team_assignments.spec.ts",
+    "test:08": "vitest run tests/test_problem_08_enrollment_pipeline.spec.ts",
+    "test:09": "vitest run tests/test_problem_09_incident_aggregator.spec.ts",
+    "test:10": "vitest run tests/test_problem_10_dispatch_manager.spec.ts",
+    "test:11": "vitest run tests/test_problem_11_coverage_tracker.spec.ts",
+    "test:12": "vitest run tests/test_problem_12_contract_alert_scheduler.spec.ts",
+    "test:13": "vitest run tests/test_problem_13_contract_lifecycle.spec.ts",
+    "test:14": "vitest run tests/test_problem_14_contract_amendment.spec.ts",
+    "test:15": "vitest run tests/test_problem_15_tic_tac_toe_engine.spec.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@vitest/ui": "^3.2.7",
+    "prettier": "3.9.6",
+    "typescript": "^5.7.0",
+    "vitest": "^3.2.0"
+  }
+}
