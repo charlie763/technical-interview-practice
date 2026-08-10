@@ -15,6 +15,13 @@ react/
   package.json                # Vite + Playwright deps
   playwright.config.js
   vite.config.js
+typescript/
+  practice_problems/          # problem stubs (read-only during practice)
+  practice_problem_answers/   # <initials>_answer_NN_<name>.ts files
+  tests/                      # Vitest suites, import from "@problems/problem_NN_<name>"
+  package.json                # Vitest + TypeScript deps
+  tsconfig.json
+  vitest.config.ts
 ```
 
 ## React / frontend workflow
@@ -83,6 +90,65 @@ If you already have `npm run dev` running, Playwright reuses that server.
 Problems 02 and 03 specify required `data-testid` attributes in their
 docstrings. The Playwright specs rely on those exact values. Problem 01 uses
 role/text selectors instead (it predates this setup).
+
+## TypeScript / vitest workflow
+
+### One-time setup
+
+```bash
+cd typescript
+npm install
+```
+
+### Working on a problem
+
+1. Copy the stub into `practice_problem_answers/`:
+
+   ```bash
+   cd typescript
+   cp practice_problems/problem_01_two_sum.ts practice_problem_answers/vn_answer_01_geofence_alert_engine.ts
+   ```
+
+2. Implement it in the answer file. Test files always import the stub via a
+   fixed path alias (e.g. `@problems/problem_01_geofence_alert_engine.ts`) — never edit the
+   test file's import.
+
+3. Run the tests against your answer via `run_tests.sh`, which sets
+   `ANSWER_FILE` so `vitest.config.ts` aliases that one import to your
+   answer file for the run (stub files on disk are never touched):
+
+   ```bash
+   ./run_tests.sh \
+     -f typescript/practice_problem_answers/vn_answer_01_geofence_alert_engine.ts \
+     -c npm run test:01
+   ```
+
+   Or run directly against the stub without `run_tests.sh` (useful to
+   confirm the stub itself fails cleanly with "Not implemented"):
+
+   ```bash
+   cd typescript && npm run test:01
+   ```
+
+### How the answer-file swap works
+
+Unlike the React workflow (which copies the answer file over `src/App.jsx`),
+TypeScript problems never touch files on disk. `vitest.config.ts` reads the
+`ANSWER_FILE` env var set by `run_tests.sh`, derives the stub's import
+specifier from the filename (same `NN_<name>` convention as
+`python/conftest.py`'s `--answer` flag), and adds a Vitest `test.alias` entry
+that redirects just that one specifier to the answer file for the run.
+
+### Test commands
+
+Add one `test:NN` script per problem to `typescript/package.json` as
+problems are created, mirroring the `react/package.json` convention:
+
+| Command | What it runs |
+|---|---|
+| `npm run test:00` | Problem 00 — smoke-test scaffold (not a real problem, safe to delete once real problems exist) |
+| `npm test` | All spec files |
+| `npm run test:ui` | Vitest interactive UI |
 
 ## Python virtual environment
 
@@ -302,7 +368,7 @@ near the top of the `<script>` block in that file (look for the comment that say
   test: "python/tests/test_problem_NN_<name>.py",         // path to the test file (null for React problems without a separate test)
   title: "Short Human-Readable Title",                     // shown as the card heading
   description: "One or two sentences describing what the candidate builds.",
-  language: "python",           // "python" | "react"
+  language: "python",           // "python" | "react" | "typescript"
   industry: "health-tech",      // see valid values below
   tags: ["tag-one", "tag-two"], // 2–5 kebab-case strings
   parts: 3,                     // number of implementation parts
@@ -311,7 +377,7 @@ near the top of the `<script>` block in that file (look for the comment that say
 ```
 
 ### Valid `language` values
-`python` | `react`
+`python` | `react` | `typescript`
 
 ### Valid `level` values (in order)
 `junior` | `mid-level` | `senior` | `staff`

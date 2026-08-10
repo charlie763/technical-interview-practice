@@ -31,6 +31,13 @@ react/
   package.json                # Vite + Playwright deps
   playwright.config.js        # Playwright config (auto-starts Vite)
   vite.config.js
+typescript/
+  practice_problems/          # problem stubs (read-only during practice)
+  practice_problem_answers/   # <initials>_answer_NN_<name>.ts files
+  tests/                      # Vitest suites, import from "@problems/. problem_NN_<name>"
+  package.json                # Vitest + TypeScript deps
+  tsconfig.json
+  vitest.config.ts
 run_tests.sh                  # Unified test runner for Python and React (see below)
 CLAUDE.md                     # Guidelines for the AI agent
 ```
@@ -55,6 +62,13 @@ python3.11 -m venv .venv
 cd react
 npm install
 npx playwright install chromium   # download the test browser (~95 MB)
+```
+
+### Typescript (one-time setup)
+
+```bash
+cd typecript
+npm install
 ```
 
 ---
@@ -168,12 +182,44 @@ npm run test:ui     # interactive Playwright UI for all problems
 npm test            # all 3 spec files
 ```
 
+
 #### 5. Reset the placeholder when done
 
 ```bash
 git restore react/src/App.jsx
 ```
 
+
+
+### Typecript problems
+
+#### 1. Copy the stub to your answers directory
+
+```bash
+cp typescript/practice_problems/problem_01_two_sum.ts typescript/practice_problem_answers/vn_answer_01_geofence_alert_engine.ts
+```
+
+The prefix (`my_answer_`, `cw_answer_`, etc.) can be anything — the filename **must** keep the `NN_<name>` segment (e.g. `01_geofence_alert_engine`) so the runner can map it to the right test suite.
+
+#### 2. Implement it
+
+Fill in the `raise NotImplementedError` stubs. Keep the function/class signatures identical to the stub.
+
+#### 3. Run tests against your answer
+
+```bash
+
+# Full test suite
+./run_tests.sh \
+  -f typescript/practice_problem_answers/vn_answer_01_geofence_alert_engine.ts \
+  -c npm run test:01
+
+# Specifc Tests
+./run_tests.sh \
+  -f typescript/practice_problem_answers/vn_answer_01_geofence_alert_engine.ts \
+  -c npm run test:01 -- -t 'isInZone'
+```
+---
 ## Adding new problems with an AI agent
 ⚠️ WARNING - PLEASE READ: If contributing, please do not add any problems verbatim from actual technical interviews. We don't want to get each other in trouble or cause issues for people actively interviewing. The `CLAUDE.md` file has instructions to scrub actual company names from problems, but please double check the code for that before submitting a PR.
 

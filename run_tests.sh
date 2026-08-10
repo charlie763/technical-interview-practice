@@ -36,6 +36,25 @@
 #   the Playwright command runs from the react/ directory. Vite is started
 #   automatically by Playwright if it isn't already running.
 #   react/src/App.jsx is restored to the placeholder after tests finish.
+#
+# ── TypeScript problems ───────────────────────────────────────────────────────
+# Usage:
+#   ./run_tests.sh -f <path-to-answer.ts> -c <npm/vitest-command...>
+#
+# Examples:
+#   ./run_tests.sh \
+#     -f typescript/practice_problem_answers/cw_answer_01_two_sum.ts \
+#     -c npm test
+#
+#   ./run_tests.sh \
+#     -f typescript/practice_problem_answers/cw_answer_01_two_sum.ts \
+#     -c npx vitest run tests/test_problem_01_two_sum.spec.ts
+#
+# How it works (TypeScript):
+#   The command runs from typescript/ with ANSWER_FILE=<abs-path> set in its
+#   environment. vitest.config.ts reads that var and aliases the matching
+#   stub import (e.g. "@problems/problem_01_two_sum") to the answer file for
+#   just that test run — no files are copied or restored.
 
 set -euo pipefail
 
@@ -105,6 +124,17 @@ if [[ "$ANSWER_ABS" == *.jsx || "$ANSWER_ABS" == *.tsx ]]; then
 
     cd "$REPO_ROOT/react"
     "${CMD[@]}"
+    exit $?
+fi
+
+# ── TypeScript mode: .ts answer files ────────────────────────────────────────
+if [[ "$ANSWER_ABS" == *.ts ]]; then
+    echo "Answer : $ANSWER"
+    echo "Command: ANSWER_FILE=$ANSWER_ABS ${CMD[*]}"
+    echo ""
+
+    cd "$REPO_ROOT/typescript"
+    ANSWER_FILE="$ANSWER_ABS" "${CMD[@]}"
     exit $?
 fi
 
