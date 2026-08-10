@@ -120,59 +120,58 @@ Fill in the `raise NotImplementedError` stubs. Keep the function/class signature
 
 ### React problems
 
-#### 2. Copy the stub to `react/src/App.jsx`
+#### 2. Create your answer directory and copy the stub into it
 
 ```bash
+mkdir -p react/practice_problem_answers/cw_answer_02_incident_dashboard
 cp react/practice_problems/problem_02_incident_dashboard.jsx \
-   react/src/App.jsx
+   react/practice_problem_answers/cw_answer_02_incident_dashboard/App.jsx
 ```
+
+`react/src/App.jsx` is a permanent placeholder — never edit it.
+Your answer lives in its own isolated directory.
 
 #### 3. Implement it in a browser
 
 ```bash
-cd react && npm run dev    # http://localhost:5173
+cd react
+PRACTICE_ANSWER=practice_problem_answers/cw_answer_02_incident_dashboard npm run dev
 ```
 
-Edit `react/src/App.jsx` — Vite hot-reloads on every save.
+Opens http://localhost:5173 and hot-reloads your `App.jsx` on every save.
+You can add helper files (components, hooks, etc.) inside your answer directory
+and import them normally.
 
 #### 4. Run Playwright tests against your answer
 
-Use `run_tests.sh` the same way as Python — just pass the `.jsx` file.
-The script copies it to `react/src/App.jsx`, runs the tests, and restores the placeholder when done:
+Use `run_tests.sh` the same way as Python — pass the answer directory (or `App.jsx` inside it):
 
 ```bash
 # Run the Playwright suite for problem 02
 ./run_tests.sh \
-  -f react/practice_problems/problem_02_incident_dashboard.jsx \
-  -c npm run test:02
-
-# If you saved your work to a separate file instead:
-./run_tests.sh \
-  -f react/my_answer_02_incident_dashboard.jsx \
+  -f react/practice_problem_answers/cw_answer_02_incident_dashboard \
   -c npm run test:02
 
 # Open Playwright's interactive UI (step through each test visually)
 ./run_tests.sh \
-  -f react/practice_problems/problem_02_incident_dashboard.jsx \
+  -f react/practice_problem_answers/cw_answer_02_incident_dashboard \
   -c npm run test:ui
 ```
 
-You can also run tests directly from the `react/` directory if `src/App.jsx`
-already contains your implementation:
+Or run directly from the `react/` directory:
 
 ```bash
 cd react
-npm run test:02     # problem 02 only
-npm run test:03     # problem 03 only
-npm run test:ui     # interactive Playwright UI for all problems
-npm test            # all 3 spec files
+PRACTICE_ANSWER=practice_problem_answers/cw_answer_02_incident_dashboard npm run test:02
+PRACTICE_ANSWER=practice_problem_answers/cw_answer_02_incident_dashboard npm run test:ui
 ```
 
-#### 5. Reset the placeholder when done
+Stop any running `npm run dev` session before running tests — when `PRACTICE_ANSWER`
+is set, Playwright always spawns a fresh dev server to ensure it uses the right answer.
 
-```bash
-git restore react/src/App.jsx
-```
+#### 5. No cleanup needed
+
+`react/src/App.jsx` is never modified, so there's nothing to restore.
 
 ## Adding new problems with an AI agent
 ⚠️ WARNING - PLEASE READ: If contributing, please do not add any problems verbatim from actual technical interviews. We don't want to get each other in trouble or cause issues for people actively interviewing. The `CLAUDE.md` file has instructions to scrub actual company names from problems, but please double check the code for that before submitting a PR.

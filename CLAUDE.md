@@ -8,8 +8,9 @@ python/
   practice_problem_answers/   # cw_answer_XX_... files (filled in by Charlie)
   tests/                      # pytest suites
 react/
-  practice_problems/          # JSX/TSX starter files
-  src/App.jsx                 # active problem (overwrite with a stub to work on it)
+  practice_problems/          # JSX/TSX starter files (read-only during practice)
+  practice_problem_answers/   # cw_answer_NN_<name>/App.jsx files (filled in by Charlie)
+  src/App.jsx                 # placeholder — never edit during practice
   src/main.jsx                # Vite entry point (do not modify)
   tests/                      # Playwright e2e specs
   package.json                # Vite + Playwright deps
@@ -34,36 +35,49 @@ npx playwright install chromium
 
 ### Working on a problem
 
-1. Copy the stub into `src/App.jsx` (this is the file Vite serves):
+All answer files live in `react/practice_problem_answers/` and are never shared.
+`src/App.jsx` is a permanent placeholder — never edit it during practice.
+
+The `PRACTICE_ANSWER` environment variable points Vite (and Playwright) at your
+answer directory. The Vite plugin in `vite.config.js` intercepts `main.jsx`'s
+`./App.jsx` import and redirects it to `<PRACTICE_ANSWER>/App.jsx`.
+
+1. Create your answer directory and copy the stub into it:
 
    ```bash
    cd react
-   cp practice_problems/problem_02_incident_dashboard.jsx src/App.jsx
+   mkdir -p practice_problem_answers/cw_answer_02_incident_dashboard
+   cp practice_problems/problem_02_incident_dashboard.jsx \
+      practice_problem_answers/cw_answer_02_incident_dashboard/App.jsx
    ```
 
-2. Start the Vite dev server to see your work in the browser:
+2. Start the Vite dev server pointing at your answer:
 
    ```bash
-   npm run dev        # opens http://localhost:5173
+   PRACTICE_ANSWER=practice_problem_answers/cw_answer_02_incident_dashboard npm run dev
    ```
 
-3. Run the Playwright tests for that problem to check your implementation:
+   This opens http://localhost:5173 and hot-reloads your answer file.
+   You can create additional files (components, hooks, etc.) inside the answer
+   directory and import them normally — Vite resolves them relative to your `App.jsx`.
+
+3. Run the Playwright tests against your answer:
 
    ```bash
-   npm run test:02    # runs tests/test_problem_02_incident_dashboard.spec.js
+   PRACTICE_ANSWER=practice_problem_answers/cw_answer_02_incident_dashboard npm run test:02
    ```
+
+   When `PRACTICE_ANSWER` is set, Playwright always spawns a fresh dev server
+   (ignoring any server already running on port 5173) so it picks up the env var.
+   Stop any existing `npm run dev` session before running tests to avoid port conflicts.
 
    Or open interactive Playwright UI mode:
 
    ```bash
-   npm run test:ui
+   PRACTICE_ANSWER=practice_problem_answers/cw_answer_02_incident_dashboard npm run test:ui
    ```
 
-4. Reset the placeholder when done:
-
-   ```bash
-   git restore src/App.jsx
-   ```
+No `git restore` needed — `src/App.jsx` is never touched.
 
 ### Test commands
 
@@ -72,11 +86,10 @@ npx playwright install chromium
 | `npm run test:01` | Problem 01 — Activity Feed |
 | `npm run test:02` | Problem 02 — Incident Dashboard |
 | `npm run test:03` | Problem 03 — Alert Triage Console |
-| `npm test` | All 3 spec files |
+| `npm test` | All spec files |
 | `npm run test:ui` | Playwright interactive UI |
 
-Playwright auto-starts the Vite dev server when it isn't already running.
-If you already have `npm run dev` running, Playwright reuses that server.
+Prefix any test command with `PRACTICE_ANSWER=practice_problem_answers/cw_answer_NN_<name>`.
 
 ### data-testid contract
 

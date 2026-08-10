@@ -20,22 +20,27 @@
 #
 # ── React problems ────────────────────────────────────────────────────────────
 # Usage:
-#   ./run_tests.sh -f <path-to-answer.jsx> -c <npm-test-command...>
+#   ./run_tests.sh -f <path-to-answer-dir> -c <npm-test-command...>
+#   ./run_tests.sh -f <path-to-answer-dir/App.jsx> -c <npm-test-command...>
 #
 # Examples:
 #   ./run_tests.sh \
-#     -f react/practice_problems/problem_02_incident_dashboard.jsx \
+#     -f react/practice_problem_answers/cw_answer_02_incident_dashboard \
 #     -c npm run test:02
 #
 #   ./run_tests.sh \
-#     -f react/practice_problems/problem_02_incident_dashboard.jsx \
+#     -f react/practice_problem_answers/cw_answer_02_incident_dashboard/App.jsx \
+#     -c npm run test:02
+#
+#   ./run_tests.sh \
+#     -f react/practice_problem_answers/cw_answer_02_incident_dashboard \
 #     -c npm run test:ui
 #
 # How it works (React):
-#   The answer file is copied to react/src/App.jsx (which Vite serves), then
-#   the Playwright command runs from the react/ directory. Vite is started
-#   automatically by Playwright if it isn't already running.
-#   react/src/App.jsx is restored to the placeholder after tests finish.
+#   Sets PRACTICE_ANSWER to the answer directory (absolute path), then runs the
+#   Playwright command from react/. Vite's plugin redirects main.jsx's App import
+#   to <PRACTICE_ANSWER>/App.jsx. react/src/App.jsx is never modified.
+#   Playwright always spawns a fresh dev server when PRACTICE_ANSWER is set.
 
 set -euo pipefail
 
@@ -76,35 +81,31 @@ if [[ ${#CMD[@]} -eq 0 ]]; then
     exit 1
 fi
 
-if [[ ! -f "$ANSWER" ]]; then
-    echo "Error: file not found: $ANSWER"
+if [[ -d "$ANSWER" ]]; then
+    ANSWER_ABS="$(cd "$ANSWER" && pwd)"
+    IS_DIR=true
+elif [[ -f "$ANSWER" ]]; then
+    ANSWER_ABS="$(cd "$(dirname "$ANSWER")" && pwd)/$(basename "$ANSWER")"
+    IS_DIR=false
+else
+    echo "Error: not found: $ANSWER"
     exit 1
 fi
 
-ANSWER_ABS="$(cd "$(dirname "$ANSWER")" && pwd)/$(basename "$ANSWER")"
+# ── React mode: answer directory or .jsx / .tsx file ─────────────────────────
+if [[ "$IS_DIR" == true || "$ANSWER_ABS" == *.jsx || "$ANSWER_ABS" == *.tsx ]]; then
+    if [[ "$IS_DIR" == true ]]; then
+        ANSWER_DIR="$ANSWER_ABS"
+    else
+        ANSWER_DIR="$(dirname "$ANSWER_ABS")"
+    fi
 
-# ── React mode: .jsx / .tsx answer files ─────────────────────────────────────
-if [[ "$ANSWER_ABS" == *.jsx || "$ANSWER_ABS" == *.tsx ]]; then
-    REACT_APP="$REPO_ROOT/react/src/App.jsx"
-    PLACEHOLDER="$REPO_ROOT/react/src/App.jsx.bak"
-
-    # Back up current App.jsx so we can restore it when done
-    cp "$REACT_APP" "$PLACEHOLDER"
-
-    cleanup() {
-        cp "$PLACEHOLDER" "$REACT_APP"
-        rm -f "$PLACEHOLDER"
-    }
-    trap cleanup EXIT
-
-    cp "$ANSWER_ABS" "$REACT_APP"
-
-    echo "Answer : $ANSWER → react/src/App.jsx"
+    echo "Answer : $ANSWER → PRACTICE_ANSWER=$ANSWER_DIR"
     echo "Command: ${CMD[*]}"
     echo ""
 
     cd "$REPO_ROOT/react"
-    "${CMD[@]}"
+    PRACTICE_ANSWER="$ANSWER_DIR" "${CMD[@]}"
     exit $?
 fi
 
