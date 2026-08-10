@@ -1,4 +1,10 @@
 /**
+ * NOTES for AI
+ * - it's not great that tests are dependent on elements having a certain data test id and/or classname. tests should
+ *   ideally be depending on mock data supplied by tests
+ */
+
+/**
  * =============================================================================
  * INTERVIEW PROBLEM 3: Live Activity Feed with Filtering & Optimistic Updates
  * Difficulty: Senior Software Engineer | Estimated time: 45-60 min
@@ -166,8 +172,49 @@ const TYPE_LABELS = {
 // ---------------------------------------------------------------------------
 
 export function ActivityFeed() {
+  const [events, setEvents] = useState([])
+  const [selectedEventTypeFilters, setSelectedEventTypeFilters] = useState(EVENT_TYPES)
+  const [areAllEventTypeFiltersSelected, setAreAllEventTypeFiltersSelected] = useState(true)
+  const eventHandler = (event) => {
+    setEvents(prevEvents => [event, ...prevEvents])
+  }
+  const filteredEvents = useMemo(() => events.filter(event => selectedEventTypeFilters.includes(event.type)), [events, selectedEventTypeFilters])
+  useEffect(() => {
+    const unsubscribeCallback = eventSource.subscribe(eventHandler);
+    return () => unsubscribeCallback();
+  }, []);
+  
+  const handleSelectEventTypeFilter = (filterName) => {
+    setSelectedEventTypeFilters(prevFilters => {
+      const isAlreadySelected = prevFilters.includes(filterName)
+      if (isAlreadySelected){
+        if (areAllEventTypeFiltersSelected){
+          setAreAllEventTypeFiltersSelected(false)
+        }
+        return prevFilters.filter(eventType => eventType !== filterName)
+      } else {
+        if (selectedEventTypeFilters.length === EVENT_TYPES.length - 1){
+          setAreAllEventTypeFiltersSelected(true)
+        }
+        return [...prevFilters, filterName]
+      }
+    })
+  }
+  const handleSelectAllEventTypeFilters = () => {
+    if (areAllEventTypeFiltersSelected){
+      setSelectedEventTypeFilters([])
+    } else {
+      selectedEventTypeFilters(["deploy", "alert", "payment", "auth"])
+    }
+    setAreAllEventTypeFiltersSelected(prev => !prev)
+  }
+
   // TODO Part 1: subscribe to eventSource on mount, unsubscribe on unmount.
   //              Store events in state and render them newest-first.
+//   Displays incoming events in reverse-chronological order (newest on top).
+//  *   - Each event row shows: timestamp, type badge, actor, and message.
+//  *   - New events should appear at the top without losing scroll position for
+//  *     events already in view. (Hint: prepend, don't append.)
 
   // TODO Part 2: add filter state (type, status) and filter the event list
   //              with useMemo. Render filter controls above the list.
@@ -177,14 +224,68 @@ export function ActivityFeed() {
   //              Track per-event loading and error state.
   //              Call acknowledgeEvent(), revert + show error on failure.
 
+//   * Event shape:
+//  * {
+//  *   id:            string,   // unique identifier
+//  *   type:          string,   // "deploy" | "alert" | "payment" | "auth"
+//  *   status:        string,   // "success" | "warning" | "error"
+//  *   actor:         string,   // who/what triggered the event
+//  *   message:       string,
+//  *   timestamp:     string,   // ISO 8601
+//  *   acknowledged:  false,    // always false when emitted
+//  * }
+//  */
+
+//   - A dropdown (or set of toggle buttons) for EVENT TYPE
+//  *     (values: "all" | "deploy" | "alert" | "payment" | "auth")
+//  *   - A dropdown for STATUS ("all" | "success" | "warning" | "error")
+//  *
+
   return (
     <div style={{ fontFamily: "monospace", maxWidth: 700, margin: "0 auto", padding: 24 }}>
       <h2 style={{ marginBottom: 16 }}>Activity Feed</h2>
 
-      {/* TODO: filter controls go here */}
+      <div styles={{display: "flex", justifyContent: "between", gap: "6px"}}>
+        <label>Event Type Filters:</label>
+        <button 
+          onClick={handleSelectAllEventTypeFilters}
+          styles={{border: "1px solid black", backgroundColor: areAllEventTypeFiltersSelected ? "green" : "yellow"}}
+        >
+            all
+        </button>
+        <button 
+          onClick={() => handleSelectEventTypeFilter("deploy")}
+          styles={{border: "1px solid black", backgroundColor: selectedEventTypeFilters.includes("deploy") ? "green" : "yellow"}}
+        >
+            deploy
+        </button>
+        <button 
+          onClick={() => handleSelectEventTypeFilter("alert")}
+          styles={{border: "1px solid black", backgroundColor: selectedEventTypeFilters.includes("alert") ? "green" : "yellow"}}
+        >
+          alert
+        </button>
+        <button 
+          onClick={() => handleSelectEventTypeFilter("payment")}
+          styles={{border: "1px solid black", backgroundColor: selectedEventTypeFilters.includes("payment") ? "green" : "yellow"}}
+        >
+          payment
+        </button>
+        <button 
+          onClick={() => handleSelectEventTypeFilter("auth")}
+          styles={{border: "1px solid black", backgroundColor: selectedEventTypeFilters.includes("auth") ? "green" : "yellow"}}
+        >
+          auth</button>
+      </div>
 
-      {/* TODO: event list goes here */}
-      <p style={{ color: "#888" }}>No events yet.</p>
+      {filteredEvents.length > 0 ? filteredEvents.map(event => (
+        <div styles={{display: "flex", justifyContent: "between", gap: "6px"}} data-testid="event-row">
+          <span>{event.timestamp}</span>
+          <span>{event.type}</span>
+          <span>{event.actor}</span>
+          <span>{event.message}</span>
+        </div>
+      )) : <p style={{ color: "#888" }}>No events yet.</p>}
     </div>
   );
 }
