@@ -106,11 +106,11 @@ npm install
 
    ```bash
    cd typescript
-   cp practice_problems/problem_01_two_sum.ts practice_problem_answers/cw_answer_01_two_sum.ts
+   cp practice_problems/problem_01_two_sum.ts practice_problem_answers/vn_answer_01_geofence_alert_engine.ts
    ```
 
 2. Implement it in the answer file. Test files always import the stub via a
-   fixed path alias (e.g. `@problems/problem_01_two_sum`) — never edit the
+   fixed path alias (e.g. `@problems/problem_01_geofence_alert_engine.ts`) — never edit the
    test file's import.
 
 3. Run the tests against your answer via `run_tests.sh`, which sets
@@ -119,7 +119,7 @@ npm install
 
    ```bash
    ./run_tests.sh \
-     -f typescript/practice_problem_answers/cw_answer_01_two_sum.ts \
+     -f typescript/practice_problem_answers/vn_answer_01_geofence_alert_engine.ts \
      -c npm run test:01
    ```
 
