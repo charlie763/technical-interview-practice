@@ -91,11 +91,27 @@ No `git restore` needed — `src/App.jsx` is never touched.
 
 Prefix any test command with `PRACTICE_ANSWER=practice_problem_answers/cw_answer_NN_<name>`.
 
-### data-testid contract
+### Test query strategy
 
-Problems 02 and 03 specify required `data-testid` attributes in their
-docstrings. The Playwright specs rely on those exact values. Problem 01 uses
-role/text selectors instead (it predates this setup).
+Playwright specs follow RTL's query priority (excluding `getByRole`, which
+requires accessibility knowledge not expected in a coding interview):
+
+1. **Seed/mock data text** — `toContainText('Downtown')` etc. Used wherever
+   the problem provides deterministic seed data whose text will appear on screen.
+2. **Element type + visible text** — `locator('button').filter({ hasText: /ack/i })`.
+   Used for buttons whose labels are specified in the problem (e.g. "Ack", "Contain",
+   "Assign", "Ack All"). Candidate must use the specified label, but no `data-testid`
+   is required on these elements.
+3. **Input attributes** — `getByPlaceholder(/search/i)` for search inputs. The problem
+   specifies the placeholder text.
+4. **`data-testid`** — last resort, used only when structural identification is
+   unavoidable (counting rows, distinguishing multiple selects on the same page,
+   editable cells, spinners). The problem file lists every required testid explicitly.
+
+**When writing new problems:** document required testids in a "TEST CONTRACT" or
+"Required data-testid attributes" block in the problem docstring. Prefer button-text
+or placeholder approaches over testids for interactive controls whenever the label
+text is fixed by the problem spec.
 
 ## Python virtual environment
 
