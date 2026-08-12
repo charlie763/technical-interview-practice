@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    // Target modern browsers / Node via Vite
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+
+    // Module resolution — "bundler" is correct for Vite 4+
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+
+    // JSX — use the React 17+ automatic runtime (no import React needed)
+    "jsx": "react-jsx",
+
+    // Permissive strict settings:
+    //   noImplicitAny  → you must annotate params/vars TypeScript can't infer
+    //   strictNullChecks off → null / undefined are assignable anywhere
+    "noImplicitAny": true,
+    "strictNullChecks": false,
+
+    // Housekeeping
+    "skipLibCheck": true,      // don't type-check node_modules .d.ts files
+    "isolatedModules": true,   // each file is a standalone module (required by Vite)
+    "noEmit": true,            // type-check only — Vite handles the actual build
+    "resolveJsonModule": true,
+    "allowJs": false           // only .ts / .tsx files are checked
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "practice_problems/**/*.ts",
+    "practice_problems/**/*.tsx",
+    "practice_problem_answers/**/*.ts",
+    "practice_problem_answers/**/*.tsx"
+  ]
+}

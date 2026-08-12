@@ -1,0 +1,24 @@
+{
+  // ── ESLint ────────────────────────────────────────────────────────────────
+  // The eslint.config.js lives in react/, so tell the extension to look there
+  // when editing any file under that subtree.
+  "eslint.workingDirectories": [
+    { "directory": "./react", "changeProcessCWD": true }
+  ],
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+
+  // ── On-save actions ───────────────────────────────────────────────────────
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+
+  // ── TypeScript ────────────────────────────────────────────────────────────
+  // Point VS Code's TS language service at the react/ tsconfig so it gives
+  // accurate squiggles for .ts/.tsx answer files.
+  "typescript.tsconfig.paths": ["./react/tsconfig.json"]
+}

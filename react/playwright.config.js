@@ -1,6 +1,7 @@
 import { defineConfig } from '@playwright/test'
 
 export default defineConfig({
+  globalSetup: './global-setup.js',
   testDir: './tests',
   timeout: 30_000,
   use: {
