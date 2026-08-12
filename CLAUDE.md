@@ -1,4 +1,5 @@
 # Technical Interview Practice — Agent Guidelines
+This repo is designed to help software engineers practice for technical interviews by (1) providing a framework for easily generating realistic practice problems and (2) allowing multiple developers to implement problem answers and run those answers against a test suite.
 
 For language-specific instructions, see:
 - **Python:** [`python/CLAUDE.md`](python/CLAUDE.md)
