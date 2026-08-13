@@ -88,7 +88,37 @@ If you introduce a **new** industry value, also add a matching CSS rule to the
 ```
 
 ### Tag conventions
-Kebab-case strings that describe the core algorithmic pattern or domain concept.
+
+Tags differ by language — **Python tags describe algorithmic patterns; React tags describe technical sub-technologies**.
+
+#### Python tags
+Describe the core data-structure or algorithmic pattern exercised.
 Examples: `sliding-window`, `rbac`, `event-driven`, `time-series`,
-`consecutive-tracking`, `deadline-tracking`, `optimistic-updates`.
-Aim for 2–5 tags per problem.
+`consecutive-tracking`, `deadline-tracking`, `state-machine`, `event-sourcing`.
+
+#### React / frontend tags
+Describe the **specific React APIs, browser APIs, or implementation techniques**
+a candidate must use — not the product domain or industry concept.
+
+Mandatory:
+- `typescript` — every problem whose stub is `.tsx` or `.ts` **must** include this tag.
+
+Recommended tags by category (add new ones as needed, always kebab-case):
+
+| Category | Tags |
+|---|---|
+| React hooks | `useEffect`, `useState`, `useMemo`, `useCallback`, `useRef` |
+| Async / data | `promises`, `async-await`, `event-streams`, `polling`, `abort-controller` |
+| UI patterns | `optimistic-updates`, `inline-editing`, `sorting`, `filtering`, `tabs`, `bulk-actions` |
+| Forms | `controlled-inputs`, `form-validation`, `debouncing` |
+| Layout / style | `css-grid`, `css-flexbox`, `css-transitions`, `conditional-rendering` |
+| Advanced React | `context-api`, `portals`, `error-boundaries`, `compound-components`, `custom-hooks` |
+
+**Do not** use domain or industry terms as React tags (e.g. `fundraising`, `saas`, `clm`).
+Those belong in the `industry` field.
+
+Each React problem should have a **distinct combination** of tags. Aim for 4–5 tags with
+meaningful variety across problems — don't let every problem share the same tag set.
+
+#### How Many tags?
+Use as many tags as necessary to describe the various aspects of a problem, but try to cap at max 10 tags.
