@@ -71,6 +71,9 @@ No `git restore` needed — `src/App.jsx` is never touched.
 | `npm run test:01` | Problem 01 — Activity Feed |
 | `npm run test:02` | Problem 02 — Incident Dashboard |
 | `npm run test:03` | Problem 03 — Alert Triage Console |
+| `npm run test:04` | Problem 04 — Contract Review Dashboard |
+| `npm run test:05` | Problem 05 — Campaign Fundraising Dashboard |
+| `npm run test:06` | Problem 06 — Fundraising Class Leaderboard |
 | `npm test` | All spec files |
 | `npm run test:ui` | Playwright interactive UI |
 

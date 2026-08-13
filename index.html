@@ -219,6 +219,7 @@
     .badge-fintech        { background: #d1fae5; color: #064e3b; }
     .badge-public-safety  { background: #dbeafe; color: #1e3a8a; }
     .badge-legal-tech     { background: #fef3c7; color: #92400e; }
+    .badge-ed-tech        { background: #e0e7ff; color: #3730a3; }
 
     /* Level */
     .badge-level-junior    { background: #f1f5f9; color: #64748b; }
@@ -546,6 +547,28 @@ const PROBLEMS = [
     language: "react",
     industry: "legal-tech",
     tags: ["clm", "optimistic-updates", "filtering", "inline-editing", "hooks"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "react/practice_problems/problem_05_campaign_dashboard.tsx",
+    test: "react/tests/test_problem_05_campaign_dashboard.spec.js",
+    title: "Campaign Fundraising Dashboard",
+    description: "Build a live school fundraising dashboard with a real-time donation stream, goal progress bar, donor-type filtering, and optimistic thank-you dispatch with rollback.",
+    language: "react",
+    industry: "ed-tech",
+    tags: ["real-time", "optimistic-updates", "filtering", "fundraising", "hooks"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "react/practice_problems/problem_06_fundraising_leaderboard.tsx",
+    test: "react/tests/test_problem_06_fundraising_leaderboard.spec.js",
+    title: "Fundraising Class Leaderboard",
+    description: "Build a sortable alumni class leaderboard with multi-column sort toggling, name search, and optimistic pledge submission with automatic rollback on failure.",
+    language: "react",
+    industry: "ed-tech",
+    tags: ["leaderboard", "sorting", "optimistic-updates", "fundraising", "hooks"],
     parts: 3,
     level: "senior"
   }
