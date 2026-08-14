@@ -5,7 +5,6 @@
  *   PRACTICE_ANSWER=cw_answer_02_pledge_tracker npm run test:02
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
 import { PledgeTracker } from '../practice_problems/problem_02_pledge_tracker'
 
 // ── Part 1 ─────────────────────────────────────────────────────────────────

@@ -5,7 +5,6 @@
  *   PRACTICE_ANSWER=cw_answer_04_fee_calculator npm run test:04
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
 import { FeeCalculator } from '../practice_problems/problem_04_fee_calculator'
 
 // ── Part 1 ─────────────────────────────────────────────────────────────────

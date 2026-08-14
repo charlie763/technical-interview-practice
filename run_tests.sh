@@ -18,6 +18,20 @@
 #   --answer <abs-path> is appended to the test command, causing conftest.py to
 #   inject your answer module in place of the problem stub before test collection.
 #
+# ── TypeScript problems ────────────────────────────────────────────────────────
+# Usage:
+#   ./run_tests.sh -f <path-to-answer.ts> -c <npm-test-command...>
+#
+# Examples:
+#   ./run_tests.sh \
+#     -f typescript/practice_problem_answers/cw_answer_01_donation_processor.ts \
+#     -c npm run test:01
+#
+# How it works (TypeScript):
+#   Extracts the stem from the answer filename (e.g. cw_answer_01_donation_processor),
+#   sets PRACTICE_ANSWER to that stem, then runs the Jest command from typescript/.
+#   jest.config.js uses moduleNameMapper to redirect the stub import to the answer file.
+#
 # ── React problems ────────────────────────────────────────────────────────────
 # Usage:
 #   ./run_tests.sh -f <path-to-answer-dir> -c <npm-test-command...>
@@ -90,6 +104,17 @@ elif [[ -f "$ANSWER" ]]; then
 else
     echo "Error: not found: $ANSWER"
     exit 1
+fi
+
+# ── TypeScript mode: .ts answer files (not .tsx) ─────────────────────────────
+if [[ "$IS_DIR" == false && "$ANSWER_ABS" == *.ts && "$ANSWER_ABS" != *.tsx ]]; then
+    ANSWER_STEM="$(basename "$ANSWER_ABS" .ts)"
+    echo "Answer : $ANSWER → PRACTICE_ANSWER=$ANSWER_STEM"
+    echo "Command: ${CMD[*]}"
+    echo ""
+    cd "$REPO_ROOT/typescript"
+    PRACTICE_ANSWER="$ANSWER_STEM" "${CMD[@]}"
+    exit $?
 fi
 
 # ── React mode: answer directory or .jsx / .tsx file ─────────────────────────

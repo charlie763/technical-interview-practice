@@ -5,7 +5,6 @@
  *   PRACTICE_ANSWER=cw_answer_01_donation_processor npm run test:01
  */
 
-import { describe, it, expect, beforeEach } from "vitest";
 import { DonationProcessor } from "../practice_problems/problem_01_donation_processor";
 
 // ── Shared timestamps ───────────────────────────────────────────────────────

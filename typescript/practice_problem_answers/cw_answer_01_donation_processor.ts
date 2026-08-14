@@ -178,7 +178,27 @@ export class DonationProcessor {
    * @throws {Error} if campaignId does not exist
    */
   getCampaignStats(campaignId: string): CampaignStats {
-    throw new Error("Not implemented");
+    const existingCampaign = this.campaignData[campaignId];
+    if (!existingCampaign) {
+      throw new Error("campaign doesn't exist");
+    }
+    const campaignStats = { totalRaised: 0, donorCount: 0, donationCount: 0 };
+    const alreadyDonatedEmails: string[] = [];
+    //     export interface CampaignStats {
+    //   totalRaised: number; // sum of non-refunded donation amounts
+    //   donorCount: number; // unique donor emails across non-refunded donations
+    //   donationCount: number; // non-refunded donation count
+    //   goalPercent: number; // (totalRaised / goal) * 100, rounded to 1 decimal place
+    // }
+    Object.values(existingCampaign.donations).forEach((donation) => {
+      if (!donation.refunded) {
+        campaignStats.totalRaised += donation.amount;
+        campaignStats.donationCount += 1;
+        if (!alreadyDonatedEmails.includes(donation.donorEmail)) {
+          campaignStats.donorCount += 1;
+        }
+      }
+    });
   }
 
   // ── Part 2 ───────────────────────────────────────────────────────────────

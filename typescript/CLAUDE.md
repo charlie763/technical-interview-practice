@@ -17,21 +17,30 @@ npm install
       practice_problem_answers/cw_answer_01_donation_processor.ts
    ```
 
-3. Run tests against your answer:
+3. Run tests against your answer via `run_tests.sh` from the repo root:
 
    ```bash
+   ./run_tests.sh \
+     -f typescript/practice_problem_answers/cw_answer_01_donation_processor.ts \
+     -c npm run test:01
+   ```
+
+   Or directly from `typescript/` with the env var:
+
+   ```bash
+   cd typescript
    PRACTICE_ANSWER=cw_answer_01_donation_processor npm run test:01
    ```
 
-   Or watch mode:
+   Watch mode:
 
    ```bash
-   PRACTICE_ANSWER=cw_answer_01_donation_processor npm run test:watch -- tests/test_problem_01_donation_processor.test.ts
+   PRACTICE_ANSWER=cw_answer_01_donation_processor npm run test:watch
    ```
 
-When `PRACTICE_ANSWER` is set, `vitest.config.ts` intercepts the import of the
-stub file and transparently redirects it to your answer file — no changes to the
-test files are ever needed.
+When `PRACTICE_ANSWER` is set, `jest.config.js` uses `moduleNameMapper` to intercept
+the import of the stub file and transparently redirect it to your answer file — no
+changes to the test files are ever needed.
 
 Running `npm test` (without `PRACTICE_ANSWER`) runs all tests against the stubs,
 which should all fail with "Not implemented". This is the expected baseline.

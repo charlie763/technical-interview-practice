@@ -5,7 +5,6 @@
  *   PRACTICE_ANSWER=cw_answer_05_giving_day_challenges npm run test:05
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
 import { GivingDayEngine } from '../practice_problems/problem_05_giving_day_challenges'
 
 const DEADLINE = '2025-10-01T12:00:00'

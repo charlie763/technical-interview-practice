@@ -5,7 +5,6 @@
  *   PRACTICE_ANSWER=cw_answer_03_donor_suppressor npm run test:03
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
 import { DonorSuppressor } from '../practice_problems/problem_03_donor_suppressor'
 
 const AS_OF = '2025-08-20T00:00:00'
