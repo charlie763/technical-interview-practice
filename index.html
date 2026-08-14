@@ -208,8 +208,9 @@
     }
 
     /* Language */
-    .badge-python { background: #e8f0fe; color: #1e40af; }
-    .badge-react  { background: #e0f7fa; color: #006064; }
+    .badge-python      { background: #e8f0fe; color: #1e40af; }
+    .badge-react       { background: #e0f7fa; color: #006064; }
+    .badge-typescript  { background: #dbeafe; color: #1e3a8a; }
 
     /* Industry — add a new rule here when adding a new industry value */
     .badge-general      { background: #f1f5f9; color: #475569; }
@@ -614,6 +615,61 @@ const PROBLEMS = [
     language: "react",
     industry: "insurance-tech",
     tags: ["typescript", "useEffect", "useRef", "useMemo", "polling", "abort-controller", "compound-components"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "typescript/practice_problems/problem_01_donation_processor.ts",
+    test: "typescript/tests/test_problem_01_donation_processor.test.ts",
+    title: "Donation Processor",
+    description: "Build a donation processor that tracks campaigns, records and refunds donations, computes stats, surfaces top donors, and adds employer matching gifts.",
+    language: "typescript",
+    industry: "ed-tech",
+    tags: ["data-model", "aggregation", "time-series", "financial"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "typescript/practice_problems/problem_02_pledge_tracker.ts",
+    test: "typescript/tests/test_problem_02_pledge_tracker.test.ts",
+    title: "Walkathon Pledge Tracker",
+    description: "Build a walkathon pledge tracker that manages per-lap and flat pledges, computes participant totals after laps are recorded, and generates class leaderboards. Candidates define their own TypeScript types.",
+    language: "typescript",
+    industry: "ed-tech",
+    tags: ["data-model", "aggregation", "leaderboard", "custom-types"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "typescript/practice_problems/problem_03_donor_suppressor.ts",
+    test: "typescript/tests/test_problem_03_donor_suppressor.test.ts",
+    title: "Donor Communication Suppressor",
+    description: "Build a suppression engine that opts donors out, tracks donation history, and filters campaign lists using priority-ordered rules (opt-out, already donated, recency cooldown).",
+    language: "typescript",
+    industry: "ed-tech",
+    tags: ["filtering", "priority-rules", "cooldown", "event-tracking"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "typescript/practice_problems/problem_04_fee_calculator.ts",
+    test: "typescript/tests/test_problem_04_fee_calculator.test.ts",
+    title: "Platform Fee Calculator",
+    description: "Implement a fundraising platform fee calculator supporting card, ACH (with cap), and check payment methods — including a donor-covers-fee gross-up formula and per-campaign transaction summaries.",
+    language: "typescript",
+    industry: "ed-tech",
+    tags: ["fee-calculation", "rounding", "aggregation", "financial"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "typescript/practice_problems/problem_05_giving_day_challenges.ts",
+    test: "typescript/tests/test_problem_05_giving_day_challenges.test.ts",
+    title: "Giving Day Challenge Engine",
+    description: "Build a giving-day challenge engine where sponsors set threshold-based bonus pledges — process donations, auto-complete challenges when thresholds are crossed, and produce an hourly breakdown. Candidates define their own TypeScript types.",
+    language: "typescript",
+    industry: "ed-tech",
+    tags: ["event-driven", "time-window", "challenge-tracking", "custom-types"],
     parts: 3,
     level: "senior"
   }

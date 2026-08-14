@@ -1,0 +1,19 @@
+{
+  "name": "interview-typescript-practice",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:01": "vitest run tests/test_problem_01_donation_processor.test.ts",
+    "test:02": "vitest run tests/test_problem_02_pledge_tracker.test.ts",
+    "test:03": "vitest run tests/test_problem_03_donor_suppressor.test.ts",
+    "test:04": "vitest run tests/test_problem_04_fee_calculator.test.ts",
+    "test:05": "vitest run tests/test_problem_05_giving_day_challenges.test.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0",
+    "vitest": "^2.0.0"
+  }
+}

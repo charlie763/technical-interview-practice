@@ -4,6 +4,7 @@ This repo is designed to help software engineers practice for technical intervie
 For language-specific instructions, see:
 - **Python:** [`python/CLAUDE.md`](python/CLAUDE.md)
 - **React:** [`react/CLAUDE.md`](react/CLAUDE.md)
+- **TypeScript:** [`typescript/CLAUDE.md`](typescript/CLAUDE.md)
 
 ## Repo structure
 
@@ -21,6 +22,13 @@ react/
   package.json                # Vite + Playwright deps
   playwright.config.js
   vite.config.js
+typescript/
+  practice_problems/          # .ts class stubs (read-only during practice)
+  practice_problem_answers/   # cw_answer_NN_<name>.ts files (filled in by Charlie)
+  tests/                      # Vitest suites
+  package.json                # Vitest deps
+  vitest.config.ts            # answer-redirect plugin
+  tsconfig.json
 ```
 
 ## Problem design rules (all languages)
@@ -55,7 +63,7 @@ near the top of the `<script>` block in that file (look for the comment that say
   test: "python/tests/test_problem_NN_<name>.py",         // path to the test file (null for React problems without a separate test)
   title: "Short Human-Readable Title",                     // shown as the card heading
   description: "One or two sentences describing what the candidate builds.",
-  language: "python",           // "python" | "react"
+  language: "python",           // "python" | "react" | "typescript"
   industry: "health-tech",      // see valid values below
   tags: ["tag-one", "tag-two"], // 2–5 kebab-case strings
   parts: 3,                     // number of implementation parts
@@ -64,7 +72,7 @@ near the top of the `<script>` block in that file (look for the comment that say
 ```
 
 ### Valid `language` values
-`python` | `react`
+`python` | `react` | `typescript`
 
 ### Valid `level` values (in order)
 `junior` | `mid-level` | `senior` | `staff`
@@ -89,12 +97,16 @@ If you introduce a **new** industry value, also add a matching CSS rule to the
 
 ### Tag conventions
 
-Tags differ by language — **Python tags describe algorithmic patterns; React tags describe technical sub-technologies**.
+Tags differ by language — **Python/TypeScript tags describe algorithmic patterns; React tags describe technical sub-technologies**.
 
-#### Python tags
+#### Python and TypeScript tags
 Describe the core data-structure or algorithmic pattern exercised.
 Examples: `sliding-window`, `rbac`, `event-driven`, `time-series`,
-`consecutive-tracking`, `deadline-tracking`, `state-machine`, `event-sourcing`.
+`consecutive-tracking`, `deadline-tracking`, `state-machine`, `event-sourcing`,
+`aggregation`, `financial`, `custom-types`.
+
+Use `custom-types` when the problem asks the candidate to design their own TypeScript
+interfaces rather than providing them in the stub.
 
 #### React / frontend tags
 Describe the **specific React APIs, browser APIs, or implementation techniques**
