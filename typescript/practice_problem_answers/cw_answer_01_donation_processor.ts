@@ -184,21 +184,22 @@ export class DonationProcessor {
     }
     const campaignStats = { totalRaised: 0, donorCount: 0, donationCount: 0 };
     const alreadyDonatedEmails: string[] = [];
-    //     export interface CampaignStats {
-    //   totalRaised: number; // sum of non-refunded donation amounts
-    //   donorCount: number; // unique donor emails across non-refunded donations
-    //   donationCount: number; // non-refunded donation count
-    //   goalPercent: number; // (totalRaised / goal) * 100, rounded to 1 decimal place
-    // }
     Object.values(existingCampaign.donations).forEach((donation) => {
       if (!donation.refunded) {
         campaignStats.totalRaised += donation.amount;
         campaignStats.donationCount += 1;
         if (!alreadyDonatedEmails.includes(donation.donorEmail)) {
           campaignStats.donorCount += 1;
+          alreadyDonatedEmails.push(donation.donorEmail);
         }
       }
     });
+    return {
+      ...campaignStats,
+      goalPercent:
+        Math.round((campaignStats.totalRaised / existingCampaign.goal) * 1000) /
+        10,
+    };
   }
 
   // ── Part 2 ───────────────────────────────────────────────────────────────
@@ -211,7 +212,49 @@ export class DonationProcessor {
    * @throws {Error} if campaignId does not exist
    */
   getTopDonors(campaignId: string, limit: number): DonorSummary[] {
-    throw new Error("Not implemented");
+    const existingCampaign = this.campaignData[campaignId];
+    if (!existingCampaign) {
+      throw new Error("campaign doesn't exist");
+    }
+    const donorEmailToAmountMap: Record<string, DonorSummary> = {};
+    Object.values(existingCampaign.donations).forEach((donation) => {
+      if (!donation.refunded) {
+        let existingDonationSummary: DonorSummary | undefined =
+          donorEmailToAmountMap[donation.donorEmail];
+        if (existingDonationSummary) {
+          existingDonationSummary.totalAmount += donation.amount;
+          existingDonationSummary.donationCount += 1;
+        } else {
+          existingDonationSummary = {
+            donorEmail: donation.donorEmail,
+            donorName: donation.donorName,
+            totalAmount: donation.amount,
+            donationCount: 1,
+          };
+        }
+        donorEmailToAmountMap[donation.donorEmail] = existingDonationSummary;
+      }
+    });
+    const donationSortFn = (
+      donationSummaryA: DonorSummary,
+      donationSummaryB: DonorSummary,
+    ) => {
+      if (donationSummaryA.totalAmount < donationSummaryB.totalAmount) {
+        return 1;
+      } else if (donationSummaryA.totalAmount > donationSummaryB.totalAmount) {
+        return -1;
+      } else {
+        if (donationSummaryA.donorEmail < donationSummaryB.donorEmail) {
+          return 1;
+        } else {
+          return -1;
+        }
+      }
+    };
+    const sortedDoantionSummarys = [
+      ...Object.values(donorEmailToAmountMap),
+    ].sort(donationSortFn);
+    return sortedDoantionSummarys.slice(0, limit);
   }
 
   /**
@@ -225,7 +268,23 @@ export class DonationProcessor {
     from: string,
     to: string,
   ): Donation[] {
-    throw new Error("Not implemented");
+    const existingCampaign = this.campaignData[campaignId];
+    if (!existingCampaign) {
+      throw new Error("campaign doesn't exist");
+    }
+    const fromDate = new Date(from);
+    const toDate = new Date(to);
+    const donationsInRanage = Object.values(existingCampaign.donations).filter(
+      (donation) => {
+        const donationDate = new Date(donation.timestamp);
+        return donationDate <= toDate && donationDate >= fromDate;
+      },
+    );
+    return [...donationsInRanage].sort(
+      (donationA: Donation, donationB: Donation) =>
+        new Date(donationA.timestamp).getTime() -
+        new Date(donationB.timestamp).getTime(),
+    );
   }
 
   // ── Part 3 ───────────────────────────────────────────────────────────────
