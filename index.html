@@ -220,6 +220,7 @@
     .badge-public-safety  { background: #dbeafe; color: #1e3a8a; }
     .badge-legal-tech     { background: #fef3c7; color: #92400e; }
     .badge-ed-tech        { background: #e0e7ff; color: #3730a3; }
+    .badge-insurance-tech { background: #cffafe; color: #164e63; }
 
     /* Level */
     .badge-level-junior    { background: #f1f5f9; color: #64748b; }
@@ -569,6 +570,50 @@ const PROBLEMS = [
     language: "react",
     industry: "ed-tech",
     tags: ["typescript", "useMemo", "sorting", "controlled-inputs", "optimistic-updates"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "python/practice_problems/problem_16_premium_rating_engine.py",
+    test: "python/tests/test_problem_16_premium_rating_engine.py",
+    title: "Policy Premium Rating Engine",
+    description: "Build a management liability premium calculator that applies coverage-type formulas, risk modifiers (industry, tenure, loss history), and produces portfolio analytics.",
+    language: "python",
+    industry: "insurance-tech",
+    tags: ["rating-engine", "risk-modifiers", "state-machine", "aggregation", "fintech"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "python/practice_problems/problem_17_claims_pipeline.py",
+    test: "python/tests/test_problem_17_claims_pipeline.py",
+    title: "Claims Processing Pipeline",
+    description: "Build a multi-stage claims lifecycle manager covering filing, investigation, settlement and denial — with reserve adequacy tracking and loss-ratio analytics.",
+    language: "python",
+    industry: "insurance-tech",
+    tags: ["state-machine", "event-sourcing", "aggregation", "deadline-tracking"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "react/practice_problems/problem_07_submission_queue.jsx",
+    test: "react/tests/test_problem_07_submission_queue.spec.js",
+    title: "Underwriting Submission Queue",
+    description: "Build an underwriting dashboard with dual-select filtering (coverage type + status), limit-based sorting, and an inline quote form with optimistic updates and rollback.",
+    language: "react",
+    industry: "insurance-tech",
+    tags: ["useMemo", "filtering", "sorting", "optimistic-updates", "controlled-inputs", "inline-editing"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "react/practice_problems/problem_08_claims_tracker.tsx",
+    test: "react/tests/test_problem_08_claims_tracker.spec.js",
+    title: "Claims Tracker",
+    description: "Build a claims tracker that polls for live status updates, filters by status tabs, and expands an inline detail panel with a note-submission form.",
+    language: "react",
+    industry: "insurance-tech",
+    tags: ["typescript", "useEffect", "useRef", "useMemo", "polling", "abort-controller", "compound-components"],
     parts: 3,
     level: "senior"
   }
