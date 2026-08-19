@@ -1,117 +1,124 @@
-# Technical Interview Practice — Agent Guidelines
+# CLAUDE.md
 
-## Repo structure
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-```
-python/
-  practice_problems/          # problem stubs (read-only during practice)
-  practice_problem_answers/   # cw_answer_XX_... files (filled in by Charlie)
-  tests/                      # pytest suites
-react/
-  practice_problems/          # JSX/TSX starter files
-  src/App.jsx                 # active problem (overwrite with a stub to work on it)
-  src/main.jsx                # Vite entry point (do not modify)
-  tests/                      # Playwright e2e specs
-  package.json                # Vite + Playwright deps
-  playwright.config.js
-  vite.config.js
-```
+## What this repo is
 
-## React / frontend workflow
+A collection of Software Engineer technical interview practice problems, each
+with a stub file and an isolated test suite. Problems live in `python/` and
+`react/`. The repo is designed to be extended by an AI coding agent: prompt
+Claude Code to generate a new problem, and it follows the conventions below.
+`index.html` is a self-contained, searchable browser for all problems (open
+it directly, no build step).
 
-### One-time setup
+## Commands
+
+### Setup (one-time)
 
 ```bash
-cd react
-npm install
+# Python
+python3.11 -m venv .venv && .venv/bin/pip install pytest
+
+# React
+cd react && npm install && npx playwright install chromium
 ```
 
-Playwright browsers only need installing once (Chromium is used):
+### Running tests
+
+The unified runner is `run_tests.sh`. It takes an answer file with `-f` and a
+test command with `-c`, and wires the answer file into the test run for you.
 
 ```bash
-npx playwright install chromium
+# Python: run one problem's suite against an answer file
+./run_tests.sh \
+  -f python/practice_problem_answers/cw_answer_03_permission_manager.py \
+  -c pytest python/tests/test_problem_03_permission_manager.py -v
+
+# Python: a single test class or method
+./run_tests.sh -f <answer.py> -c pytest python/tests/test_problem_03_permission_manager.py::TestCreateRole
+./run_tests.sh -f <answer.py> -c pytest python/tests/test_problem_03_permission_manager.py::TestCreateRole::test_empty_permissions_by_default
+
+# React: run one problem's Playwright suite against an answer file
+./run_tests.sh -f react/practice_problems/problem_02_incident_dashboard.jsx -c npm run test:02
 ```
 
-### Working on a problem
+For Python, `run_tests.sh` appends `--answer <abs-path-to-answer-file>`, which
+`python/conftest.py` uses to inject the answer module in place of the problem
+stub before test collection. This means test files never need their imports
+edited, no matter which answer file you point at.
 
-1. Copy the stub into `src/App.jsx` (this is the file Vite serves):
+For React, `run_tests.sh` copies the answer `.jsx` file to `react/src/App.jsx`
+(the file Vite serves), runs the given command from `react/`, then restores
+the previous `App.jsx` on exit.
 
-   ```bash
-   cd react
-   cp practice_problems/problem_02_incident_dashboard.jsx src/App.jsx
-   ```
-
-2. Start the Vite dev server to see your work in the browser:
-
-   ```bash
-   npm run dev        # opens http://localhost:5173
-   ```
-
-3. Run the Playwright tests for that problem to check your implementation:
-
-   ```bash
-   npm run test:02    # runs tests/test_problem_02_incident_dashboard.spec.js
-   ```
-
-   Or open interactive Playwright UI mode:
-
-   ```bash
-   npm run test:ui
-   ```
-
-4. Reset the placeholder when done:
-
-   ```bash
-   git restore src/App.jsx
-   ```
-
-### Test commands
-
-| Command | What it runs |
-|---|---|
-| `npm run test:01` | Problem 01 — Activity Feed |
-| `npm run test:02` | Problem 02 — Incident Dashboard |
-| `npm run test:03` | Problem 03 — Alert Triage Console |
-| `npm test` | All 3 spec files |
-| `npm run test:ui` | Playwright interactive UI |
-
-Playwright auto-starts the Vite dev server when it isn't already running.
-If you already have `npm run dev` running, Playwright reuses that server.
-
-### data-testid contract
-
-Problems 02 and 03 specify required `data-testid` attributes in their
-docstrings. The Playwright specs rely on those exact values. Problem 01 uses
-role/text selectors instead (it predates this setup).
-
-## Python virtual environment
-
-A `.venv` lives at the repo root. Always activate it before running pytest or
-any Python command:
+You can also skip `run_tests.sh` and run tests directly, as long as the
+answer file is already in place (for Python, activate `.venv` first and pass
+`--answer` yourself; for React, `App.jsx` must already hold the
+implementation):
 
 ```bash
 source .venv/bin/activate
+cd python && pytest tests/test_problem_03_permission_manager.py -v --answer /abs/path/to/answer.py
+
+cd react && npm run test:02      # or npm test for all specs, npm run test:ui for interactive mode
 ```
 
-If `.venv` doesn't exist yet, create it:
+There is no lint command configured in this repo.
 
-```bash
-python3.11 -m venv .venv && .venv/bin/pip install pytest
-```
+## Architecture
 
-`run_tests.sh` activates `.venv` automatically when it exists.
+### Python problem/test wiring
+
+Test files always import from the stub module path,
+`practice_problems.problem_NN_<name>`, never from an answer file directly.
+`python/conftest.py` adds a `--answer` pytest flag: when set, it loads the
+given answer file and registers it in `sys.modules` under that same stub
+module path before collection runs, so the test's import resolves to the
+answer implementation instead. This is why answer files can live anywhere
+under `practice_problem_answers/` with any prefix (`cw_answer_`, `en_answer_`,
+`my_answer_`, ...) as long as the filename contains a `NN_<name>` segment
+matching the stub it targets.
+
+`conftest.py` also defines an autouse fixture, `_reset_class_level_state`,
+that clears class-level `set` attributes and mutable default `set` arguments
+on any class from an imported practice-problem module after each test. It is
+a safety net for practice sessions, not a fix for a real bug: if tests only
+pass because of it, the implementation has a state-bleed bug (see "Problem
+design rules" below).
+
+### React problem wiring
+
+`react/src/App.jsx` is the single file Vite serves and the single file
+Playwright tests exercise. There is one `App.jsx` slot, not one per problem,
+so only one problem's implementation can be "active" at a time. Each
+`npm run test:NN` script points at a fixed spec file
+(`tests/test_problem_NN_<name>.spec.js`) that expects specific `data-testid`
+attributes, listed in that problem's docstring. Problem 01 predates this
+convention and uses role/text selectors instead.
+
+### The problem index (`index.html`)
+
+`index.html` is a static, dependency-free HTML/JS file with a `PROBLEMS`
+array describing every problem (path, test path, title, description,
+language, industry, tags, part count, level). It is not generated from the
+`practice_problems/` directories, so every new problem must be added to this
+array by hand. See "Keeping the problem index up to date" below for the
+schema and conventions.
 
 ---
 
-**Workflow per problem:**
-1. Problem file has the prompt + empty stubs.
-2. User copies the problem file to `practice_problem_answers/cw_answer_XX_<name>.py` and implements it there.
-3. He updates the test file's import to point at his answer file.
-4. He runs `pytest tests/test_problem_XX_<name>.py -v` from the `python/` directory.
+## Workflow for a candidate practicing a problem
 
-Test files **always** import from `practice_problems.problem_NN_<name>` (the stub).
-The `--answer` flag in `python/conftest.py` injects the answer module under that same
-module path before test collection, so no manual import changes are ever needed.
+1. The problem stub in `practice_problems/` has the prompt plus empty
+   stubs that raise `NotImplementedError`.
+2. Copy the stub to an answer file (Python:
+   `practice_problem_answers/<prefix>_answer_NN_<name>.py`; React:
+   `react/src/App.jsx` or any `.jsx` file to pass to `run_tests.sh`) and
+   implement it there. Keep signatures identical to the stub.
+3. Run the test suite for that problem against the answer file using
+   `run_tests.sh` (see "Commands" above).
+
+Never edit files in `practice_problems/` or the test files while practicing.
 
 ---
 
@@ -339,3 +346,15 @@ Kebab-case strings that describe the core algorithmic pattern or domain concept.
 Examples: `sliding-window`, `rbac`, `event-driven`, `time-series`,
 `consecutive-tracking`, `deadline-tracking`, `optimistic-updates`.
 Aim for 2–5 tags per problem.
+
+---
+
+## Contribution note
+
+Do not add problems copied verbatim from an actual technical interview. See
+"Don't mention companies by name" above; scrub company names and identifying
+details before a problem is committed.
+
+Do not modify an existing problem or test file in place once candidates may
+already be working from it (this breaks in-progress answer files). Instead,
+copy it to a new `_v2`-style file and improve the copy.
