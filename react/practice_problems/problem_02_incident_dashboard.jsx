@@ -24,8 +24,9 @@
  *   - Each row shows: severity badge (color-coded), incident type, location,
  *     and a relative timestamp ("2 min ago").
  *
- * Data-testid requirements (Playwright relies on these):
+ * Required data-testid attributes:
  *   data-testid="incident-row"    — wrapper element for each active incident
+ *                                   (used by tests to count visible rows)
  *   data-testid="severity-badge"  — the colored severity indicator in each row
  *
  * PART 2 — Filtering  (~15 min)
@@ -51,11 +52,14 @@
  *   1. Immediately mark the incident as contained in local state (optimistic).
  *   2. Call `containIncident(incidentId)` — resolves on success, rejects ~20%.
  *   3. On success: move the row to a "Contained" section at the bottom of the
- *      page with data-testid="contained-row".
+ *      page. Each contained row needs data-testid="contained-row".
  *   4. On rejection: revert the incident to active, show an inline error
  *      ("Failed — retry") on that row.
- *   5. While the request is in-flight, the button (data-testid="contain-btn")
- *      must be disabled to prevent double-submission.
+ *   5. While the request is in-flight, the Contain button must be disabled
+ *      to prevent double-submission.
+ *
+ * Note: the Contain button is located by its text ("Contain") — no data-testid
+ * is required on the button itself.
  *
  * =============================================================================
  */
@@ -184,7 +188,8 @@ export function IncidentDashboard() {
   //              <select data-testid="filter-type">. No re-subscribe on filter change.
 
   // TODO Part 3: optimistic "Contain" action.
-  //              Button: data-testid="contain-btn" (disabled while in-flight)
+  //              Button label must include "Contain" (tests locate it by text).
+  //              Disable the button while request is in-flight.
   //              Contained rows: data-testid="contained-row"
 
   return (

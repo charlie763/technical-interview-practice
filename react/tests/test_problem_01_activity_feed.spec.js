@@ -7,8 +7,12 @@
  * These tests target a COMPLETED implementation of src/App.jsx.
  * Against the stub they will fail — that is expected behaviour.
  *
- * Copy the problem to activate:
- *   cp practice_problems/problem_01_activity_feed.jsx src/App.jsx
+ * Query strategy (in priority order):
+ *   1. Seed/mock data text — toContainText('known value')
+ *   2. Element type + text — locator('button').filter({ hasText: /label/i })
+ *   3. Element type — locator('select').first()
+ *   4. data-testid — only when structural identification is unavoidable
+ *      (see problem file for which testids are required)
  */
 
 import { test, expect } from '@playwright/test'
@@ -21,7 +25,7 @@ test.describe('Problem 01 — Activity Feed', () => {
   // ── Part 1: live subscription ──────────────────────────────────────────────
 
   test('renders the Activity Feed heading', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: /activity feed/i })).toBeVisible()
+    await expect(page.locator('h1, h2, h3, h4').filter({ hasText: /activity feed/i })).toBeVisible()
   })
 
   test('events appear after the source connects', async ({ page }) => {
@@ -30,12 +34,13 @@ test.describe('Problem 01 — Activity Feed', () => {
   })
 
   test('event rows are displayed newest-first (latest timestamp at top)', async ({ page }) => {
-    // Wait for at least 2 events
+    // Wait for at least 2 events.
+    // Tests detect rows via data-testid="event-row" OR any class containing "event".
+    // See problem file for the testid contract.
     await page.waitForFunction(
       () => document.querySelectorAll('[data-testid="event-row"], [class*="event"]').length >= 2,
       { timeout: 10_000 },
     )
-    // The first visible timestamp should be >= the second
     const timestamps = await page.evaluate(() => {
       const rows = Array.from(
         document.querySelectorAll('[data-testid="event-row"], [class*="event-row"]'),
@@ -62,19 +67,19 @@ test.describe('Problem 01 — Activity Feed', () => {
     const option = await select.locator('option').nth(1).getAttribute('value')
     if (option) await select.selectOption(option)
     // App should not crash
-    await expect(page.getByRole('heading', { name: /activity feed/i })).toBeVisible()
+    await expect(page.locator('h1, h2, h3, h4').filter({ hasText: /activity feed/i })).toBeVisible()
   })
 
   // ── Part 3: optimistic acknowledgement ────────────────────────────────────
 
   test('Ack button appears on event rows', async ({ page }) => {
     await expect(page.locator('body')).not.toContainText('No events yet', { timeout: 10_000 })
-    await expect(page.getByRole('button', { name: /ack/i }).first()).toBeVisible({ timeout: 5_000 })
+    await expect(page.locator('button').filter({ hasText: /ack/i }).first()).toBeVisible({ timeout: 5_000 })
   })
 
   test('Ack button is disabled immediately after clicking', async ({ page }) => {
     await expect(page.locator('body')).not.toContainText('No events yet', { timeout: 10_000 })
-    const ackBtn = page.getByRole('button', { name: /ack/i }).first()
+    const ackBtn = page.locator('button').filter({ hasText: /ack/i }).first()
     await expect(ackBtn).toBeVisible({ timeout: 5_000 })
     await ackBtn.click()
     // Optimistic update: button should be disabled while request is in-flight

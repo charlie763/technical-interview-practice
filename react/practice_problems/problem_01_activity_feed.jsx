@@ -53,6 +53,20 @@
  *      and be disabled to prevent double-submission.
  *
  * =============================================================================
+ *
+ * TEST CONTRACT
+ * -------------
+ * Playwright tests use the following query strategy (in priority order):
+ *
+ * 1. Text content from the live event stream (no testids needed for most assertions).
+ * 2. Button text — the Ack button is found by /ack/i text. Name it "Ack" or similar.
+ * 3. data-testid="event-row" (or a CSS class containing "event") — the ordering
+ *    test needs to identify individual rows. Add data-testid="event-row" to each
+ *    event row element, or give it a class name that includes "event".
+ * 4. locator('select') — filter controls are found by element type; at least one
+ *    <select> element must be present for the filter test to pass.
+ *
+ * =============================================================================
  */
 
 import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";

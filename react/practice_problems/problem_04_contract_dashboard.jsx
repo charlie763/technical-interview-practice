@@ -47,11 +47,13 @@
  *
  * 2. Text search — an <input> that filters rows by title (case-insensitive
  *    substring match).
- *    data-testid="search-input"
+ *    Tests accept either data-testid="search-input" OR a placeholder attribute
+ *    that contains "search" (case-insensitive), e.g. placeholder="Search contracts..."
  *
  * 3. Sort by expiration — a <button> that toggles between ascending and
  *    descending expiration date order.
- *    data-testid="sort-expiration"
+ *    Tests accept either data-testid="sort-expiration" OR a button whose visible
+ *    text contains "expir" (case-insensitive), e.g. "Sort by expiration" or "↑ Expiry".
  *
  * Use useMemo to derive the filtered + sorted list from the raw contracts state.
  * Show a row count: "Showing N contracts".

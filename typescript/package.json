@@ -1,0 +1,21 @@
+{
+  "name": "interview-typescript-practice",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:01": "jest tests/test_problem_01_donation_processor.test.ts",
+    "test:02": "jest tests/test_problem_02_pledge_tracker.test.ts",
+    "test:03": "jest tests/test_problem_03_donor_suppressor.test.ts",
+    "test:04": "jest tests/test_problem_04_fee_calculator.test.ts",
+    "test:05": "jest tests/test_problem_05_giving_day_challenges.test.ts"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.0.0",
+    "@types/node": "^22.0.0",
+    "jest": "^29.0.0",
+    "ts-jest": "^29.0.0",
+    "typescript": "^5.7.0"
+  }
+}

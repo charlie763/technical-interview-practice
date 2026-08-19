@@ -7,9 +7,6 @@
  * These tests target a COMPLETED implementation of src/App.jsx.
  * Against the stub they will fail — that is expected behaviour.
  *
- * Copy the problem to activate:
- *   cp practice_problems/problem_04_contract_dashboard.jsx src/App.jsx
- *
  * Seed data reference (from SEED_CONTRACTS in the problem file):
  *   con-001  "Vendor MSA"                 active     expires 2025-09-30
  *   con-002  "SaaS Subscription Agreement" in_review  expires 2025-12-31
@@ -17,6 +14,15 @@
  *   con-004  "Office Lease"                active     expires 2027-06-01
  *   con-005  "Legacy Reseller Agreement"   expired    expires 2024-01-01
  *   con-006  "Marketing Agency SOW"        draft      expires 2025-11-30
+ *
+ * Query strategy (in priority order):
+ *   1. Seed data text — toContainText('Vendor MSA') etc.
+ *   2. Input attributes — getByPlaceholder() for search input
+ *   3. Element type + text — locator('button').filter({ hasText: /expir/i })
+ *      for the sort button (data-testid="sort-expiration" also accepted)
+ *   4. data-testid — required for row counting, badges, filter selects,
+ *      editable fields, and the save spinner
+ *      (see problem file for which testids are required)
  */
 
 import { test, expect } from '@playwright/test'
@@ -53,12 +59,20 @@ test.describe('Problem 04 — Contract Review Dashboard', () => {
     await expect(page.getByTestId('filter-status')).toBeVisible()
   })
 
-  test('search-input is present', async ({ page }) => {
-    await expect(page.getByTestId('search-input')).toBeVisible()
+  test('search input is present', async ({ page }) => {
+    // Accepts data-testid="search-input" OR an input with a placeholder matching /search/i
+    await expect(
+      page.locator('[data-testid="search-input"], input[placeholder*="search" i]').first()
+    ).toBeVisible()
   })
 
-  test('sort-expiration button is present', async ({ page }) => {
-    await expect(page.getByTestId('sort-expiration')).toBeVisible()
+  test('sort by expiration button is present', async ({ page }) => {
+    // Accepts data-testid="sort-expiration" OR a button whose text contains "expir"
+    await expect(
+      page.locator('[data-testid="sort-expiration"]').or(
+        page.locator('button').filter({ hasText: /expir/i })
+      ).first()
+    ).toBeVisible()
   })
 
   test('filtering by status "expired" shows only expired contracts', async ({ page }) => {
@@ -73,14 +87,16 @@ test.describe('Problem 04 — Contract Review Dashboard', () => {
   })
 
   test('text search filters by title (case-insensitive)', async ({ page }) => {
-    await page.getByTestId('search-input').fill('nda')
+    const searchInput = page.locator('[data-testid="search-input"], input[placeholder*="search" i]').first()
+    await searchInput.fill('nda')
     await expect(page.locator('[data-testid="contract-row"]')).toHaveCount(1)
     await expect(page.locator('body')).toContainText('NDA — Design Partner')
   })
 
   test('search combined with status filter narrows results', async ({ page }) => {
     await page.getByTestId('filter-status').selectOption('active')
-    await page.getByTestId('search-input').fill('vendor')
+    const searchInput = page.locator('[data-testid="search-input"], input[placeholder*="search" i]').first()
+    await searchInput.fill('vendor')
     await expect(page.locator('[data-testid="contract-row"]')).toHaveCount(1)
   })
 
@@ -91,9 +107,12 @@ test.describe('Problem 04 — Contract Review Dashboard', () => {
   })
 
   test('sort button changes expiration order', async ({ page }) => {
-    // Click once to sort descending (or ascending — just verify row order changes)
+    // Click once to sort — verify row order changes
     const rowsBefore = await page.locator('[data-testid="contract-row"]').allTextContents()
-    await page.getByTestId('sort-expiration').click()
+    const sortBtn = page.locator('[data-testid="sort-expiration"]').or(
+      page.locator('button').filter({ hasText: /expir/i })
+    ).first()
+    await sortBtn.click()
     const rowsAfter = await page.locator('[data-testid="contract-row"]').allTextContents()
     // Order should differ (seed data has varied dates)
     const changed = rowsBefore.some((r, i) => r !== rowsAfter[i])

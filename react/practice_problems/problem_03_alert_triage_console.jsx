@@ -25,15 +25,17 @@
  *   - Each row shows: severity badge (1–5, color-coded), alert type, message,
  *     source, and relative time ("3 min ago").
  *
- * Data-testid requirements (Playwright relies on these):
+ * Required data-testid attributes:
  *   data-testid="alert-row"      — wrapper element for each alert row
+ *                                  (used by tests to count rows and check ordering)
  *   data-testid="severity-badge" — the severity indicator inside each row
  *
  * PART 2 — Assign to unit  (~15 min)
  * ────────────────────────────────────
  * Add an assign action to each unassigned, unacknowledged alert row:
  *   - A <select data-testid="unit-select"> populated with UNITS.
- *   - A <button data-testid="assign-btn"> that calls assignAlert(alertId, unitId).
+ *   - A button that calls assignAlert(alertId, unitId). Label it "Assign".
+ *     Tests locate the button by its text — no data-testid required on it.
  *
  * When the assignment succeeds:
  *   - Show the assigned unit name on the row (no separate section needed yet).
@@ -48,21 +50,20 @@
  * Add a tab bar at the top of the console with three tabs:
  *   Queued | Assigned | Acknowledged
  *
- * Data-testid requirements:
- *   data-testid="tab-queued"        — Queued tab button
- *   data-testid="tab-assigned"      — Assigned tab button
- *   data-testid="tab-acknowledged"  — Acknowledged tab button
- *
- * Each tab shows its count in parentheses, e.g. "Queued (3)".
+ * Tests locate tabs by their text content — no data-testid required.
+ * Each tab label must include the tab name (e.g. "Queued", "Assigned",
+ * "Acknowledged") so the text-based locator can find it. Showing a count in
+ * parentheses is fine: "Queued (3)" still matches /queued/i.
  *
  * Switching tabs changes which alerts are shown:
  *   Queued       — unassigned AND not acknowledged
  *   Assigned     — assigned AND not acknowledged
  *   Acknowledged — acknowledged (by any means)
  *
- * On the Queued tab, add an "Ack All" button (data-testid="ack-all-btn") that
- * calls acknowledgeAlert(id) for every currently visible queued alert and marks
- * them all as acknowledged. Fire all calls in parallel (Promise.all or similar).
+ * On the Queued tab, add an "Ack All" button that calls acknowledgeAlert(id)
+ * for every currently visible queued alert and marks them all as acknowledged.
+ * Fire all calls in parallel (Promise.all or similar).
+ * Label the button "Ack All" — tests locate it by text, no data-testid needed.
  *
  * =============================================================================
  */
@@ -255,12 +256,13 @@ export function AlertTriageConsole() {
 
   // TODO Part 2: add assign action per queued row.
   //              Unit select: data-testid="unit-select"
-  //              Assign button: data-testid="assign-btn"
+  //              Assign button: label it "Assign" (tests locate by text, no testid needed).
   //              Disable both while request is in-flight.
 
   // TODO Part 3: add tab bar and Ack All button.
-  //              Tabs: data-testid="tab-queued", "tab-assigned", "tab-acknowledged"
-  //              Ack All: data-testid="ack-all-btn" (visible on Queued tab only)
+  //              Tab labels must include "Queued", "Assigned", "Acknowledged" (tests use text).
+  //              Ack All button: label it "Ack All" (tests locate by text, no testid needed).
+  //              Ack All is visible on Queued tab only.
 
   return (
     <div style={{ fontFamily: 'system-ui', maxWidth: 900, margin: '0 auto', padding: 24 }}>

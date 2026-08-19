@@ -208,8 +208,9 @@
     }
 
     /* Language */
-    .badge-python { background: #e8f0fe; color: #1e40af; }
-    .badge-react  { background: #e0f7fa; color: #006064; }
+    .badge-python      { background: #e8f0fe; color: #1e40af; }
+    .badge-react       { background: #e0f7fa; color: #006064; }
+    .badge-typescript  { background: #dbeafe; color: #1e3a8a; }
 
     /* Industry — add a new rule here when adding a new industry value */
     .badge-general      { background: #f1f5f9; color: #475569; }
@@ -219,6 +220,8 @@
     .badge-fintech        { background: #d1fae5; color: #064e3b; }
     .badge-public-safety  { background: #dbeafe; color: #1e3a8a; }
     .badge-legal-tech     { background: #fef3c7; color: #92400e; }
+    .badge-ed-tech        { background: #e0e7ff; color: #3730a3; }
+    .badge-insurance-tech { background: #cffafe; color: #164e63; }
 
     /* Level */
     .badge-level-junior    { background: #f1f5f9; color: #64748b; }
@@ -435,7 +438,7 @@ const PROBLEMS = [
     description: "Build a real-time event feed with client-side filtering and optimistic acknowledgement with automatic rollback on failure.",
     language: "react",
     industry: "general",
-    tags: ["real-time", "event-stream", "filtering", "optimistic-updates", "hooks", "saas"],
+    tags: ["useEffect", "useMemo", "event-streams", "optimistic-updates"],
     parts: 3,
     level: "senior"
   },
@@ -479,7 +482,7 @@ const PROBLEMS = [
     description: "Build a live incident monitoring panel with a real-time feed, severity/type filtering, and an optimistic 'Contain' action with rollback on failure.",
     language: "react",
     industry: "public-safety",
-    tags: ["real-time", "optimistic-updates", "filtering", "event-driven", "hooks"],
+    tags: ["useEffect", "useMemo", "event-streams", "filtering", "optimistic-updates"],
     parts: 3,
     level: "senior"
   },
@@ -490,7 +493,7 @@ const PROBLEMS = [
     description: "Build a dispatch ops queue with real-time alert ingestion, unit assignment with optimistic updates, tab-based filtering, and bulk-acknowledge.",
     language: "react",
     industry: "public-safety",
-    tags: ["dispatch", "real-time", "optimistic-updates", "bulk-actions", "tabs", "hooks"],
+    tags: ["useEffect", "tabs", "bulk-actions", "promises", "controlled-inputs"],
     parts: 3,
     level: "senior"
   },
@@ -528,19 +531,151 @@ const PROBLEMS = [
     level: "senior"
   },
   {
+    path: "python/practice_problems/problem_15_tic_tac_toe_engine.py",
+    test: "python/tests/test_problem_15_tic_tac_toe_engine.py",
+    title: "Tic-Tac-Toe Engine",
+    description: "Analyze game boards for winners, optimize move tracking with O(1) incremental counters, then generalize to arbitrary board sizes, win lengths, and player counts.",
+    language: "python",
+    industry: "general",
+    tags: ["game-logic", "incremental-state", "optimization", "generalization"],
+    parts: 3,
+    level: "senior"
+  },
+  {
     path: "react/practice_problems/problem_04_contract_dashboard.jsx",
     test: "react/tests/test_problem_04_contract_dashboard.spec.js",
     title: "Contract Review Dashboard",
     description: "Build a contract list view with status/text filtering, expiration sorting, and inline field editing with optimistic updates and rollback on failure.",
     language: "react",
     industry: "legal-tech",
-    tags: ["clm", "optimistic-updates", "filtering", "inline-editing", "hooks"],
+    tags: ["useMemo", "sorting", "filtering", "inline-editing", "controlled-inputs"],
     parts: 3,
     level: "senior"
   },
   {
-    path: "python/practice_problems/problem_15_card_risk_engine.py",
-    test: "python/tests/test_problem_15_card_risk_engine.py",
+    path: "react/practice_problems/problem_05_campaign_dashboard.tsx",
+    test: "react/tests/test_problem_05_campaign_dashboard.spec.js",
+    title: "Campaign Fundraising Dashboard",
+    description: "Build a live school fundraising dashboard with a real-time donation stream, goal progress bar, donor-type filtering, and optimistic thank-you dispatch with rollback.",
+    language: "react",
+    industry: "ed-tech",
+    tags: ["typescript", "useEffect", "useMemo", "event-streams", "optimistic-updates"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "react/practice_problems/problem_06_fundraising_leaderboard.tsx",
+    test: "react/tests/test_problem_06_fundraising_leaderboard.spec.js",
+    title: "Fundraising Class Leaderboard",
+    description: "Build a sortable alumni class leaderboard with multi-column sort toggling, name search, and optimistic pledge submission with automatic rollback on failure.",
+    language: "react",
+    industry: "ed-tech",
+    tags: ["typescript", "useMemo", "sorting", "controlled-inputs", "optimistic-updates"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "python/practice_problems/problem_16_premium_rating_engine.py",
+    test: "python/tests/test_problem_16_premium_rating_engine.py",
+    title: "Policy Premium Rating Engine",
+    description: "Build a management liability premium calculator that applies coverage-type formulas, risk modifiers (industry, tenure, loss history), and produces portfolio analytics.",
+    language: "python",
+    industry: "insurance-tech",
+    tags: ["rating-engine", "risk-modifiers", "state-machine", "aggregation", "fintech"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "python/practice_problems/problem_17_claims_pipeline.py",
+    test: "python/tests/test_problem_17_claims_pipeline.py",
+    title: "Claims Processing Pipeline",
+    description: "Build a multi-stage claims lifecycle manager covering filing, investigation, settlement and denial — with reserve adequacy tracking and loss-ratio analytics.",
+    language: "python",
+    industry: "insurance-tech",
+    tags: ["state-machine", "event-sourcing", "aggregation", "deadline-tracking"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "react/practice_problems/problem_07_submission_queue.jsx",
+    test: "react/tests/test_problem_07_submission_queue.spec.js",
+    title: "Underwriting Submission Queue",
+    description: "Build an underwriting dashboard with dual-select filtering (coverage type + status), limit-based sorting, and an inline quote form with optimistic updates and rollback.",
+    language: "react",
+    industry: "insurance-tech",
+    tags: ["useMemo", "filtering", "sorting", "optimistic-updates", "controlled-inputs", "inline-editing"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "react/practice_problems/problem_08_claims_tracker.tsx",
+    test: "react/tests/test_problem_08_claims_tracker.spec.js",
+    title: "Claims Tracker",
+    description: "Build a claims tracker that polls for live status updates, filters by status tabs, and expands an inline detail panel with a note-submission form.",
+    language: "react",
+    industry: "insurance-tech",
+    tags: ["typescript", "useEffect", "useRef", "useMemo", "polling", "abort-controller", "compound-components"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "typescript/practice_problems/problem_01_donation_processor.ts",
+    test: "typescript/tests/test_problem_01_donation_processor.test.ts",
+    title: "Donation Processor",
+    description: "Build a donation processor that tracks campaigns, records and refunds donations, computes stats, surfaces top donors, and adds employer matching gifts.",
+    language: "typescript",
+    industry: "ed-tech",
+    tags: ["data-model", "aggregation", "time-series", "financial"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "typescript/practice_problems/problem_02_pledge_tracker.ts",
+    test: "typescript/tests/test_problem_02_pledge_tracker.test.ts",
+    title: "Walkathon Pledge Tracker",
+    description: "Build a walkathon pledge tracker that manages per-lap and flat pledges, computes participant totals after laps are recorded, and generates class leaderboards. Candidates define their own TypeScript types.",
+    language: "typescript",
+    industry: "ed-tech",
+    tags: ["data-model", "aggregation", "leaderboard", "custom-types"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "typescript/practice_problems/problem_03_donor_suppressor.ts",
+    test: "typescript/tests/test_problem_03_donor_suppressor.test.ts",
+    title: "Donor Communication Suppressor",
+    description: "Build a suppression engine that opts donors out, tracks donation history, and filters campaign lists using priority-ordered rules (opt-out, already donated, recency cooldown).",
+    language: "typescript",
+    industry: "ed-tech",
+    tags: ["filtering", "priority-rules", "cooldown", "event-tracking"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "typescript/practice_problems/problem_04_fee_calculator.ts",
+    test: "typescript/tests/test_problem_04_fee_calculator.test.ts",
+    title: "Platform Fee Calculator",
+    description: "Implement a fundraising platform fee calculator supporting card, ACH (with cap), and check payment methods — including a donor-covers-fee gross-up formula and per-campaign transaction summaries.",
+    language: "typescript",
+    industry: "ed-tech",
+    tags: ["fee-calculation", "rounding", "aggregation", "financial"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "typescript/practice_problems/problem_05_giving_day_challenges.ts",
+    test: "typescript/tests/test_problem_05_giving_day_challenges.test.ts",
+    title: "Giving Day Challenge Engine",
+    description: "Build a giving-day challenge engine where sponsors set threshold-based bonus pledges — process donations, auto-complete challenges when thresholds are crossed, and produce an hourly breakdown. Candidates define their own TypeScript types.",
+    language: "typescript",
+    industry: "ed-tech",
+    tags: ["event-driven", "time-window", "challenge-tracking", "custom-types"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "python/practice_problems/problem_18_card_risk_engine.py",
+    test: "python/tests/test_problem_18_card_risk_engine.py",
     title: "Card Transaction Risk Engine",
     description: "Build a card-transaction risk engine that evaluates static fraud rules, layers in sliding-window velocity checks, and auto-blocks cards after repeated declines.",
     language: "python",
@@ -550,8 +685,8 @@ const PROBLEMS = [
     level: "senior"
   },
   {
-    path: "python/practice_problems/problem_16_payment_ledger.py",
-    test: "python/tests/test_problem_16_payment_ledger.py",
+    path: "python/practice_problems/problem_19_payment_ledger.py",
+    test: "python/tests/test_problem_19_payment_ledger.py",
     title: "Payment Ledger & Reconciliation",
     description: "Build an idempotent internal ledger service that records account-to-account transfers, supports reversals, and reconciles applied transfers against an external bank statement feed.",
     language: "python",
@@ -561,8 +696,8 @@ const PROBLEMS = [
     level: "senior"
   },
   {
-    path: "python/practice_problems/problem_17_dunning_scheduler.py",
-    test: "python/tests/test_problem_17_dunning_scheduler.py",
+    path: "python/practice_problems/problem_20_dunning_scheduler.py",
+    test: "python/tests/test_problem_20_dunning_scheduler.py",
     title: "Subscription Dunning & Retry Scheduler",
     description: "Build a subscription billing dunning manager that tracks failed charge attempts, schedules retries with exponential backoff, and auto-cancels subscriptions once retries are exhausted.",
     language: "python",
