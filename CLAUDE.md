@@ -5,6 +5,7 @@ For language-specific instructions, see:
 - **Python:** [`python/CLAUDE.md`](python/CLAUDE.md)
 - **React:** [`react/CLAUDE.md`](react/CLAUDE.md)
 - **TypeScript:** [`typescript/CLAUDE.md`](typescript/CLAUDE.md)
+- **Go:** [`golang/CLAUDE.md`](golang/CLAUDE.md)
 
 ## Repo structure
 
@@ -29,6 +30,10 @@ typescript/
   package.json                # Vitest deps
   vitest.config.ts            # answer-redirect plugin
   tsconfig.json
+golang/
+  practice_problems/          # problem_NN_<name>/ dirs, each with stub.go + types.go + *_test.go
+  practice_problem_answers/   # cw_answer_NN_<name>.go files (filled in by Charlie)
+  go.mod
 ```
 
 ## Problem design rules (all languages)
@@ -72,7 +77,7 @@ near the top of the `<script>` block in that file (look for the comment that say
 ```
 
 ### Valid `language` values
-`python` | `react` | `typescript`
+`python` | `react` | `typescript` | `golang`
 
 ### Valid `level` values (in order)
 `junior` | `mid-level` | `senior` | `staff`

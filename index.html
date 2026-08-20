@@ -211,6 +211,7 @@
     .badge-python      { background: #e8f0fe; color: #1e40af; }
     .badge-react       { background: #e0f7fa; color: #006064; }
     .badge-typescript  { background: #dbeafe; color: #1e3a8a; }
+    .badge-golang      { background: #d1fae5; color: #065f46; }
 
     /* Industry — add a new rule here when adding a new industry value */
     .badge-general      { background: #f1f5f9; color: #475569; }
@@ -355,6 +356,17 @@ const PROBLEMS = [
     level: "senior"
   },
   {
+    path: "golang/practice_problems/problem_01_geofence_alert_engine/stub.go",
+    test: null,
+    title: "Geofence Alert Engine",
+    description: "Build a GPS-based zone monitor that fires configurable alert rules when tracked assets cross geofence boundaries.",
+    language: "golang",
+    industry: "iot",
+    tags: ["event-driven", "geospatial", "alert-system", "data-model"],
+    parts: 4,
+    level: "senior"
+  },
+  {
     path: "python/practice_problems/problem_02_api_rate_limiter.py",
     test: "python/tests/test_problem_02_api_rate_limiter.py",
     title: "Tiered API Rate Limiter",
@@ -366,11 +378,33 @@ const PROBLEMS = [
     level: "senior"
   },
   {
+    path: "golang/practice_problems/problem_02_api_rate_limiter/stub.go",
+    test: null,
+    title: "Tiered API Rate Limiter",
+    description: "Implement a sliding-window rate limiter with per-minute and per-day caps across multiple subscription tiers.",
+    language: "golang",
+    industry: "general",
+    tags: ["rate-limiting", "sliding-window", "tiered-plans", "time-series", "api-platform"],
+    parts: 4,
+    level: "senior"
+  },
+  {
     path: "python/practice_problems/problem_03_permission_manager.py",
     test: "python/tests/test_problem_03_permission_manager.py",
     title: "Permission Manager (RBAC)",
     description: "Build a role-based access control engine supporting role inheritance and wildcard permission matching.",
     language: "python",
+    industry: "general",
+    tags: ["rbac", "permissions", "role-hierarchy", "wildcard-matching", "saas"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "golang/practice_problems/problem_03_permission_manager/stub.go",
+    test: null,
+    title: "Permission Manager (RBAC)",
+    description: "Build a role-based access control engine supporting role inheritance and wildcard permission matching.",
+    language: "golang",
     industry: "general",
     tags: ["rbac", "permissions", "role-hierarchy", "wildcard-matching", "saas"],
     parts: 3,
