@@ -5,6 +5,7 @@ For language-specific instructions, see:
 - **Python:** [`python/CLAUDE.md`](python/CLAUDE.md)
 - **React:** [`react/CLAUDE.md`](react/CLAUDE.md)
 - **TypeScript:** [`typescript/CLAUDE.md`](typescript/CLAUDE.md)
+- **Go:** [`golang/CLAUDE.md`](golang/CLAUDE.md)
 
 ## Repo structure
 
@@ -29,6 +30,10 @@ typescript/
   package.json                # Vitest deps
   vitest.config.ts            # answer-redirect plugin
   tsconfig.json
+golang/
+  practice_problems/          # problem_NN_<name>/ dirs, each with stub.go + types.go + *_test.go
+  practice_problem_answers/   # cw_answer_NN_<name>.go files (filled in by Charlie)
+  go.mod
 ```
 
 ## Problem design rules (all languages)
@@ -51,9 +56,8 @@ apply across company types (SaaS, API platform, IoT, dev tools, etc.).
 ## Keeping the problem index up to date
 
 `index.html` at the repo root is a self-contained searchable index of all practice
-problems. **Every time you create a new problem, add an entry to the `PROBLEMS` array**
-near the top of the `<script>` block in that file (look for the comment that says
-`PROBLEM INDEX — add new problems here`).
+problems. It references a `PROBLEMS` array in `data.js` at the repo root.
+**Every time you create a new problem, add an entry to the `PROBLEMS` array**
 
 ### Entry format
 
@@ -63,16 +67,16 @@ near the top of the `<script>` block in that file (look for the comment that say
   test: "python/tests/test_problem_NN_<name>.py",         // path to the test file (null for React problems without a separate test)
   title: "Short Human-Readable Title",                     // shown as the card heading
   description: "One or two sentences describing what the candidate builds.",
-  language: "python",           // "python" | "react" | "typescript"
+  language: "python",           // "python" | "react" | "typescript" | "golan"
   industry: "health-tech",      // see valid values below
-  tags: ["tag-one", "tag-two"], // 2–5 kebab-case strings
+  tags: ["tag-one", "tag-two"], // max 10 kebab-case strings (try to add all relevant tags)
   parts: 3,                     // number of implementation parts
   level: "senior"               // "junior" | "mid-level" | "senior" | "staff"
 }
 ```
 
 ### Valid `language` values
-`python` | `react` | `typescript`
+`python` | `react` | `typescript` | `golang`
 
 ### Valid `level` values (in order)
 `junior` | `mid-level` | `senior` | `staff`

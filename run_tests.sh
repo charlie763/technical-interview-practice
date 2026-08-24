@@ -32,6 +32,25 @@
 #   sets PRACTICE_ANSWER to that stem, then runs the Jest command from typescript/.
 #   jest.config.js uses moduleNameMapper to redirect the stub import to the answer file.
 #
+# ── Go problems ───────────────────────────────────────────────────────────────
+# Usage:
+#   ./run_tests.sh -f <path-to-answer.go> -c <go-test-command...>
+#
+# Examples:
+#   ./run_tests.sh \
+#     -f golang/practice_problem_answers/cw_answer_01_geofence_alert_engine.go \
+#     -c go test -v .
+#
+#   ./run_tests.sh \
+#     -f golang/practice_problem_answers/cw_answer_01_geofence_alert_engine.go \
+#     -c go test -v -run TestIsInZone .
+#
+# How it works (Go):
+#   Extracts the problem ID from the answer filename (e.g. 01_geofence_alert_engine),
+#   copies *_test.go from the problem directory plus the answer file
+#   (as solution.go) into a temp directory, writes a minimal go.mod, then runs
+#   the test command inside that temp directory. No common files are modified.
+#
 # ── React problems ────────────────────────────────────────────────────────────
 # Usage:
 #   ./run_tests.sh -f <path-to-answer-dir> -c <npm-test-command...>
@@ -131,6 +150,50 @@ if [[ "$IS_DIR" == true || "$ANSWER_ABS" == *.jsx || "$ANSWER_ABS" == *.tsx ]]; 
 
     cd "$REPO_ROOT/react"
     PRACTICE_ANSWER="$ANSWER_DIR" "${CMD[@]}"
+    exit $?
+fi
+
+# ── Go mode: .go answer files ────────────────────────────────────────────────
+if [[ "$IS_DIR" == false && "$ANSWER_ABS" == *.go ]]; then
+    FILENAME=$(basename "$ANSWER_ABS" .go)
+    # Extract NN_name from filename (e.g. cw_answer_01_geofence_alert_engine → 01_geofence_alert_engine)
+    PROBLEM_ID=$(echo "$FILENAME" | grep -oE '[0-9]{2}_[a-z_]+')
+
+    if [[ -z "$PROBLEM_ID" ]]; then
+        echo "Error: could not extract problem ID from filename: $FILENAME"
+        echo "Expected format: *_NN_<name>.go (e.g. cw_answer_01_geofence_alert_engine.go)"
+        exit 1
+    fi
+
+    PROBLEM_DIR="$REPO_ROOT/golang/practice_problems/problem_${PROBLEM_ID}"
+
+    if [[ ! -d "$PROBLEM_DIR" ]]; then
+        echo "Error: no problem directory found: $PROBLEM_DIR"
+        exit 1
+    fi
+
+    # Create a temp working directory; clean it up on exit
+    GO_TMPDIR=$(mktemp -d)
+    trap "rm -rf '$GO_TMPDIR'" EXIT
+
+    # Copy *_test.go from the problem directory
+    for f in "$PROBLEM_DIR"/*_test.go; do
+        cp "$f" "$GO_TMPDIR/"
+    done
+
+    # Copy the answer file as solution.go
+    cp "$ANSWER_ABS" "$GO_TMPDIR/solution.go"
+
+    # Write a minimal go.mod so 'go test' resolves correctly
+    printf 'module practice\n\ngo 1.22.0\n' > "$GO_TMPDIR/go.mod"
+
+    echo "Answer : $ANSWER → $GO_TMPDIR/solution.go"
+    echo "Command: ${CMD[*]}"
+    echo "Working: $GO_TMPDIR"
+    echo ""
+
+    cd "$GO_TMPDIR"
+    "${CMD[@]}"
     exit $?
 fi
 

@@ -211,6 +211,7 @@
     .badge-python      { background: #e8f0fe; color: #1e40af; }
     .badge-react       { background: #e0f7fa; color: #006064; }
     .badge-typescript  { background: #dbeafe; color: #1e3a8a; }
+    .badge-golang      { background: #d1fae5; color: #065f46; }
 
     /* Industry — add a new rule here when adding a new industry value */
     .badge-general      { background: #f1f5f9; color: #475569; }
@@ -334,354 +335,14 @@
 </main>
 
 <div class="toast" id="toast">Path copied!</div>
-
+ <script src="data.js"></script>
 <script>
-// ============================================================
-// PROBLEM INDEX
-// To add a new problem, append an entry to this array.
-// See CLAUDE.md § "Keeping the problem index up to date" for
-// field definitions, valid values, and badge colour rules.
-// ============================================================
-const PROBLEMS = [
-  {
-    path: "python/practice_problems/problem_01_geofence_alert_engine.py",
-    test: "python/tests/test_problem_01_geofence_alert_engine.py",
-    title: "Geofence Alert Engine",
-    description: "Build a GPS-based zone monitor that fires configurable alert rules when tracked assets cross geofence boundaries.",
-    language: "python",
-    industry: "iot",
-    tags: ["event-driven", "geospatial", "alert-system", "data-model"],
-    parts: 3,
-    level: "senior"
-  },
-  {
-    path: "python/practice_problems/problem_02_api_rate_limiter.py",
-    test: "python/tests/test_problem_02_api_rate_limiter.py",
-    title: "Tiered API Rate Limiter",
-    description: "Implement a sliding-window rate limiter with per-minute and per-day caps across multiple subscription tiers.",
-    language: "python",
-    industry: "general",
-    tags: ["rate-limiting", "sliding-window", "tiered-plans", "time-series", "api-platform"],
-    parts: 3,
-    level: "senior"
-  },
-  {
-    path: "python/practice_problems/problem_03_permission_manager.py",
-    test: "python/tests/test_problem_03_permission_manager.py",
-    title: "Permission Manager (RBAC)",
-    description: "Build a role-based access control engine supporting role inheritance and wildcard permission matching.",
-    language: "python",
-    industry: "general",
-    tags: ["rbac", "permissions", "role-hierarchy", "wildcard-matching", "saas"],
-    parts: 3,
-    level: "senior"
-  },
-  {
-    path: "python/practice_problems/problem_04_biomarker_alert.py",
-    test: "python/tests/test_problem_04_biomarker_alert.py",
-    title: "Biomarker Alert Monitor",
-    description: "Process patient readings to track consecutive out-of-range days and generate prioritized coach outreach lists.",
-    language: "python",
-    industry: "health-tech",
-    tags: ["time-series", "consecutive-tracking", "clinical-monitoring", "alert-system"],
-    parts: 3,
-    level: "senior"
-  },
-  {
-    path: "python/practice_problems/problem_05_medication_titration.py",
-    test: "python/tests/test_problem_05_medication_titration.py",
-    title: "Medication Titration Tracker",
-    description: "Track dosage adjustment events over time, handling out-of-order arrivals and querying active medication history.",
-    language: "python",
-    industry: "health-tech",
-    tags: ["event-sourcing", "out-of-order-events", "medication", "clinical"],
-    parts: 3,
-    level: "senior"
-  },
-  {
-    path: "python/practice_problems/problem_06_lab_cadence.py",
-    test: "python/tests/test_problem_06_lab_cadence.py",
-    title: "Lab Cadence Compliance Monitor",
-    description: "Track required lab submission deadlines per patient and surface overdue labs for health coach follow-up.",
-    language: "python",
-    industry: "health-tech",
-    tags: ["deadline-tracking", "compliance", "scheduling", "clinical"],
-    parts: 3,
-    level: "senior"
-  },
-  {
-    path: "python/practice_problems/problem_07_care_team_assignments.py",
-    test: "python/tests/test_problem_07_care_team_assignments.py",
-    title: "Care Team Assignment Manager",
-    description: "Assign patients to care team members by role with capacity enforcement and a full reassignment audit trail queryable by timestamp.",
-    language: "python",
-    industry: "health-tech",
-    tags: ["relational-data", "capacity-constraints", "audit-trail", "temporal-queries"],
-    parts: 3,
-    level: "senior"
-  },
-  {
-    path: "python/practice_problems/problem_08_enrollment_pipeline.py",
-    test: "python/tests/test_problem_08_enrollment_pipeline.py",
-    title: "Patient Enrollment Pipeline",
-    description: "Model a clinical enrollment state machine with duration metrics, conversion rates between stages, and SLA monitoring for patients overdue in a state.",
-    language: "python",
-    industry: "health-tech",
-    tags: ["state-machine", "metrics", "conversion-rate", "sla-monitoring", "clinical"],
-    parts: 3,
-    level: "senior"
-  },
-  {
-    path: "react/practice_problems/problem_01_activity_feed.jsx",
-    test: null,
-    title: "Activity Feed with Filtering & Optimistic Updates",
-    description: "Build a real-time event feed with client-side filtering and optimistic acknowledgement with automatic rollback on failure.",
-    language: "react",
-    industry: "general",
-    tags: ["useEffect", "useMemo", "event-streams", "optimistic-updates"],
-    parts: 3,
-    level: "senior"
-  },
-  {
-    path: "python/practice_problems/problem_09_incident_aggregator.py",
-    test: "python/tests/test_problem_09_incident_aggregator.py",
-    title: "Multi-Source Incident Aggregator",
-    description: "Ingest reports from multiple data sources, manually group them into unified incidents, and auto-deduplicate new arrivals using a sliding time window.",
-    language: "python",
-    industry: "public-safety",
-    tags: ["event-deduplication", "time-window", "alert-system", "event-driven"],
-    parts: 3,
-    level: "senior"
-  },
-  {
-    path: "python/practice_problems/problem_10_dispatch_manager.py",
-    test: "python/tests/test_problem_10_dispatch_manager.py",
-    title: "Responder Dispatch Manager",
-    description: "Route incoming incident alerts to field responders based on type subscriptions and capacity limits, with auto-assignment selecting the least-loaded eligible unit.",
-    language: "python",
-    industry: "public-safety",
-    tags: ["dispatch", "capacity-constraints", "priority-queue", "auto-assignment"],
-    parts: 3,
-    level: "senior"
-  },
-  {
-    path: "python/practice_problems/problem_11_coverage_tracker.py",
-    test: "python/tests/test_problem_11_coverage_tracker.py",
-    title: "Sensor Coverage Tracker",
-    description: "Monitor radio-receiver station health via heartbeats, track outage history with duration metrics, and compute per-region coverage status.",
-    language: "python",
-    industry: "public-safety",
-    tags: ["heartbeat-monitoring", "outage-tracking", "time-series", "coverage-analysis"],
-    parts: 3,
-    level: "senior"
-  },
-  {
-    path: "react/practice_problems/problem_02_incident_dashboard.jsx",
-    test: "react/tests/test_problem_02_incident_dashboard.spec.js",
-    title: "Real-Time Incident Dashboard",
-    description: "Build a live incident monitoring panel with a real-time feed, severity/type filtering, and an optimistic 'Contain' action with rollback on failure.",
-    language: "react",
-    industry: "public-safety",
-    tags: ["useEffect", "useMemo", "event-streams", "filtering", "optimistic-updates"],
-    parts: 3,
-    level: "senior"
-  },
-  {
-    path: "react/practice_problems/problem_03_alert_triage_console.jsx",
-    test: "react/tests/test_problem_03_alert_triage_console.spec.js",
-    title: "Alert Triage Console",
-    description: "Build a dispatch ops queue with real-time alert ingestion, unit assignment with optimistic updates, tab-based filtering, and bulk-acknowledge.",
-    language: "react",
-    industry: "public-safety",
-    tags: ["useEffect", "tabs", "bulk-actions", "promises", "controlled-inputs"],
-    parts: 3,
-    level: "senior"
-  },
-  {
-    path: "python/practice_problems/problem_12_contract_alert_scheduler.py",
-    test: "python/tests/test_problem_12_contract_alert_scheduler.py",
-    title: "Contract Expiration Alert Scheduler",
-    description: "Schedule and track expiration alerts for contracts — register global alert configs, compute per-contract alert schedules, query due alerts, and track sent state.",
-    language: "python",
-    industry: "legal-tech",
-    tags: ["scheduling", "date-arithmetic", "clm", "notifications"],
-    parts: 3,
-    level: "senior"
-  },
-  {
-    path: "python/practice_problems/problem_13_contract_lifecycle.py",
-    test: "python/tests/test_problem_13_contract_lifecycle.py",
-    title: "Contract Lifecycle State Machine",
-    description: "Manage contract state transitions through a defined lifecycle (draft → executed → expired), enforcing valid transitions, audit-logging every change, and surfacing overdue contracts.",
-    language: "python",
-    industry: "legal-tech",
-    tags: ["state-machine", "audit-trail", "clm", "lifecycle"],
-    parts: 3,
-    level: "senior"
-  },
-  {
-    path: "python/practice_problems/problem_14_contract_amendment.py",
-    test: "python/tests/test_problem_14_contract_amendment.py",
-    title: "Contract Amendment Manager",
-    description: "Track amendments to signed contracts and resolve the effective field values as of any date by applying base fields and chronological overrides.",
-    language: "python",
-    industry: "legal-tech",
-    tags: ["clm", "versioning", "date-arithmetic", "event-sourcing"],
-    parts: 3,
-    level: "senior"
-  },
-  {
-    path: "python/practice_problems/problem_15_tic_tac_toe_engine.py",
-    test: "python/tests/test_problem_15_tic_tac_toe_engine.py",
-    title: "Tic-Tac-Toe Engine",
-    description: "Analyze game boards for winners, optimize move tracking with O(1) incremental counters, then generalize to arbitrary board sizes, win lengths, and player counts.",
-    language: "python",
-    industry: "general",
-    tags: ["game-logic", "incremental-state", "optimization", "generalization"],
-    parts: 3,
-    level: "senior"
-  },
-  {
-    path: "react/practice_problems/problem_04_contract_dashboard.jsx",
-    test: "react/tests/test_problem_04_contract_dashboard.spec.js",
-    title: "Contract Review Dashboard",
-    description: "Build a contract list view with status/text filtering, expiration sorting, and inline field editing with optimistic updates and rollback on failure.",
-    language: "react",
-    industry: "legal-tech",
-    tags: ["useMemo", "sorting", "filtering", "inline-editing", "controlled-inputs"],
-    parts: 3,
-    level: "senior"
-  },
-  {
-    path: "react/practice_problems/problem_05_campaign_dashboard.tsx",
-    test: "react/tests/test_problem_05_campaign_dashboard.spec.js",
-    title: "Campaign Fundraising Dashboard",
-    description: "Build a live school fundraising dashboard with a real-time donation stream, goal progress bar, donor-type filtering, and optimistic thank-you dispatch with rollback.",
-    language: "react",
-    industry: "ed-tech",
-    tags: ["typescript", "useEffect", "useMemo", "event-streams", "optimistic-updates"],
-    parts: 3,
-    level: "senior"
-  },
-  {
-    path: "react/practice_problems/problem_06_fundraising_leaderboard.tsx",
-    test: "react/tests/test_problem_06_fundraising_leaderboard.spec.js",
-    title: "Fundraising Class Leaderboard",
-    description: "Build a sortable alumni class leaderboard with multi-column sort toggling, name search, and optimistic pledge submission with automatic rollback on failure.",
-    language: "react",
-    industry: "ed-tech",
-    tags: ["typescript", "useMemo", "sorting", "controlled-inputs", "optimistic-updates"],
-    parts: 3,
-    level: "senior"
-  },
-  {
-    path: "python/practice_problems/problem_16_premium_rating_engine.py",
-    test: "python/tests/test_problem_16_premium_rating_engine.py",
-    title: "Policy Premium Rating Engine",
-    description: "Build a management liability premium calculator that applies coverage-type formulas, risk modifiers (industry, tenure, loss history), and produces portfolio analytics.",
-    language: "python",
-    industry: "insurance-tech",
-    tags: ["rating-engine", "risk-modifiers", "state-machine", "aggregation", "fintech"],
-    parts: 3,
-    level: "senior"
-  },
-  {
-    path: "python/practice_problems/problem_17_claims_pipeline.py",
-    test: "python/tests/test_problem_17_claims_pipeline.py",
-    title: "Claims Processing Pipeline",
-    description: "Build a multi-stage claims lifecycle manager covering filing, investigation, settlement and denial — with reserve adequacy tracking and loss-ratio analytics.",
-    language: "python",
-    industry: "insurance-tech",
-    tags: ["state-machine", "event-sourcing", "aggregation", "deadline-tracking"],
-    parts: 3,
-    level: "senior"
-  },
-  {
-    path: "react/practice_problems/problem_07_submission_queue.jsx",
-    test: "react/tests/test_problem_07_submission_queue.spec.js",
-    title: "Underwriting Submission Queue",
-    description: "Build an underwriting dashboard with dual-select filtering (coverage type + status), limit-based sorting, and an inline quote form with optimistic updates and rollback.",
-    language: "react",
-    industry: "insurance-tech",
-    tags: ["useMemo", "filtering", "sorting", "optimistic-updates", "controlled-inputs", "inline-editing"],
-    parts: 3,
-    level: "senior"
-  },
-  {
-    path: "react/practice_problems/problem_08_claims_tracker.tsx",
-    test: "react/tests/test_problem_08_claims_tracker.spec.js",
-    title: "Claims Tracker",
-    description: "Build a claims tracker that polls for live status updates, filters by status tabs, and expands an inline detail panel with a note-submission form.",
-    language: "react",
-    industry: "insurance-tech",
-    tags: ["typescript", "useEffect", "useRef", "useMemo", "polling", "abort-controller", "compound-components"],
-    parts: 3,
-    level: "senior"
-  },
-  {
-    path: "typescript/practice_problems/problem_01_donation_processor.ts",
-    test: "typescript/tests/test_problem_01_donation_processor.test.ts",
-    title: "Donation Processor",
-    description: "Build a donation processor that tracks campaigns, records and refunds donations, computes stats, surfaces top donors, and adds employer matching gifts.",
-    language: "typescript",
-    industry: "ed-tech",
-    tags: ["data-model", "aggregation", "time-series", "financial"],
-    parts: 3,
-    level: "senior"
-  },
-  {
-    path: "typescript/practice_problems/problem_02_pledge_tracker.ts",
-    test: "typescript/tests/test_problem_02_pledge_tracker.test.ts",
-    title: "Walkathon Pledge Tracker",
-    description: "Build a walkathon pledge tracker that manages per-lap and flat pledges, computes participant totals after laps are recorded, and generates class leaderboards. Candidates define their own TypeScript types.",
-    language: "typescript",
-    industry: "ed-tech",
-    tags: ["data-model", "aggregation", "leaderboard", "custom-types"],
-    parts: 3,
-    level: "senior"
-  },
-  {
-    path: "typescript/practice_problems/problem_03_donor_suppressor.ts",
-    test: "typescript/tests/test_problem_03_donor_suppressor.test.ts",
-    title: "Donor Communication Suppressor",
-    description: "Build a suppression engine that opts donors out, tracks donation history, and filters campaign lists using priority-ordered rules (opt-out, already donated, recency cooldown).",
-    language: "typescript",
-    industry: "ed-tech",
-    tags: ["filtering", "priority-rules", "cooldown", "event-tracking"],
-    parts: 3,
-    level: "senior"
-  },
-  {
-    path: "typescript/practice_problems/problem_04_fee_calculator.ts",
-    test: "typescript/tests/test_problem_04_fee_calculator.test.ts",
-    title: "Platform Fee Calculator",
-    description: "Implement a fundraising platform fee calculator supporting card, ACH (with cap), and check payment methods — including a donor-covers-fee gross-up formula and per-campaign transaction summaries.",
-    language: "typescript",
-    industry: "ed-tech",
-    tags: ["fee-calculation", "rounding", "aggregation", "financial"],
-    parts: 3,
-    level: "senior"
-  },
-  {
-    path: "typescript/practice_problems/problem_05_giving_day_challenges.ts",
-    test: "typescript/tests/test_problem_05_giving_day_challenges.test.ts",
-    title: "Giving Day Challenge Engine",
-    description: "Build a giving-day challenge engine where sponsors set threshold-based bonus pledges — process donations, auto-complete challenges when thresholds are crossed, and produce an hourly breakdown. Candidates define their own TypeScript types.",
-    language: "typescript",
-    industry: "ed-tech",
-    tags: ["event-driven", "time-window", "challenge-tracking", "custom-types"],
-    parts: 3,
-    level: "senior"
-  }
-];
-// ============================================================
-
 // ── Derived from the file's own URL — works for any local clone ──────────────
 const repoRoot = window.location.pathname.replace(/\/index\.html$/, "");
 
 // ── Filter state ─────────────────────────────────────────────────────────────
 const LEVELS = ["junior", "mid-level", "senior", "staff"]; // canonical order
-const state = { search: "", language: null, industry: null, level: null, tag: null };
+const state = { search: "", language: "python", industry: null, level: null, tag: null };
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 const unique = arr => [...new Set(arr)];
@@ -720,9 +381,9 @@ function renderFilters() {
 
   document.getElementById("language-filters").innerHTML =
     `<span class="filter-label">Language</span>` +
-    ["all", ...langs].map(l => {
-      const active = l === "all" ? !state.language : state.language === l;
-      return `<button class="filter-btn${active ? " active" : ""}" data-lang="${l}">${l === "all" ? "All" : label(l)}</button>`;
+    [...langs].map(l => {
+      const active = state.language === l;
+      return `<button class="filter-btn${active ? " active" : ""}" data-lang="${l}">${label(l)}</button>`;
     }).join("");
 
   document.getElementById("industry-filters").innerHTML =
@@ -811,7 +472,7 @@ document.getElementById("search-input").addEventListener("input", e => {
 document.getElementById("language-filters").addEventListener("click", e => {
   const btn = e.target.closest("[data-lang]");
   if (!btn) return;
-  state.language = btn.dataset.lang === "all" ? null : btn.dataset.lang;
+  state.language = btn.dataset.lang;
   render();
 });
 
