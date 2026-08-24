@@ -87,9 +87,38 @@ Implement `add_submission`, `get_submission`, and `calculate_base_premium`.
 """
 
 from __future__ import annotations
+from dataclasses import dataclass
+from decimal import Decimal
+from math import isclose
 
 COVERAGE_TYPES = {"epl", "do", "fiduciary"}
 INDUSTRY_RISKS = {"low", "medium", "high"}
+INDUSTRY_RISK_MAP = {
+    "low": Decimal(0.85),
+    "medium": Decimal(1.00),
+    "high": Decimal(1.35),
+}
+
+
+@dataclass
+class PriorClaim:
+    year: int  # calendar year of the claim
+    amount: int  # dollars paid/reserved
+    claim_type: str  # e.g. "epl", "do", "fiduciary"
+
+
+@dataclass
+class PolicySubmission:
+    submission_id: str
+    coverage_type: str  # epl | do | fiduciary
+    company_name: str
+    employee_count: int
+    annual_revenue: int  # dollars
+    years_in_business: int
+    industry_risk: str  # low | medium | high
+    requested_limit: int  # policy limit in dollars
+    deductible: int  # self-insured retention in dollars
+    prior_claims: list[PriorClaim]  # list of PriorClaim dicts (see below)
 
 
 class PremiumRatingEngine:
@@ -98,7 +127,7 @@ class PremiumRatingEngine:
     """
 
     def __init__(self):
-        raise NotImplementedError
+        self.policy_submissions: dict[str, PolicySubmission] = {}
 
     # ── Part 1 ────────────────────────────────────────────────────────────────
 
@@ -113,7 +142,7 @@ class PremiumRatingEngine:
         industry_risk: str,
         requested_limit: int,
         deductible: int,
-    ) -> dict:
+    ) -> PolicySubmission:
         """
         Register a new policy submission.
 
@@ -147,9 +176,29 @@ class PremiumRatingEngine:
             "epl"/"do"/"fiduciary", or industry_risk is not one of
             "low"/"medium"/"high".
         """
-        raise NotImplementedError
+        existing_policy_submission = self.policy_submissions.get(submission_id)
+        if (
+            existing_policy_submission
+            or coverage_type not in COVERAGE_TYPES
+            or industry_risk not in INDUSTRY_RISKS
+        ):
+            raise ValueError
+        new_submission = {
+            "submission_id": submission_id,
+            "coverage_type": coverage_type,  # epl | do | fiduciary
+            "company_name": company_name,
+            "employee_count": employee_count,
+            "annual_revenue": annual_revenue,  # dollars
+            "years_in_business": years_in_business,
+            "industry_risk": industry_risk,  # low | medium | high
+            "requested_limit": requested_limit,  # policy limit in dollars
+            "deductible": deductible,  # self-insured retention in dollars
+            "prior_claims": [],  # list of PriorClaim dicts (see below)
+        }
+        self.policy_submissions[submission_id] = new_submission
+        return new_submission
 
-    def get_submission(self, submission_id: str) -> dict:
+    def get_submission(self, submission_id: str) -> PolicySubmission:
         """
         Return the submission dict.
 
@@ -158,7 +207,10 @@ class PremiumRatingEngine:
         KeyError
             If submission_id does not exist.
         """
-        raise NotImplementedError
+        existing_policy_submission = self.policy_submissions.get(submission_id)
+        if not existing_policy_submission:
+            raise KeyError
+        return existing_policy_submission
 
     def calculate_base_premium(self, submission_id: str) -> int:
         """
@@ -175,7 +227,46 @@ class PremiumRatingEngine:
         KeyError
             If submission_id does not exist.
         """
-        raise NotImplementedError
+        submission = self.get_submission(submission_id=submission_id)
+        employee_count = submission["employee_count"]
+        annual_revenue = submission["annual_revenue"]
+        base_premium = 0
+        if submission["coverage_type"] == "epl":
+            base_premium = (
+                1_200 + 15 * employee_count + annual_revenue * Decimal(0.0008)
+            )
+        elif submission["coverage_type"] == "do":
+            base_premium = 2_500 + annual_revenue * Decimal(0.0010)
+        elif submission["coverage_type"] == "fiduciary":
+            base_premium = 800 + annual_revenue * Decimal(0.0004)
+        base_premium = min(base_premium, Decimal(0.03) * submission["requested_limit"])
+        base_premium = max(base_premium, 500)
+        return round(base_premium)
+
+    #     PREMIUM RATING RULES
+    # --------------------
+    # Base premium by coverage type (Part 1):
+    #   EPL:       $1,200 + ($15 × employee_count) + (annual_revenue × 0.0008)
+    #   D&O:       $2,500 + (annual_revenue × 0.0010)
+    #   Fiduciary: $800   + (annual_revenue × 0.0004)
+    #   Cap:       base_premium may not exceed 3% of requested_limit
+    #   Floor:     base_premium may not be less than $500
+
+    # Risk modifiers applied to base premium (Part 2):
+    #   industry_risk:
+    #     "low"    → × 0.85
+    #     "medium" → × 1.00
+    #     "high"   → × 1.35
+    #   years_in_business:
+    #     < 3      → × 1.25
+    #     3–10     → × 1.00
+    #     > 10     → × 0.90
+    #   prior_claims in the last 3 years (relative to the current_year argument):
+    #     Each qualifying claim adds +15% (multiplicative modifier cap: +60%)
+    #     Qualifying = claim_type matches coverage_type OR claim_type is "any"
+
+    #   Final premium = base × industry_modifier × tenure_modifier × claims_modifier
+    #   Final premium floor: max(final, deductible // 10, 500)
 
     # ── Part 2 ────────────────────────────────────────────────────────────────
 
@@ -185,7 +276,7 @@ class PremiumRatingEngine:
         year: int,
         amount: int,
         claim_type: str,
-    ) -> dict:
+    ) -> PriorClaim:
         """
         Append a PriorClaim to the submission's prior_claims list.
 
@@ -210,7 +301,14 @@ class PremiumRatingEngine:
         KeyError
             If submission_id does not exist.
         """
-        raise NotImplementedError
+        submission = self.get_submission(submission_id=submission_id)
+        new_claim = {
+            "year": year,  # calendar year of the claim
+            "amount": amount,  # dollars paid/reserved
+            "claim_type": claim_type,  # e.g. "epl", "do", "fiduciary"
+        }
+        submission["prior_claims"].append(new_claim)
+        return new_claim
 
     def calculate_final_premium(
         self,
@@ -254,7 +352,40 @@ class PremiumRatingEngine:
         KeyError
             If submission_id does not exist.
         """
-        raise NotImplementedError
+        submission = self.get_submission(submission_id=submission_id)
+        base_premium = self.calculate_base_premium(submission_id=submission_id)
+        industry_modifier = INDUSTRY_RISK_MAP[submission["industry_risk"]]
+        tenure_modifier = None
+        claims_modifier = Decimal(1)
+        years_in_business = submission["years_in_business"]
+        prior_claims = submission.get("prior_claims", [])
+        if years_in_business < 3:
+            tenure_modifier = Decimal(1.25)
+        elif years_in_business > 10:
+            tenure_modifier = Decimal(0.9)
+        else:
+            tenure_modifier = 1
+        for claim in prior_claims:
+            if (
+                not isclose(claims_modifier, 1.6)
+                and claim["year"] >= current_year - 3
+                and (
+                    claim["claim_type"] == "any"
+                    or claim["claim_type"] == submission["coverage_type"]
+                )
+            ):
+                claims_modifier += round(Decimal(0.15), 2)
+        final_premium = (
+            base_premium * industry_modifier * tenure_modifier * claims_modifier
+        )
+        final_premium = max(final_premium, submission["deductible"] // 10, 500)
+        return {
+            "base_premium": base_premium,
+            "industry_modifier": industry_modifier,
+            "tenure_modifier": tenure_modifier,
+            "claims_modifier": float(claims_modifier),
+            "final_premium": round(final_premium),
+        }
 
     # ── Part 3 ────────────────────────────────────────────────────────────────
 
@@ -268,7 +399,27 @@ class PremiumRatingEngine:
             Keys are coverage types that have at least one submission.
             Values are lists of submission dicts, sorted by submission_id.
         """
-        raise NotImplementedError
+        # improvement: sort in place?
+        submissions_by_coverage_type = {}
+        for submission in self.policy_submissions.values():
+            existing_coverage_type_submissions = submissions_by_coverage_type.get(
+                submission["coverage_type"], []
+            )
+            insertion_idx = 0
+            for existing_sub in existing_coverage_type_submissions:
+                if submission["submission_id"] > existing_sub["submission_id"]:
+                    insertion_idx += 1
+                else:
+                    break
+            existing_coverage_type_submissions = [
+                *existing_coverage_type_submissions[:insertion_idx],
+                submission,
+                *existing_coverage_type_submissions[insertion_idx:],
+            ]
+            submissions_by_coverage_type[submission["coverage_type"]] = (
+                existing_coverage_type_submissions
+            )
+        return submissions_by_coverage_type
 
     def get_portfolio_metrics(self, current_year: int) -> dict:
         """
