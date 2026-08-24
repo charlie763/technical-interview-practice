@@ -715,7 +715,7 @@ const repoRoot = window.location.pathname.replace(/\/index\.html$/, "");
 
 // ── Filter state ─────────────────────────────────────────────────────────────
 const LEVELS = ["junior", "mid-level", "senior", "staff"]; // canonical order
-const state = { search: "", language: null, industry: null, level: null, tag: null };
+const state = { search: "", language: "python", industry: null, level: null, tag: null };
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 const unique = arr => [...new Set(arr)];
@@ -754,9 +754,9 @@ function renderFilters() {
 
   document.getElementById("language-filters").innerHTML =
     `<span class="filter-label">Language</span>` +
-    ["all", ...langs].map(l => {
-      const active = l === "all" ? !state.language : state.language === l;
-      return `<button class="filter-btn${active ? " active" : ""}" data-lang="${l}">${l === "all" ? "All" : label(l)}</button>`;
+    [...langs].map(l => {
+      const active = state.language === l;
+      return `<button class="filter-btn${active ? " active" : ""}" data-lang="${l}">${label(l)}</button>`;
     }).join("");
 
   document.getElementById("industry-filters").innerHTML =
@@ -845,7 +845,7 @@ document.getElementById("search-input").addEventListener("input", e => {
 document.getElementById("language-filters").addEventListener("click", e => {
   const btn = e.target.closest("[data-lang]");
   if (!btn) return;
-  state.language = btn.dataset.lang === "all" ? null : btn.dataset.lang;
+  state.language = btn.dataset.lang;
   render();
 });
 
