@@ -95,6 +95,19 @@ Each problem uses a short, descriptive package name:
 | Problem 07 — Care Team Assignment Manager | `careteam` |
 | Problem 08 — Patient Enrollment Pipeline | `enrollment` |
 | Problem 09 — Multi-Source Incident Aggregator | `incidents` |
+| Problem 10 — Responder Dispatch Manager | `dispatch` |
+| Problem 11 — Sensor Coverage Tracker | `coverage` |
+| Problem 12 — Contract Expiration Alert Scheduler | `alertscheduler` |
+| Problem 13 — Contract Lifecycle State Machine | `lifecycle` |
+| Problem 14 — Contract Amendment Manager | `amendments` |
+| Problem 15 — Tic-Tac-Toe Engine | `tictactoe` |
+| Problem 16 — Policy Premium Rating Engine | `premiumrating` |
+| Problem 17 — Claims Processing Pipeline | `claims` |
+| Problem 18 — Donation Processor | `donations` |
+| Problem 19 — Walkathon Pledge Tracker | `pledges` |
+| Problem 20 — Donor Communication Suppressor | `suppressor` |
+| Problem 21 — Platform Fee Calculator | `fees` |
+| Problem 22 — Giving Day Challenge Engine | `challenges` |
 
 New problems should follow the same pattern. Avoid `main` and generic names like `solution`.
 

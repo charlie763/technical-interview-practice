@@ -356,7 +356,7 @@ const PROBLEMS = [
     level: "senior"
   },
   {
-    path: "golang/practice_problems/problem_01_geofence_alert_engine/stub.go",
+    path: "golang/practice_problems/problem_01_geofence_alert_engine/problem.go",
     test: null,
     title: "Geofence Alert Engine",
     description: "Build a GPS-based zone monitor that fires configurable alert rules when tracked assets cross geofence boundaries.",
@@ -378,7 +378,7 @@ const PROBLEMS = [
     level: "senior"
   },
   {
-    path: "golang/practice_problems/problem_02_api_rate_limiter/stub.go",
+    path: "golang/practice_problems/problem_02_api_rate_limiter/problem.go",
     test: null,
     title: "Tiered API Rate Limiter",
     description: "Implement a sliding-window rate limiter with per-minute and per-day caps across multiple subscription tiers.",
@@ -400,7 +400,7 @@ const PROBLEMS = [
     level: "senior"
   },
   {
-    path: "golang/practice_problems/problem_03_permission_manager/stub.go",
+    path: "golang/practice_problems/problem_03_permission_manager/problem.go",
     test: null,
     title: "Permission Manager (RBAC)",
     description: "Build a role-based access control engine supporting role inheritance and wildcard permission matching.",
@@ -759,6 +759,160 @@ const PROBLEMS = [
     language: "typescript",
     industry: "ed-tech",
     tags: ["event-driven", "time-window", "challenge-tracking", "custom-types"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "golang/practice_problems/problem_07_care_team_assignments/problem.go",
+    test: "golang/practice_problems/problem_07_care_team_assignments/problem_test.go",
+    title: "Care Team Assignment Manager",
+    description: "Assign patients to care team members by role with capacity enforcement and a full reassignment audit trail queryable by timestamp.",
+    language: "golang",
+    industry: "health-tech",
+    tags: ["relational-data", "capacity-constraints", "audit-trail", "temporal-queries"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "golang/practice_problems/problem_08_enrollment_pipeline/problem.go",
+    test: "golang/practice_problems/problem_08_enrollment_pipeline/problem_test.go",
+    title: "Patient Enrollment Pipeline",
+    description: "Model a clinical enrollment state machine with duration metrics, conversion rates between stages, and SLA monitoring for patients overdue in a state.",
+    language: "golang",
+    industry: "health-tech",
+    tags: ["state-machine", "metrics", "conversion-rate", "sla-monitoring"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "golang/practice_problems/problem_09_incident_aggregator/problem.go",
+    test: "golang/practice_problems/problem_09_incident_aggregator/problem_test.go",
+    title: "Multi-Source Incident Aggregator",
+    description: "Ingest reports from multiple data sources, manually group them into unified incidents, and auto-deduplicate new arrivals using a sliding time window.",
+    language: "golang",
+    industry: "public-safety",
+    tags: ["event-deduplication", "time-window", "alert-system", "event-driven"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "golang/practice_problems/problem_10_dispatch_manager/problem.go",
+    test: "golang/practice_problems/problem_10_dispatch_manager/problem_test.go",
+    title: "Responder Dispatch Manager",
+    description: "Route incoming incident alerts to field responders based on type subscriptions and capacity limits, with auto-assignment selecting the least-loaded eligible unit.",
+    language: "golang",
+    industry: "public-safety",
+    tags: ["dispatch", "capacity-constraints", "priority-queue", "auto-assignment"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "golang/practice_problems/problem_11_coverage_tracker/problem.go",
+    test: "golang/practice_problems/problem_11_coverage_tracker/problem_test.go",
+    title: "Sensor Coverage Tracker",
+    description: "Monitor radio-receiver station health via heartbeats, track outage history with duration metrics, and compute per-region coverage status.",
+    language: "golang",
+    industry: "public-safety",
+    tags: ["heartbeat-monitoring", "outage-tracking", "time-series", "coverage-analysis"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "golang/practice_problems/problem_12_contract_alert_scheduler/problem.go",
+    test: "golang/practice_problems/problem_12_contract_alert_scheduler/problem_test.go",
+    title: "Contract Expiration Alert Scheduler",
+    description: "Schedule and track expiration alerts for contracts — register global alert configs, compute per-contract alert schedules, query due alerts, and track sent state.",
+    language: "golang",
+    industry: "legal-tech",
+    tags: ["scheduling", "date-arithmetic", "clm", "notifications"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "golang/practice_problems/problem_13_contract_lifecycle/problem.go",
+    test: "golang/practice_problems/problem_13_contract_lifecycle/problem_test.go",
+    title: "Contract Lifecycle State Machine",
+    description: "Manage contract state transitions through a defined lifecycle (draft → executed → expired), enforcing valid transitions, audit-logging every change, and surfacing overdue contracts.",
+    language: "golang",
+    industry: "legal-tech",
+    tags: ["state-machine", "audit-trail", "clm", "lifecycle"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "golang/practice_problems/problem_14_contract_amendment/problem.go",
+    test: "golang/practice_problems/problem_14_contract_amendment/problem_test.go",
+    title: "Contract Amendment Manager",
+    description: "Track amendments to signed contracts and resolve the effective field values as of any date by applying base fields and chronological overrides.",
+    language: "golang",
+    industry: "legal-tech",
+    tags: ["clm", "versioning", "date-arithmetic", "event-sourcing"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "golang/practice_problems/problem_15_tic_tac_toe_engine/problem.go",
+    test: "golang/practice_problems/problem_15_tic_tac_toe_engine/problem_test.go",
+    title: "Tic-Tac-Toe Engine",
+    description: "Analyze game boards for winners, optimize move tracking with O(1) incremental counters, then generalize to arbitrary board sizes, win lengths, and player counts.",
+    language: "golang",
+    industry: "general",
+    tags: ["game-logic", "incremental-state", "optimization", "generalization"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "golang/practice_problems/problem_18_donation_processor/problem.go",
+    test: "golang/practice_problems/problem_18_donation_processor/problem_test.go",
+    title: "Donation Processor",
+    description: "Build a donation processor that tracks campaigns, records and refunds donations, computes stats, surfaces top donors, and adds employer matching gifts.",
+    language: "golang",
+    industry: "ed-tech",
+    tags: ["data-model", "aggregation", "time-series", "financial"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "golang/practice_problems/problem_19_pledge_tracker/problem.go",
+    test: "golang/practice_problems/problem_19_pledge_tracker/problem_test.go",
+    title: "Walkathon Pledge Tracker",
+    description: "Build a walkathon pledge tracker that manages per-lap and flat pledges, computes participant totals after laps are recorded, and generates class leaderboards.",
+    language: "golang",
+    industry: "ed-tech",
+    tags: ["data-model", "aggregation", "leaderboard"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "golang/practice_problems/problem_20_donor_suppressor/problem.go",
+    test: "golang/practice_problems/problem_20_donor_suppressor/problem_test.go",
+    title: "Donor Communication Suppressor",
+    description: "Build a suppression engine that opts donors out, tracks donation history, and filters campaign lists using priority-ordered rules (opt-out, already donated, recency cooldown).",
+    language: "golang",
+    industry: "ed-tech",
+    tags: ["filtering", "priority-rules", "cooldown", "event-tracking"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "golang/practice_problems/problem_21_fee_calculator/problem.go",
+    test: "golang/practice_problems/problem_21_fee_calculator/problem_test.go",
+    title: "Platform Fee Calculator",
+    description: "Implement a fundraising platform fee calculator supporting card, ACH (with cap), and check payment methods — including a donor-covers-fee gross-up formula and per-campaign transaction summaries.",
+    language: "golang",
+    industry: "ed-tech",
+    tags: ["fee-calculation", "rounding", "aggregation", "financial"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "golang/practice_problems/problem_22_giving_day_challenges/problem.go",
+    test: "golang/practice_problems/problem_22_giving_day_challenges/problem_test.go",
+    title: "Giving Day Challenge Engine",
+    description: "Build a giving-day challenge engine where sponsors set threshold-based bonus pledges — process donations, auto-complete challenges when thresholds are crossed, and produce an hourly breakdown.",
+    language: "golang",
+    industry: "ed-tech",
+    tags: ["event-driven", "time-window", "challenge-tracking"],
     parts: 3,
     level: "senior"
   }
