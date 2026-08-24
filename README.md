@@ -17,7 +17,8 @@ A collection of Software Engineer practice problems with test suites, designed t
 More directories may be added over time as problems in different languages are added, but the overall structure should stay the same.
 
 ```
-index.html                    # Searchable problem browser — open in any browser
+index.html                    # Searchable problem browser — open in any browser locally
+data.js                       # Problems array holding meta-data about all practice problems
 python/
   practice_problems/          # Problem stubs — read these, don't edit them
   practice_problem_answers/   # Your implementations go here
@@ -197,7 +198,7 @@ Generate a new Senior SWE interview problem for the python/ directory.
    problem(s) off of that.
 
 After creating the problem and test files, add an entry to the PROBLEMS array
-in index.html following the format in CLAUDE.md.
+in data.js following the format in CLAUDE.md.
 ```
 
 The agent will create:
