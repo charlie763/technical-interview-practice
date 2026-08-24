@@ -619,7 +619,8 @@ func TestGetClaimsMetrics(t *testing.T) {
 		// 1 settled claim: approved=60_000 / claimed=75_000 = 0.8
 		p := seededPipeline(t)
 		metrics, _ := p.GetClaimsMetrics()
-		want := float64(int(float64(60_000)/float64(75_000)*10000+0.5)) / 10000
+		ratio := float64(60_000) / float64(75_000)
+		want := float64(int(ratio*10000+0.5)) / 10000
 		if metrics.AvgSettlementRatio != want {
 			t.Errorf("AvgSettlementRatio = %v, want %v", metrics.AvgSettlementRatio, want)
 		}
@@ -656,7 +657,8 @@ func TestGetPolicyLossHistory(t *testing.T) {
 		if history.TotalPaid != 60_000 {
 			t.Errorf("TotalPaid = %d, want 60000", history.TotalPaid)
 		}
-		wantRatio := float64(int(float64(60_000)/float64(105_000)*10000+0.5)) / 10000
+		lossRatioNumerator := float64(60_000) / float64(105_000)
+		wantRatio := float64(int(lossRatioNumerator*10000+0.5)) / 10000
 		if history.LossRatio != wantRatio {
 			t.Errorf("LossRatio = %v, want %v", history.LossRatio, wantRatio)
 		}
