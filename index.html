@@ -411,6 +411,39 @@ const PROBLEMS = [
     level: "senior"
   },
   {
+    path: "golang/practice_problems/problem_04_biomarker_alert_monitor/problem.go",
+    test: "golang/practice_problems/problem_04_biomarker_alert_monitor/problem_test.go",
+    title: "Biomarker Alert Monitor",
+    description: "Process patient readings to track consecutive out-of-range days and generate prioritized coach outreach lists.",
+    language: "golang",
+    industry: "health-tech",
+    tags: ["time-series", "consecutive-tracking", "clinical-monitoring", "alert-system"],
+    parts: 4,
+    level: "senior"
+  },
+  {
+    path: "golang/practice_problems/problem_05_medication_titration/problem.go",
+    test: "golang/practice_problems/problem_05_medication_titration/problem_test.go",
+    title: "Medication Titration Tracker",
+    description: "Track dosage adjustment events over time, handling out-of-order arrivals and querying active medication history.",
+    language: "golang",
+    industry: "health-tech",
+    tags: ["event-sourcing", "time-series", "aggregation", "state-machine"],
+    parts: 4,
+    level: "senior"
+  },
+  {
+    path: "golang/practice_problems/problem_06_lab_cadence/problem.go",
+    test: "golang/practice_problems/problem_06_lab_cadence/problem_test.go",
+    title: "Lab Cadence Compliance Monitor",
+    description: "Track required lab submission deadlines per patient and surface overdue labs for health coach follow-up.",
+    language: "golang",
+    industry: "health-tech",
+    tags: ["deadline-tracking", "compliance", "event-driven", "aggregation"],
+    parts: 4,
+    level: "senior"
+  },
+  {
     path: "python/practice_problems/problem_04_biomarker_alert.py",
     test: "python/tests/test_problem_04_biomarker_alert.py",
     title: "Biomarker Alert Monitor",
@@ -625,6 +658,28 @@ const PROBLEMS = [
     title: "Claims Processing Pipeline",
     description: "Build a multi-stage claims lifecycle manager covering filing, investigation, settlement and denial — with reserve adequacy tracking and loss-ratio analytics.",
     language: "python",
+    industry: "insurance-tech",
+    tags: ["state-machine", "event-sourcing", "aggregation", "deadline-tracking"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "golang/practice_problems/problem_16_premium_rating_engine/problem.go",
+    test: "golang/practice_problems/problem_16_premium_rating_engine/problem_test.go",
+    title: "Policy Premium Rating Engine",
+    description: "Build a management liability premium calculator that applies coverage-type formulas, risk modifiers (industry, tenure, loss history), and produces portfolio analytics.",
+    language: "golang",
+    industry: "insurance-tech",
+    tags: ["rating-engine", "risk-modifiers", "state-machine", "aggregation", "fintech"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "golang/practice_problems/problem_17_claims_pipeline/problem.go",
+    test: "golang/practice_problems/problem_17_claims_pipeline/problem_test.go",
+    title: "Claims Processing Pipeline",
+    description: "Build a multi-stage claims lifecycle manager covering filing, investigation, settlement and denial — with reserve adequacy tracking and loss-ratio analytics.",
+    language: "golang",
     industry: "insurance-tech",
     tags: ["state-machine", "event-sourcing", "aggregation", "deadline-tracking"],
     parts: 3,

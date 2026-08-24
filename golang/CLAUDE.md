@@ -89,6 +89,12 @@ Each problem uses a short, descriptive package name:
 | Problem 01 — Geofence Alert Engine | `geofence` |
 | Problem 02 — API Rate Limiter | `ratelimiter` |
 | Problem 03 — Permission Manager | `rbac` |
+| Problem 04 — Biomarker Alert Monitor | `biomarker` |
+| Problem 05 — Medication Titration Tracker | `titration` |
+| Problem 06 — Lab Cadence Compliance Monitor | `labcadence` |
+| Problem 07 — Care Team Assignment Manager | `careteam` |
+| Problem 08 — Patient Enrollment Pipeline | `enrollment` |
+| Problem 09 — Multi-Source Incident Aggregator | `incidents` |
 
 New problems should follow the same pattern. Avoid `main` and generic names like `solution`.
 
