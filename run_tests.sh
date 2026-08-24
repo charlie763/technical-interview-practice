@@ -47,7 +47,7 @@
 #
 # How it works (Go):
 #   Extracts the problem ID from the answer filename (e.g. 01_geofence_alert_engine),
-#   copies types.go + *_test.go from the problem directory plus the answer file
+#   copies *_test.go from the problem directory plus the answer file
 #   (as solution.go) into a temp directory, writes a minimal go.mod, then runs
 #   the test command inside that temp directory. No common files are modified.
 #
@@ -176,11 +176,9 @@ if [[ "$IS_DIR" == false && "$ANSWER_ABS" == *.go ]]; then
     GO_TMPDIR=$(mktemp -d)
     trap "rm -rf '$GO_TMPDIR'" EXIT
 
-    # Copy types.go and *_test.go from the problem directory (skip stub.go)
-    for f in "$PROBLEM_DIR"/*.go; do
-        fname=$(basename "$f")
-        [[ "$fname" == "stub.go" ]] && continue
-        cp "$f" "$GO_TMPDIR/$fname"
+    # Copy *_test.go from the problem directory
+    for f in "$PROBLEM_DIR"/*_test.go; do
+        cp "$f" "$GO_TMPDIR/"
     done
 
     # Copy the answer file as solution.go

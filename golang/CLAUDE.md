@@ -13,28 +13,27 @@ Each problem lives in `golang/practice_problems/problem_NN_<name>/`:
 
 | File | Purpose |
 |---|---|
-| `stub.go` | Problem description + function stubs (all `panic("not implemented")`) |
-| `types.go` | Shared struct/interface definitions — read-only during practice |
+| `problem.go` | Problem description + type definitions + function stubs (all `panic("not implemented")`) — copy this to start |
 | `problem_test.go` | Test suite — read-only during practice |
 
 ### 2. Create your answer file
 
-Copy the stub to `practice_problem_answers/` and rename it:
+Copy `problem.go` to `practice_problem_answers/` and rename it:
 
 ```bash
-cp golang/practice_problems/problem_01_geofence_alert_engine/stub.go \
+cp golang/practice_problems/problem_01_geofence_alert_engine/problem.go \
    golang/practice_problem_answers/cw_answer_01_geofence_alert_engine.go
 ```
 
 Open the answer file and implement every function (replace each `panic("not implemented")`).
 
 Your answer file **must**:
-- Declare the same package name as the stub (e.g. `package geofence`)
+- Declare the same package name as the problem (e.g. `package geofence`)
 - Only import standard-library packages
-- Not re-define types that are already declared in `types.go` (they are provided at test time)
+- Include the type definitions copied from `problem.go` (keep them as-is, just implement the panicking functions)
 
 For class-based problems (Problem 03+), define your own struct and implement the interface —
-the stub tells you what interface to satisfy.
+the problem file tells you what interface to satisfy.
 
 ### 3. Run the tests against your answer
 
@@ -60,7 +59,6 @@ Run a specific test group:
 1. Extracts the problem ID from the answer filename (e.g. `01_geofence_alert_engine`).
 2. Locates `golang/practice_problems/problem_01_geofence_alert_engine/`.
 3. Creates a temporary directory containing:
-   - `types.go` from the problem directory (shared type definitions)
    - `problem_test.go` from the problem directory (the test suite)
    - Your answer file, copied as `solution.go`
    - A minimal `go.mod` (`module practice`)
@@ -98,21 +96,20 @@ New problems should follow the same pattern. Avoid `main` and generic names like
 
 ```
 problem_NN_<name>/
-  types.go        # Exported struct/interface definitions (read-only during practice)
-  stub.go         # Function stubs with panic() + problem description (read-only)
-  problem_test.go # White-box tests (same package, read-only)
+  problem.go      # Problem description + type definitions + function stubs (copy this to start)
+  problem_test.go # White-box tests (same package, read-only during practice)
 ```
 
-### Writing stub files
+### Writing problem files
 
 - All function bodies must be `panic("not implemented")`.
 - Include a comprehensive comment block at the top (context, data model, example).
-- Declare error sentinel variables in `stub.go`:
+- Declare error sentinel variables and all types in `problem.go`:
   ```go
   var ErrAlreadyExists = errors.New("already exists")
   var ErrNotFound      = errors.New("not found")
   ```
-- For class-based problems, define the interface in `types.go` and a `New<Name>()` constructor stub in `stub.go`.
+- For class-based problems, define the interface and a `New<Name>()` constructor stub in `problem.go`.
 
 ### Error handling
 
