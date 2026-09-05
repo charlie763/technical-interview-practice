@@ -25,14 +25,24 @@ python/
   tests/                      # pytest suites (one per problem)
   conftest.py                 # pytest config & --answer flag
 react/
-  practice_problems/          # React/JSX starter files
+  practice_problems/          # React/JSX/TSX starter files
   src/App.jsx                 # Active problem (overwrite to work; restore with git)
   src/main.jsx                # Vite entry point (do not modify)
   tests/                      # Playwright e2e specs (one per problem)
   package.json                # Vite + Playwright deps
   playwright.config.js        # Playwright config (auto-starts Vite)
   vite.config.js
-run_tests.sh                  # Unified test runner for Python and React (see below)
+typescript/
+  practice_problems/          # .ts class stubs (read-only during practice)
+  practice_problem_answers/   # Your implementations go here
+  tests/                      # Jest suites (one per problem)
+  package.json                # Jest + ts-jest deps
+  jest.config.js              # Answer-redirect plugin
+golang/
+  practice_problems/          # problem_NN_<name>/ dirs, each with problem.go + problem_test.go
+  practice_problem_answers/   # cw_answer_NN_<name>.go files
+  go.mod
+run_tests.sh                  # Unified test runner for all languages (see below)
 CLAUDE.md                     # Guidelines for the AI agent
 ```
 
@@ -57,6 +67,23 @@ cd react
 npm install
 npx playwright install chromium   # download the test browser (~95 MB)
 ```
+
+### TypeScript (one-time setup)
+
+```bash
+cd typescript
+npm install
+```
+
+### Go (one-time setup)
+
+Go 1.22 or newer must be installed. Check with:
+
+```bash
+go version
+```
+
+No additional dependencies — all Go problems use only the standard library.
 
 ---
 
@@ -173,6 +200,79 @@ is set, Playwright always spawns a fresh dev server to ensure it uses the right 
 #### 5. No cleanup needed
 
 `react/src/App.jsx` is never modified, so there's nothing to restore.
+
+---
+
+### TypeScript problems
+
+#### 2. Copy the stub to your answers directory
+
+```bash
+cp typescript/practice_problems/problem_01_donation_processor.ts \
+   typescript/practice_problem_answers/my_answer_01_donation_processor.ts
+```
+
+The prefix (`my_answer_`, `cw_answer_`, etc.) can be anything — the filename **must** keep the `NN_<name>` segment.
+
+#### 3. Implement it
+
+Fill in the `throw new Error('Not implemented')` stubs. Keep the class and method signatures identical to the stub.
+
+#### 4. Run tests against your answer
+
+```bash
+# Via run_tests.sh (from repo root)
+./run_tests.sh \
+  -f typescript/practice_problem_answers/my_answer_01_donation_processor.ts \
+  -c npm run test:01
+
+# Or directly from typescript/ with the env var
+cd typescript
+PRACTICE_ANSWER=my_answer_01_donation_processor npm run test:01
+
+# Watch mode (re-runs on every save)
+PRACTICE_ANSWER=my_answer_01_donation_processor npm run test:watch
+```
+
+The `PRACTICE_ANSWER` env var tells Jest to redirect imports of the stub to your answer file — you never need to edit the test files.
+
+---
+
+### Go problems
+
+#### 2. Copy the stub to your answers directory
+
+```bash
+cp golang/practice_problems/problem_01_geofence_alert_engine/problem.go \
+   golang/practice_problem_answers/my_answer_01_geofence_alert_engine.go
+```
+
+The prefix can be anything; the `NN_<name>` segment must match the problem directory name.
+
+#### 3. Implement it
+
+Replace every `panic("not implemented")` with a real implementation. Your answer file must:
+- Declare the same package name as the problem (shown at the top of `problem.go`, e.g. `package geofence`)
+- Only import standard-library packages
+- Include the type definitions copied from `problem.go` (keep them as-is)
+
+#### 4. Run tests against your answer
+
+```bash
+# Full test suite
+./run_tests.sh \
+  -f golang/practice_problem_answers/my_answer_01_geofence_alert_engine.go \
+  -c go test -v .
+
+# Single test group
+./run_tests.sh \
+  -f golang/practice_problem_answers/my_answer_01_geofence_alert_engine.go \
+  -c go test -v -run TestIsInZone .
+```
+
+`run_tests.sh` automatically pairs your answer file with the right `problem_test.go`, compiles them together in a temporary directory, and runs the tests — no `go.mod` setup required.
+
+---
 
 ## Adding new problems with an AI agent
 ⚠️ WARNING - PLEASE READ: If contributing, please do not add any problems verbatim from actual technical interviews. We don't want to get each other in trouble or cause issues for people actively interviewing. The `CLAUDE.md` file has instructions to scrub actual company names from problems, but please double check the code for that before submitting a PR.
