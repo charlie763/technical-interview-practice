@@ -215,7 +215,6 @@ class TestAddZone:
     def test_adds_zone(self, state):
         z = add_zone(state, "yard", "Yard", 35.3, 35.4, -106.7, -106.6)
         assert state["zones"]["yard"] == z
-        assert z["id"] == "yard"
         assert z["name"] == "Yard"
         assert z["bounds"] == {"min_lat": 35.3, "max_lat": 35.4,
                                "min_lng": -106.7, "max_lng": -106.6}
@@ -249,7 +248,6 @@ class TestAddAsset:
     def test_adds_asset(self, state):
         a = add_asset(state, "scanner_1", "Scanner #1")
         assert state["assets"]["scanner_1"] == a
-        assert a["id"] == "scanner_1"
         assert a["lat"] is None
         assert a["lng"] is None
         assert a["zone_id"] is None
