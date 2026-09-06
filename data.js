@@ -13,7 +13,7 @@ const PROBLEMS = [
     language: "python",
     industry: "iot",
     tags: ["event-driven", "geospatial", "alert-system", "data-model"],
-    parts: 3,
+    parts: 4,
     level: "senior"
   },
   {

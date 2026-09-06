@@ -22,16 +22,37 @@ from practice_problems.problem_01_geofence_alert_engine import (
 # Shared fixtures
 # ---------------------------------------------------------------------------
 
+# Build state straight from the data model in the stub docstring, so each part's
+# tests only need Parts 1..N. Part 4 still calls the real CRUD helpers.
+
+def _seed_zone(state, zone_id, name, min_lat, max_lat, min_lng, max_lng):
+    zone = {"id": zone_id, "name": name,
+            "bounds": {"min_lat": min_lat, "max_lat": max_lat,
+                       "min_lng": min_lng, "max_lng": max_lng}}
+    state["zones"][zone_id] = zone
+
+
+def _seed_asset(state, asset_id, name):
+    asset = {"id": asset_id, "name": name, "lat": None, "lng": None, "zone_id": None}
+    state["assets"][asset_id] = asset
+
+
+def _seed_rule(state, rule_id, from_zone_id, to_zone_id, asset_id):
+    rule = {"id": rule_id, "from_zone_id": from_zone_id,
+            "to_zone_id": to_zone_id, "asset_id": asset_id}
+    state["alert_rules"].append(rule)
+
+
 @pytest.fixture
 def state():
     """A tracker with two adjacent zones and two assets."""
     s = make_tracker()
     # Warehouse: lat [35.00, 35.10], lng [-106.70, -106.60]
-    add_zone(s, "warehouse", "Warehouse A", 35.00, 35.10, -106.70, -106.60)
+    _seed_zone(s, "warehouse", "Warehouse A", 35.00, 35.10, -106.70, -106.60)
     # Loading dock: lat [35.10, 35.20], lng [-106.70, -106.60]
-    add_zone(s, "loading_dock", "Loading Dock", 35.10, 35.20, -106.70, -106.60)
-    add_asset(s, "forklift_1", "Forklift #1")
-    add_asset(s, "drone_1", "Drone #1")
+    _seed_zone(s, "loading_dock", "Loading Dock", 35.10, 35.20, -106.70, -106.60)
+    _seed_asset(s, "forklift_1", "Forklift #1")
+    _seed_asset(s, "drone_1", "Drone #1")
     return s
 
 
@@ -114,7 +135,7 @@ class TestProcessLocationUpdate:
         assert state["assets"]["forklift_1"]["zone_id"] is None
 
     def test_zone_entry_triggers_matching_rule(self, state):
-        add_alert_rule(state, "rule_entry", None, "warehouse", None)
+        _seed_rule(state, "rule_entry", None, "warehouse", None)
         alerts = process_location_update(state, "forklift_1", 35.05, -106.65, "t1")
         assert len(alerts) == 1
         assert alerts[0]["rule_id"] == "rule_entry"
@@ -128,7 +149,7 @@ class TestProcessLocationUpdate:
         state["assets"]["forklift_1"]["lat"] = 35.05
         state["assets"]["forklift_1"]["lng"] = -106.65
         state["assets"]["forklift_1"]["zone_id"] = "warehouse"
-        add_alert_rule(state, "rule_exit", "warehouse", None, None)
+        _seed_rule(state, "rule_exit", "warehouse", None, None)
         alerts = process_location_update(state, "forklift_1", 36.0, -106.65, "t2")
         assert len(alerts) == 1
         assert alerts[0]["from_zone_id"] == "warehouse"
@@ -138,7 +159,7 @@ class TestProcessLocationUpdate:
         state["assets"]["forklift_1"]["lat"] = 35.05
         state["assets"]["forklift_1"]["lng"] = -106.65
         state["assets"]["forklift_1"]["zone_id"] = "warehouse"
-        add_alert_rule(state, "rule_wh_to_dock", "warehouse", "loading_dock", None)
+        _seed_rule(state, "rule_wh_to_dock", "warehouse", "loading_dock", None)
         alerts = process_location_update(state, "forklift_1", 35.15, -106.65, "t3")
         assert len(alerts) == 1
         assert alerts[0]["from_zone_id"] == "warehouse"
@@ -148,28 +169,28 @@ class TestProcessLocationUpdate:
         state["assets"]["forklift_1"]["lat"] = 35.05
         state["assets"]["forklift_1"]["lng"] = -106.65
         state["assets"]["forklift_1"]["zone_id"] = "warehouse"
-        add_alert_rule(state, "rule_any", None, None, None)
+        _seed_rule(state, "rule_any", None, None, None)
         alerts = process_location_update(state, "forklift_1", 35.06, -106.65, "t4")
         assert alerts == []
 
     def test_asset_specific_rule_ignores_other_assets(self, state):
-        add_alert_rule(state, "rule_drone_only", None, "warehouse", "drone_1")
+        _seed_rule(state, "rule_drone_only", None, "warehouse", "drone_1")
         alerts = process_location_update(state, "forklift_1", 35.05, -106.65, "t5")
         assert alerts == []
 
     def test_asset_specific_rule_fires_for_correct_asset(self, state):
-        add_alert_rule(state, "rule_forklift", None, "warehouse", "forklift_1")
+        _seed_rule(state, "rule_forklift", None, "warehouse", "forklift_1")
         alerts = process_location_update(state, "forklift_1", 35.05, -106.65, "t6")
         assert len(alerts) == 1
 
     def test_multiple_matching_rules_all_fire(self, state):
-        add_alert_rule(state, "rule_a", None, "warehouse", None)
-        add_alert_rule(state, "rule_b", None, None, None)
+        _seed_rule(state, "rule_a", None, "warehouse", None)
+        _seed_rule(state, "rule_b", None, None, None)
         alerts = process_location_update(state, "forklift_1", 35.05, -106.65, "t7")
         assert len(alerts) == 2
 
     def test_alerts_appended_to_log(self, state):
-        add_alert_rule(state, "rule_1", None, "warehouse", None)
+        _seed_rule(state, "rule_1", None, "warehouse", None)
         process_location_update(state, "forklift_1", 35.05, -106.65, "t8")
         assert len(state["alert_log"]) == 1
 
@@ -194,7 +215,10 @@ class TestAddZone:
     def test_adds_zone(self, state):
         z = add_zone(state, "yard", "Yard", 35.3, 35.4, -106.7, -106.6)
         assert state["zones"]["yard"] == z
+        assert z["id"] == "yard"
         assert z["name"] == "Yard"
+        assert z["bounds"] == {"min_lat": 35.3, "max_lat": 35.4,
+                               "min_lng": -106.7, "max_lng": -106.6}
 
     def test_duplicate_raises_value_error(self, state):
         with pytest.raises(ValueError):
@@ -225,6 +249,7 @@ class TestAddAsset:
     def test_adds_asset(self, state):
         a = add_asset(state, "scanner_1", "Scanner #1")
         assert state["assets"]["scanner_1"] == a
+        assert a["id"] == "scanner_1"
         assert a["lat"] is None
         assert a["lng"] is None
         assert a["zone_id"] is None
