@@ -42,6 +42,11 @@ golang/
   practice_problems/          # problem_NN_<name>/ dirs, each with problem.go + problem_test.go
   practice_problem_answers/   # cw_answer_NN_<name>.go files
   go.mod
+ruby/
+  practice_problems/          # problem_NN_<name>.rb class stubs (read-only during practice)
+  practice_problem_answers/   # Your implementations go here
+  tests/                      # RSpec suites (one per problem) + spec_helper.rb
+  Gemfile                     # rspec dependency
 run_tests.sh                  # Unified test runner for all languages (see below)
 CLAUDE.md                     # Guidelines for the AI agent
 ```
@@ -85,6 +90,20 @@ go version
 
 No additional dependencies — all Go problems use only the standard library.
 
+### Ruby (one-time setup)
+
+Ruby 3.2+ must be installed. Check with:
+
+```bash
+ruby --version
+```
+
+Then install the `rspec` gem:
+
+```bash
+gem install rspec
+```
+
 ---
 
 ## Browsing problems
@@ -103,7 +122,7 @@ Browse `index.html` to pick something, then click **Open in VS Code** to open th
 
 ---
 
-### Python problems
+### [Python](python/practice_problems) problems
 
 #### 2. Copy the stub to your answers directory
 
@@ -146,7 +165,7 @@ Fill in the `raise NotImplementedError` stubs. Keep the function/class signature
 
 ---
 
-### React problems
+### [React](react/practice_problems) problems
 
 #### 2. Create your answer directory and copy the stub into it
 
@@ -203,7 +222,7 @@ is set, Playwright always spawns a fresh dev server to ensure it uses the right 
 
 ---
 
-### TypeScript problems
+### [TypeScript](typescript/practice_problems) problems
 
 #### 2. Copy the stub to your answers directory
 
@@ -238,7 +257,7 @@ The `PRACTICE_ANSWER` env var tells Jest to redirect imports of the stub to your
 
 ---
 
-### Go problems
+### [Go](golang/practice_problems) problems
 
 #### 2. Copy the stub to your answers directory
 
@@ -271,6 +290,42 @@ Replace every `panic("not implemented")` with a real implementation. Your answer
 ```
 
 `run_tests.sh` automatically pairs your answer file with the right `problem_test.go`, compiles them together in a temporary directory, and runs the tests — no `go.mod` setup required.
+
+---
+
+### [Ruby](ruby/practice_problems) problems
+
+#### 2. Copy the stub to your answers directory
+
+```bash
+cp ruby/practice_problems/problem_01_geofence_alert_engine.rb \
+   ruby/practice_problem_answers/my_answer_01_geofence_alert_engine.rb
+```
+
+The prefix (`my_answer_`, `cw_answer_`, etc.) can be anything — the filename **must** keep the `NN_<name>` segment so the runner can map it to the right spec file.
+
+#### 3. Implement it
+
+Fill in the `raise NotImplementedError` stubs. Keep the class and method signatures identical to the stub.
+
+#### 4. Run tests against your answer
+
+```bash
+# Via run_tests.sh (from repo root)
+./run_tests.sh \
+  -f ruby/practice_problem_answers/my_answer_01_geofence_alert_engine.rb \
+  -c rspec tests/problem_01_geofence_alert_engine_spec.rb
+
+# Or directly from ruby/ with the env var
+cd ruby
+PRACTICE_ANSWER=my_answer_01_geofence_alert_engine \
+  rspec tests/problem_01_geofence_alert_engine_spec.rb
+```
+
+`tests/spec_helper.rb`'s `load_problem` helper reads `PRACTICE_ANSWER` and loads your answer
+file in place of the stub — you never need to edit the spec files. Running `rspec` from
+`ruby/` with no `PRACTICE_ANSWER` set runs every spec against the stubs, which should all
+fail with `NotImplementedError` — that's the expected baseline.
 
 ---
 
