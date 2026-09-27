@@ -74,6 +74,21 @@
 #   Playwright command from react/. Vite's plugin redirects main.jsx's App import
 #   to <PRACTICE_ANSWER>/App.jsx. react/src/App.jsx is never modified.
 #   Playwright always spawns a fresh dev server when PRACTICE_ANSWER is set.
+#
+# ── Ruby problems ──────────────────────────────────────────────────────────────
+# Usage:
+#   ./run_tests.sh -f <path-to-answer.rb> -c <rspec-command...>
+#
+# Examples:
+#   ./run_tests.sh \
+#     -f ruby/practice_problem_answers/cw_answer_01_ticket_escalation_tracker.rb \
+#     -c rspec tests/problem_01_ticket_escalation_tracker_spec.rb
+#
+# How it works (Ruby):
+#   Extracts the stem from the answer filename (e.g.
+#   cw_answer_01_ticket_escalation_tracker), sets PRACTICE_ANSWER to that stem,
+#   then runs the rspec command from ruby/. tests/spec_helper.rb's load_problem
+#   reads PRACTICE_ANSWER to load the answer file instead of the problem stub.
 
 set -euo pipefail
 
@@ -132,6 +147,17 @@ if [[ "$IS_DIR" == false && "$ANSWER_ABS" == *.ts && "$ANSWER_ABS" != *.tsx ]]; 
     echo "Command: ${CMD[*]}"
     echo ""
     cd "$REPO_ROOT/typescript"
+    PRACTICE_ANSWER="$ANSWER_STEM" "${CMD[@]}"
+    exit $?
+fi
+
+# ── Ruby mode: .rb answer files ───────────────────────────────────────────────
+if [[ "$IS_DIR" == false && "$ANSWER_ABS" == *.rb ]]; then
+    ANSWER_STEM="$(basename "$ANSWER_ABS" .rb)"
+    echo "Answer : $ANSWER → PRACTICE_ANSWER=$ANSWER_STEM"
+    echo "Command: ${CMD[*]}"
+    echo ""
+    cd "$REPO_ROOT/ruby"
     PRACTICE_ANSWER="$ANSWER_STEM" "${CMD[@]}"
     exit $?
 fi
