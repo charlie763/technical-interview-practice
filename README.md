@@ -101,7 +101,8 @@ ruby --version
 Then install the `rspec` gem:
 
 ```bash
-gem install rspec
+cd ruby/
+bundle install
 ```
 
 ---
