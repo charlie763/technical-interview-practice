@@ -1,0 +1,5 @@
+--require spec_helper
+-I tests
+--default-path tests
+--format documentation
+--color

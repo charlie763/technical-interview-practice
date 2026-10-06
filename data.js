@@ -576,5 +576,192 @@ const PROBLEMS = [
     tags: ["event-driven", "time-window", "challenge-tracking"],
     parts: 3,
     level: "senior"
+  },
+  {
+    path: "ruby/practice_problems/problem_01_geofence_alert_engine.rb",
+    test: "ruby/tests/problem_01_geofence_alert_engine_spec.rb",
+    title: "Geofence Alert Engine",
+    description: "Build a GPS-based zone monitor that fires configurable alert rules when tracked assets cross geofence boundaries.",
+    language: "ruby",
+    industry: "iot",
+    tags: ["event-driven", "geospatial", "alert-system", "data-model"],
+    parts: 4,
+    level: "senior"
+  },
+  {
+    path: "ruby/practice_problems/problem_02_api_rate_limiter.rb",
+    test: "ruby/tests/problem_02_api_rate_limiter_spec.rb",
+    title: "Tiered API Rate Limiter",
+    description: "Build a sliding-window rate limiter for a developer-facing API platform, with per-minute and per-day caps that vary by plan tier.",
+    language: "ruby",
+    industry: "dev-tools",
+    tags: ["sliding-window", "rate-limiting", "tiered-plans"],
+    parts: 4,
+    level: "senior"
+  },
+  {
+    path: "ruby/practice_problems/problem_03_permission_manager.rb",
+    test: "ruby/tests/problem_03_permission_manager_spec.rb",
+    title: "Permission Manager (RBAC)",
+    description: "Build a role-based access control engine supporting role inheritance and wildcard permission matching.",
+    language: "ruby",
+    industry: "general",
+    tags: ["rbac", "permissions", "role-hierarchy", "wildcard-matching", "saas"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "ruby/practice_problems/problem_04_biomarker_alert_monitor.rb",
+    test: "ruby/tests/problem_04_biomarker_alert_monitor_spec.rb",
+    title: "Biomarker Alert Monitor",
+    description: "Process patient readings to track consecutive out-of-range days and generate prioritized coach outreach lists.",
+    language: "ruby",
+    industry: "health-tech",
+    tags: ["time-series", "consecutive-tracking", "clinical-monitoring", "alert-system"],
+    parts: 4,
+    level: "senior"
+  },
+  {
+    path: "ruby/practice_problems/problem_05_medication_titration_tracker.rb",
+    test: "ruby/tests/problem_05_medication_titration_tracker_spec.rb",
+    title: "Medication Titration Tracker",
+    description: "Track dosage adjustment events over time, handling out-of-order arrivals and querying active medication history.",
+    language: "ruby",
+    industry: "health-tech",
+    tags: ["event-sourcing", "time-series", "aggregation", "state-machine"],
+    parts: 4,
+    level: "senior"
+  },
+  {
+    path: "ruby/practice_problems/problem_06_lab_cadence_monitor.rb",
+    test: "ruby/tests/problem_06_lab_cadence_monitor_spec.rb",
+    title: "Lab Cadence Compliance Monitor",
+    description: "Track required lab submission deadlines per patient and surface overdue labs for health coach follow-up.",
+    language: "ruby",
+    industry: "health-tech",
+    tags: ["deadline-tracking", "compliance", "event-driven", "aggregation"],
+    parts: 4,
+    level: "senior"
+  },
+  {
+    path: "ruby/practice_problems/problem_07_care_team_assignments.rb",
+    test: "ruby/tests/problem_07_care_team_assignments_spec.rb",
+    title: "Care Team Assignment Manager",
+    description: "Assign patients to care team members by role with capacity enforcement and a full reassignment audit trail queryable by timestamp.",
+    language: "ruby",
+    industry: "health-tech",
+    tags: ["relational-data", "capacity-constraints", "audit-trail", "temporal-queries"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "ruby/practice_problems/problem_08_enrollment_pipeline.rb",
+    test: "ruby/tests/problem_08_enrollment_pipeline_spec.rb",
+    title: "Patient Enrollment Pipeline",
+    description: "Model a clinical enrollment state machine with duration metrics, conversion rates between stages, and SLA monitoring for patients overdue in a state.",
+    language: "ruby",
+    industry: "health-tech",
+    tags: ["state-machine", "metrics", "conversion-rate", "sla-monitoring", "clinical"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "ruby/practice_problems/problem_09_incident_aggregator.rb",
+    test: "ruby/tests/problem_09_incident_aggregator_spec.rb",
+    title: "Multi-Source Incident Aggregator",
+    description: "Ingest reports from multiple data sources, manually group them into unified incidents, and auto-deduplicate new arrivals using a sliding time window.",
+    language: "ruby",
+    industry: "public-safety",
+    tags: ["event-deduplication", "time-window", "alert-system", "event-driven"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "ruby/practice_problems/problem_10_dispatch_manager.rb",
+    test: "ruby/tests/problem_10_dispatch_manager_spec.rb",
+    title: "Responder Dispatch Manager",
+    description: "Route incoming incident alerts to field responders based on type subscriptions and capacity limits, with auto-assignment selecting the least-loaded eligible unit.",
+    language: "ruby",
+    industry: "public-safety",
+    tags: ["dispatch", "capacity-constraints", "priority-queue", "auto-assignment"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "ruby/practice_problems/problem_11_coverage_tracker.rb",
+    test: "ruby/tests/problem_11_coverage_tracker_spec.rb",
+    title: "Sensor Coverage Tracker",
+    description: "Monitor radio-receiver station health via heartbeats, track outage history with duration metrics, and compute per-region coverage status.",
+    language: "ruby",
+    industry: "public-safety",
+    tags: ["heartbeat-monitoring", "outage-tracking", "time-series", "coverage-analysis"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "ruby/practice_problems/problem_12_contract_alert_scheduler.rb",
+    test: "ruby/tests/problem_12_contract_alert_scheduler_spec.rb",
+    title: "Contract Expiration Alert Scheduler",
+    description: "Schedule and track expiration alerts for contracts — register global alert configs, compute per-contract alert schedules, query due alerts, and track sent state.",
+    language: "ruby",
+    industry: "legal-tech",
+    tags: ["scheduling", "date-arithmetic", "clm", "notifications"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "ruby/practice_problems/problem_13_contract_lifecycle.rb",
+    test: "ruby/tests/problem_13_contract_lifecycle_spec.rb",
+    title: "Contract Lifecycle State Machine",
+    description: "Manage contract state transitions through a defined lifecycle (draft → executed → expired), enforcing valid transitions, audit-logging every change, and surfacing overdue contracts.",
+    language: "ruby",
+    industry: "legal-tech",
+    tags: ["state-machine", "audit-trail", "clm", "lifecycle"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "ruby/practice_problems/problem_14_contract_amendment.rb",
+    test: "ruby/tests/problem_14_contract_amendment_spec.rb",
+    title: "Contract Amendment Manager",
+    description: "Track amendments to signed contracts and resolve the effective field values as of any date by applying base fields and chronological overrides.",
+    language: "ruby",
+    industry: "legal-tech",
+    tags: ["clm", "versioning", "date-arithmetic", "event-sourcing"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "ruby/practice_problems/problem_15_tic_tac_toe_engine.rb",
+    test: "ruby/tests/problem_15_tic_tac_toe_engine_spec.rb",
+    title: "Tic-Tac-Toe Engine",
+    description: "Analyze game boards for winners, optimize move tracking with O(1) incremental counters, then generalize to arbitrary board sizes, win lengths, and player counts.",
+    language: "ruby",
+    industry: "general",
+    tags: ["game-logic", "incremental-state", "optimization", "generalization"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "ruby/practice_problems/problem_16_premium_rating_engine.rb",
+    test: "ruby/tests/problem_16_premium_rating_engine_spec.rb",
+    title: "Policy Premium Rating Engine",
+    description: "Build a management liability premium calculator that applies coverage-type formulas, risk modifiers (industry, tenure, loss history), and produces portfolio analytics.",
+    language: "ruby",
+    industry: "insurance-tech",
+    tags: ["rating-engine", "risk-modifiers", "state-machine", "aggregation", "fintech"],
+    parts: 3,
+    level: "senior"
+  },
+  {
+    path: "ruby/practice_problems/problem_17_claims_pipeline.rb",
+    test: "ruby/tests/problem_17_claims_pipeline_spec.rb",
+    title: "Claims Processing Pipeline",
+    description: "Build a multi-stage claims lifecycle manager covering filing, investigation, settlement and denial — with reserve adequacy tracking and loss-ratio analytics.",
+    language: "ruby",
+    industry: "insurance-tech",
+    tags: ["state-machine", "event-sourcing", "aggregation", "deadline-tracking"],
+    parts: 3,
+    level: "senior"
   }
 ];

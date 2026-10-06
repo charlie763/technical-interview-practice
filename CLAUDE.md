@@ -6,6 +6,7 @@ For language-specific instructions, see:
 - **React:** [`react/CLAUDE.md`](react/CLAUDE.md)
 - **TypeScript:** [`typescript/CLAUDE.md`](typescript/CLAUDE.md)
 - **Go:** [`golang/CLAUDE.md`](golang/CLAUDE.md)
+- **Ruby:** [`ruby/CLAUDE.md`](ruby/CLAUDE.md)
 
 ## Repo structure
 
@@ -34,6 +35,12 @@ golang/
   practice_problems/          # problem_NN_<name>/ dirs, each with stub.go + types.go + *_test.go
   practice_problem_answers/   # cw_answer_NN_<name>.go files (filled in by Charlie)
   go.mod
+ruby/
+  practice_problems/          # problem_NN_<name>.rb class stubs (read-only during practice)
+  practice_problem_answers/   # cw_answer_NN_<name>.rb files (filled in by Charlie)
+  tests/                       # RSpec suites (spec_helper.rb answer-redirect)
+  Gemfile                      # rspec dependency
+  .rspec                       # points rspec at tests/ and requires spec_helper
 ```
 
 ## Problem design rules (all languages)
@@ -67,7 +74,7 @@ problems. It references a `PROBLEMS` array in `data.js` at the repo root.
   test: "python/tests/test_problem_NN_<name>.py",         // path to the test file (null for React problems without a separate test)
   title: "Short Human-Readable Title",                     // shown as the card heading
   description: "One or two sentences describing what the candidate builds.",
-  language: "python",           // "python" | "react" | "typescript" | "golan"
+  language: "python",           // "python" | "react" | "typescript" | "golang" | "ruby"
   industry: "health-tech",      // see valid values below
   tags: ["tag-one", "tag-two"], // max 10 kebab-case strings (try to add all relevant tags)
   parts: 3,                     // number of implementation parts
@@ -76,7 +83,7 @@ problems. It references a `PROBLEMS` array in `data.js` at the repo root.
 ```
 
 ### Valid `language` values
-`python` | `react` | `typescript` | `golang`
+`python` | `react` | `typescript` | `golang` | `ruby`
 
 ### Valid `level` values (in order)
 `junior` | `mid-level` | `senior` | `staff`
@@ -101,9 +108,9 @@ If you introduce a **new** industry value, also add a matching CSS rule to the
 
 ### Tag conventions
 
-Tags differ by language — **Python/TypeScript tags describe algorithmic patterns; React tags describe technical sub-technologies**.
+Tags differ by language — **Python/TypeScript/Ruby tags describe algorithmic patterns; React tags describe technical sub-technologies**.
 
-#### Python and TypeScript tags
+#### Python, TypeScript, and Ruby tags
 Describe the core data-structure or algorithmic pattern exercised.
 Examples: `sliding-window`, `rbac`, `event-driven`, `time-series`,
 `consecutive-tracking`, `deadline-tracking`, `state-machine`, `event-sourcing`,
